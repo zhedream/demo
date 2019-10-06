@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Text of Canvas</title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <canvas id="canvas2"></canvas>
+</body>
+
+</html>
+
+<style>
+    canvas {
+        border: 1px solid black;
+    }
+</style>
+
+<script>
+
+    /* 
+        贝赛尔曲线: https://www.cnblogs.com/hnfxs/p/3148483.html
+        Canvas:https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes#二次贝塞尔曲线及三次贝塞尔曲线
+
+        绘制 二阶贝赛尔曲线 , 需要三点,  构成 两条 线段,    起点, 控点, 结束点 .  起点由  笔触点 ,  或者 上一个 结束点 构成,  绘制, quadraticCurveTo(空点,结束点)
+        绘制 三阶阶贝赛尔曲线 , 需要四点,    笔触点moveTo 或 上一个结束底单  ,  bezierCurveTo(控1,控2,结束点)
+        
+        
+    */
+
+    const canvas = document.getElementById('canvas'); // canvas 作为一个画布, 获取Canvas
+    const ctx = canvas.getContext('2d'); // 获取一个  2D上下文,  
+    // 画一个对话气泡
+    ctx.beginPath();
+    ctx.moveTo(75, 25); // 起始 笔触, 点1,
+    ctx.quadraticCurveTo(25, 25, 25, 62.5); // 绘制 二阶贝赛尔曲线, ( 点2,点3 )
+    ctx.quadraticCurveTo(25, 100, 50, 100); // 点3, 会成为 下次绘制 曲线的点1 ,
+    ctx.quadraticCurveTo(50, 120, 30, 125);
+    ctx.quadraticCurveTo(60, 120, 65, 100);
+    ctx.quadraticCurveTo(125, 100, 125, 62.5);
+    ctx.quadraticCurveTo(125, 25, 75, 25);
+    ctx.stroke(); // 绘制划线
+    // ctx.fill();  // 填充
+
+
+    const canvas2 = document.getElementById('canvas2'); // canvas 作为一个画布, 获取Canvas
+    const ctx2 = canvas2.getContext('2d'); // 获取一个  2D上下文,  
+    // 一个爱心
+    ctx2.beginPath();
+    ctx2.moveTo(75, 40);
+    ctx2.bezierCurveTo(75, 37, 70, 25, 50, 25);
+    ctx2.bezierCurveTo(20, 25, 20, 62.5, 20, 62.5);
+    ctx2.bezierCurveTo(20, 80, 40, 102, 75, 120);
+    ctx2.bezierCurveTo(110, 102, 130, 80, 130, 62.5);
+    ctx2.bezierCurveTo(130, 62.5, 130, 25, 100, 25);
+    ctx2.bezierCurveTo(85, 25, 75, 37, 75, 40);
+    // ctx2.stroke(); // 绘制划线
+    ctx2.fill();
+
+</script>

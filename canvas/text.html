@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Text of Canvas</title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+</body>
+
+</html>
+
+<style>
+    #canvas {
+        border: 1px solid black;
+    }
+</style>
+
+<script>
+
+    /* 
+    
+        MDN 教程: https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Drawing_text
+    
+    
+    */
+    const canvas = document.getElementById('canvas'); // canvas 作为一个画布, 获取Canvas
+    const ctx = canvas.getContext('2d'); // 获取一个  2D上下文,  
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // 擦除(0,0)位置大小为 整个Canvas , 擦除的意思是把该区域变为透明
+    ctx.shadowOffsetX = 2; // 影音 x
+    ctx.shadowOffsetY = 2; // 阴影 y
+    ctx.shadowBlur = 2; // 聚焦度 , 高度?
+    ctx.shadowColor = '#666666'; // 阴影颜色
+    ctx.font = '24px Arial'; // 文本字体
+    ctx.fillStyle = 'red'; // 文本颜色
+    ctx.fillText('带阴影的文字', 20, 40); // 填充文本, 坐标
+
+</script>

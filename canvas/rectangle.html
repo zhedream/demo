@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rectangle of Canvas </title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+</body>
+
+</html>
+
+<style>
+    /* canvas 标签,默认宽度 300px, 高度 150ox */
+    #canvas {
+        border: 1px solid black;
+    }
+</style>
+
+<script>
+    /* 
+        x: 标签左上角, 水平向右为 X 坐标
+        y: 标签做山脚, 垂直线下为 Y 坐标
+        xy, 均为 正数
+
+        https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes
+        
+        void ctx.fillRect(x, y, width, height); 绘制填充矩形, fill: 填充 , rectangle: 矩形
+        void ctx.strokeRect(x, y, width, height); 边框矩形, stroke: 笔画, 
+    */
+
+    const canvas = document.getElementById('canvas'); // canvas 作为一个画布, 获取Canvas
+    const ctx = canvas.getContext('2d'); // 获取一个  2D上下文,  Canvas 有图层的概念吗?
+    ctx.fillStyle = "green";
+    ctx.fillRect(25, 25, 100, 100); // 绘制一个填充的矩形
+    ctx.clearRect(45, 45, 60, 60); // 清除指定矩形区域，让清除部分完全透明。
+    ctx.strokeStyle = 'green';
+    ctx.strokeRect(50, 50, 50, 50); // 绘制一个矩形的边框 , 边框矩形
+
+</script>

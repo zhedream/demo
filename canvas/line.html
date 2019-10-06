@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Rectangle of Canvas </title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <canvas id="canvas2"></canvas>
+</body>
+
+</html>
+
+<style>
+    /* canvas 标签,默认宽度 300px, 高度 150ox */
+    canvas {
+        border: 1px solid black;
+    }
+</style>
+
+<script>
+    /* 
+
+     */
+
+    const canvas = document.getElementById('canvas'); // canvas 作为一个画布, 获取Canvas
+    const ctx = canvas.getContext('2d'); // 获取一个  2D上下文,  Canvas 有图层的概念吗?
+
+    ctx.beginPath(); // 开始绘制 ,新建路径
+    ctx.moveTo(75, 50); // 笔触, 起点, 路径 开始的地方
+    ctx.lineTo(100, 75); // 画线到 某点 , 默认也是写一个 笔触,
+    ctx.moveTo(85, 50); // 新的笔触点, 
+    ctx.lineTo(100, 25);
+    ctx.lineTo(105, 35);
+    ctx.closePath(); // 闭合, 画一条线到起点(笔触)
+    ctx.stroke(); // 绘制
+
+    const canvas2 = document.getElementById('canvas2'); // canvas 作为一个画布, 获取Canvas
+    const ctx2 = canvas2.getContext('2d'); // 获取一个  2D上下文,  Canvas 有图层的概念吗?
+
+    ctx2.beginPath(); // 开始绘制 路径
+    ctx2.moveTo(75, 50); // 起点
+    ctx2.lineTo(100, 75); // 画先到 某点
+    ctx2.lineTo(100, 25);
+    // ctx2.closePath(); // 闭合, 可不闭合
+    ctx2.fill(); // 填充, 会自动闭合 , 可绘制多边形 , 只能是连续的路径, 只有一个笔触
+
+</script>

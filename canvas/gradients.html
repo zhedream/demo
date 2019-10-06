@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>渐变色 of Canvas</title>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <canvas id="canvas2" ></canvas>
+
+</body>
+
+</html>
+
+<style>
+    #canvas {
+        border: 1px solid black;
+    }
+</style>
+
+<script>
+
+
+    const canvas = document.getElementById('canvas'); // canvas 作为一个画布, 获取Canvas
+    const ctx = canvas.getContext('2d'); // 获取一个  2D上下文,  
+
+    // 创建 线性  渐变
+    var lingrad = ctx.createLinearGradient(0, 0, 0, 150);
+    lingrad.addColorStop(0, '#00ABEB'); // 设置过度颜色
+    lingrad.addColorStop(0.5, '#fff');
+    lingrad.addColorStop(0.5, '#26C000'); // 截断渐变
+    lingrad.addColorStop(1, '#fff');
+
+    var lingrad2 = ctx.createLinearGradient(0, 50, 0, 95);
+    lingrad2.addColorStop(0.5, '#000');
+    lingrad2.addColorStop(1, 'rgba(0,0,0,0)'); // 透明
+
+    // assign gradients to fill and stroke styles
+    ctx.fillStyle = lingrad;
+    ctx.strokeStyle = lingrad2;
+
+    // draw shapes
+    ctx.fillRect(10, 10, 130, 130);
+    ctx.strokeRect(50, 50, 50, 50);
+
+    // 中心渐变
+
+    /* 
+    
+    https://developer.mozilla.org/zh-CN/docs/Web/API/CanvasRenderingContext2D/createRadialGradient
+
+    CanvasGradient ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+    开始圆 坐标, 半径
+    结束圆 坐标, 半径
+    */
+
+    const canvas2 = document.getElementById('canvas2'); 
+    const ctx2 = canvas2.getContext('2d'); 
+
+    var gradient = ctx2.createRadialGradient(100, 100, 0, 100, 100, 107);
+    gradient.addColorStop(0, "red");
+    gradient.addColorStop(0.5, "green");
+    gradient.addColorStop(1, "blue");
+    ctx2.fillStyle = gradient;
+    ctx2.fillRect(0, 0, 200, 200);
+
+
+</script>
