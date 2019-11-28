@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .father {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+        }
+
+        .son {
+            position: absolute;
+            top: 11px;
+            width: 50px;
+            height: 50px;
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="father" class="father">
+        <div id="son" class="son"></div>
+    </div>
+</body>
+
+<script>
+
+    const father = document.getElementById('father');
+    father.onclick = function (e) {
+        console.dir(document.body);
+
+        console.log('bodyClientWidth', document.body.clientWidth);
+        console.log('bodyClientHeight', document.body.clientHeight);
+
+        const target = e.target
+        console.log('offsetTop:左上角距父容器top', target.offsetTop);
+        console.log('offsetLeft:左上角距父容器top (tip:塌陷)', target.offsetLeft);
+        
+        console.log('offsetWidth:元素宽度', target.offsetWidth);
+        console.log('offsetHeight:元素高度', target.offsetHeight);
+
+        console.log('clientWidth:元素宽度', target.clientWidth);
+        console.log('clientHeight:元素高度', target.clientHeight);
+
+        console.log('clientTop:元素??', target.clientTop);
+        console.log('clientLeft:元素??', target.clientLeft);
+
+        console.dir(e.target);
+    }
+
+
+
+</script>
+
+
+
+
+</html>
