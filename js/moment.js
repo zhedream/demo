@@ -17,5 +17,10 @@ new Date().getTime() // 获取时间戳
 // 前一天日期
 let day = new Date();
 day.setDate(day.getDate() - 1)
-console.log(day.format("yyyy-MM-dd"));
+console.log(day.format("yyyy-MM-dd")); // es6 没有 format 方法
+
+// 一小时之前
+new Date(
+    new Date().setTime(new Date().getTime() - 1000 * 60 * 60 * 1 * 1)
+)
 
