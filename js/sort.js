@@ -1,14 +1,14 @@
 // JS sort 排序
 // LINK: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 
-var array1 = [1, 2, 30, 4, ,800, 9, 21, 100000];
+var array1 = [1, 2, 30, 4, , 800, 9, 21, 100000];
 
 console.log('a' < 'b'); // true
 console.log('a' - 'b'); // NaN
 console.log('80' > '9'); // false
 console.log('80' - '9'); // 71
 
-array1.sort((a,b)=>a<b);
+array1.sort((a, b) => a < b);
 console.log(array1);
 /* 
 
