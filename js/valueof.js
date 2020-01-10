@@ -3,10 +3,10 @@ function MyNumberType(n) {
     this.number2 = n + 2;
 }
 MyNumberType.prototype.valueOf = function () {
-    return this.number+'3';
+    return this.number + '3';
 };
 MyNumberType.prototype.toString = function dogToString() {
-    return this.string+'toString';
+    return this.string + 'toString';
 }
 
 

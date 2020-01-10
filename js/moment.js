@@ -13,6 +13,13 @@ console.log('一小时之后', moment().add(1, 'hours').format('YYYY-MM-DD HH:00
 
 new Date().getTime() // 获取时间戳
 
+moment().date(); // 这个月几号
+
+moment().format('d') // 周几 [0,6]  周日第一天为 0  
+
+moment().isBefore('2020-01-05'); // false 某天之前
+moment() < moment('2020-01-05') // false 
+moment() < moment('2020-01-05').endOf('day') // false 
 
 // 前一天日期
 let day = new Date();

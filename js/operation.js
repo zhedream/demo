@@ -23,6 +23,9 @@ console.log(b);
 
 /* 
 
+prototype 伪重载
+
+
 参考:
 https://www.cnblogs.com/wangkangluo1/archive/2013/03/18/2965476.html
 
