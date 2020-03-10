@@ -6,3 +6,9 @@ let remove = arr.splice(1,3); // [index,length,insert]:移除的
 
 // 数组截取, 浅拷贝 [1,3)
 arr.slice(1, 3); 
+
+
+
+arr.push(6,7,8)
+
+console.log(arr.join(''));
