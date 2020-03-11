@@ -7,3 +7,10 @@ console.log(str.split(',')[2]);
 str.substring(0, 1);
 
 str.includes(',2'); // 是否包含 字符串
+
+// 字符串 .. 处理
+const sub = function (str) {
+    // 显示字数 三个字
+    if (str.length > 3) return str.slice(0, 3) + "..";
+    else return value;
+}
