@@ -8,7 +8,11 @@ console.log('a' - 'b'); // NaN
 console.log('80' > '9'); // false
 console.log('80' - '9'); // 71
 
-array1.sort((a, b) => a < b);
+array1.sort((a, b) => {
+    console.log(a, b);
+
+    return a < b
+});
 console.log(array1);
 /* 
 
@@ -32,7 +36,7 @@ array1.sort((a, b) => {
     return 0; // 相等
 });
 
-// console.log(array1);
+console.log(array1);
 
 
 

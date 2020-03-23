@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script src="./cache.js"></script>
+    <script>
+
+        async function solveFetch(params) {
+            let { a, b } = params;
+            console.log(`solve ${a} and ${b} : ${a + b} `);
+            return a + b;
+        }
+
+        function go() {
+            let a = Number(document.getElementById('input').value)
+            let b = Number(document.getElementById('input2').value)
+            let params = { a, b }
+            cacheAsync(solveFetch, params).then(item => {
+                console.log('', item);
+            })
+            console.log(MemoryCahce);
+        }
+
+    </script>
+
+    <input type="text" placeholder="参数1" id="input">
+    <input type="text" placeholder="参数2" id="input2">
+    <button onclick="go()">solveFetch</button>
+</body>
+
+</html>
