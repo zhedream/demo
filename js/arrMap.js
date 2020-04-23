@@ -5,9 +5,9 @@ arr = [
     { key: 'd' },
     { key: 'e' },
 ]
-let arrMap = arr.reduce((pre, item, index, ) => {
-    pre[item.key] = index
-    return pre
+let arrMap = arr.reduce((acc, item, index, _) => {
+    acc[item.key] = index
+    return acc
 }, {})
 
 console.log(arrMap);
