@@ -1,26 +1,20 @@
-// JS sort 排序
-// LINK: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 
-var array1 = [1, 2, 30, 4, , 800, 9, 21, 100000];
-
-console.log('a' < 'b'); // true
-console.log('a' - 'b'); // NaN
-console.log('80' > '9'); // false
-console.log('80' - '9'); // 71
-
-array1.sort((a, b) => {
-    console.log(a, b);
-
-    return a < b
-});
-console.log(array1);
 /* 
 
-默认  Unicode升序, '1' - '30' a < b 不交换
+JS sort 排序
+LINK: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 
-返回 负数 | -1 或 1 | 正数
+默认  Unicode升序
+
+如果 compareFunction(a, b) 小于 0 ，那么 a 会被排列到 b 之前；
+如果 compareFunction(a, b) 等于 0 ， a 和 b 的相对位置不变。备注： ECMAScript 标准并不保证这一行为
+如果 compareFunction(a, b) 大于 0 ， b 会被排列到 a 之前。
+
+自定义函数 要求返回 负数 | 正数 如 -1 | 1  
 
 */
+
+var array1 = [1, 2, 30, 4, , 800, 9, 21, 100000];
 
 
 array1.sort((a, b) => {
@@ -39,17 +33,16 @@ array1.sort((a, b) => {
 console.log(array1);
 
 
-
+// Number 排序
 array1.sort((a, b) => a - b); // 升序
 // console.log(array1);
 array1.sort((a, b) => b - a); // 降序
 // console.log(array1);
 
 // Unicode 排序
-array1.sort((a, b) => a < b);
-// console.log(array1);
-array1.sort((a, b) => a > b);
-// console.log(array1);
+array1.sort((a, b) => String(a).toUpperCase() > String(b).toUpperCase() ? 1 : -1); // 升序
+array1.sort((a, b) => String(a).toUpperCase() < String(b).toUpperCase() ? 1 : -1); // 降序
+console.log(array1);
 
 /*
 

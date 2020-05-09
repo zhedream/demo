@@ -1,18 +1,37 @@
 
 let arr = [1, 2, 3, 4, 5];
 
+arr.some(item => item === 1); // true 满足一项为真 true | false
+arr.every(item => item === 1); // false 满足所有为真 true | false
+
 // 删除/替换/插入 数组
 let remove = arr.splice(1, 3); // [index,length,insert]:移除的
 
 // 数组截取, 浅拷贝 [1,3)
 arr.slice(1, 3);
 
+arr.slice(-1)[0]; // last item
 
-console.log(arr);
+// console.log(arr);
 
 arr.push(6, 7, 8)
 
-console.log(arr.join(''));
+arr.filter((value, index, data) => vavlue); // 去假值
+arr.filter(v => v); // 去假值
+
+// 表格数据 筛选与去重
+let CarNumbers = tasks.reduce(
+  // 逗号操作符 acc.add 后 return acc
+  (acc, item) => (acc.add(item.CarNumber), acc),
+  new Set()
+);
+
+// console.log(arr.join(''));
+
+let aaa = arr.find((item, index) => item === 8) // item or undefined
+aaa = arr.findIndex((item, index) => item === 8) // index or -1
+
+console.log(aaa);
 
 
 /*

@@ -23,3 +23,20 @@ export const textDot = (value) => {
     if (value.length > 3) return value.slice(0, 3) + "..";
     else return value;
 }
+/**
+ * 中文长度
+ * @param {string} str 
+ * @return {number}
+ */
+export const mbLen = (str) => {
+    var len = 0;
+    for (var i = 0; i < str.length; i++) {
+        var a = str.charAt(i);
+        if (a.match(/[^\x00-\xff]/gi) != null) {
+            len += 2;
+        } else {
+            len += 1;
+        }
+    }
+    return len;
+}

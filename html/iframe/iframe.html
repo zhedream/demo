@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <a href="">aaa</a>
+  <iframe id="iframe" src="http://localhost:2222/iframe2.html" frameborder="0"></iframe>
+</body>
+
+<script>
+  let iframe = document.getElementById('iframe')
+
+
+
+  window.ff = iframe;
+
+  function receiveMessage(event) {
+    // 我们能相信信息的发送者吗?  (也许这个发送者和我们最初打开的不是同一个页面).
+    if (event.origin !== "http://localhost:2222")
+      return;
+    console.log(event.data)
+    // event.source 是我们通过window.open打开的弹出页面 popup
+    // event.data 是 popup发送给当前页面的消息 "hi there yourself!  the secret response is: rheeeeet!"
+  }
+  window.addEventListener("message", receiveMessage, false);
+
+  setTimeout(() => {
+    iframe.contentWindow.postMessage('111', "http://localhost:2222")
+  }, 1000);
+
+</script>
+
+</html>
