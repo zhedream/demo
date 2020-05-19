@@ -33,6 +33,8 @@ aaa = arr.findIndex((item, index) => item === 8) // index or -1
 
 console.log(aaa);
 
+// Array.from()
+// https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from
 
 /*
 
