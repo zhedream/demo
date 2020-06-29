@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>拖动DIV</title>
+  <style>
+    #div1 {
+      width: 100px;
+      height: 100px;
+      background: red;
+      position: absolute;
+    }
+
+    #img1 {
+      position: absolute;
+    }
+
+    body {
+      margin: 0;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div style="position: relative;width: 600px;height: 300px;background-color: royalblue;top: 150px;left:50px;">
+    <div id="div1"></div>
+  </div>
+  <img src="#" id="img1" />
+</body>
+
+<script>
+  window.onload = function () {
+
+    var oDiv = document.getElementById('div1');
+    var oImg = document.getElementById('img1');
+
+    drag(oImg);
+
+    drag(oDiv);
+
+    function drag(obj) {
+
+      // console.log(obj.parentElement)
+      // console.dir(obj.parentNode)
+      const parrentBox = obj.parentNode;
+
+      obj.onmousedown = function (e1) {
+        let ev = e1 || event;
+
+        // 计算 偏移 父盒子 定位
+        const top = parrentBox.offsetTop
+        const left = parrentBox.offsetLeft
+        const width = parrentBox.clientWidth
+        const height = parrentBox.clientHeight
+
+        // const top = 0
+        // const left = 0
+        // const width = 0
+        // const height = 0
+
+        const adsorb = 20; // 吸附距离
+
+        const ptop = -top; // 父盒子 距顶部 偏移
+        const pleft = -left; // 距左侧 偏移
+
+        const pbottom = -ptop; // 距底部 偏移
+        const pright = -pleft; // 距右侧 偏移
+
+        let disX = ev.clientX - this.offsetLeft;
+        let disY = ev.clientY - this.offsetTop;
+        // console.log(obj);
+
+        if (obj.setCapture) {
+          obj.setCapture();
+        }
+
+        document.onmousemove = function (e2) {
+          let ev = e2 || event;
+
+          let L = ev.clientX - disX; //拖动元素左侧的位置=当前鼠标距离浏览器左侧的距离 - （物体宽度的一半）
+          let T = ev.clientY - disY; //拖动元素顶部的位置=当前鼠标距离浏览器顶部的距离 - （物体高度的一半）
+
+          // console.log(T);
+          // console.log(L);
+
+          if (L < pleft + adsorb) {  //如果左侧的距离小于0，就让距离等于0.不能超出屏幕左侧。如果需要磁性吸附，把0改为100或者想要的数字即可
+            L = pleft;
+          } else if (L > (document.documentElement.clientWidth - obj.offsetWidth - pright - adsorb)) {  //如果左侧的距离>屏幕的宽度-元素的宽度。也就是说元素的右侧超出屏幕的右侧，就让元素的右侧在屏幕的右侧上
+            L = document.documentElement.clientWidth - obj.offsetWidth - pright;
+          }
+
+          if (T < ptop + adsorb) {  // 和左右距离同理
+            T = ptop;
+          } else if (T > (document.documentElement.clientHeight - obj.offsetHeight - pbottom - adsorb)) {
+            T = document.documentElement.clientHeight - obj.offsetHeight - pbottom;
+          }
+
+          obj.style.left = L + 'px';
+          obj.style.top = T + 'px';
+
+        }
+
+        document.onmouseup = function () {
+          document.onmousemove = document.onmouseup = null;
+          if (obj.releaseCapture) {
+            obj.releaseCapture();
+          }
+        }
+
+        return false;
+
+      }
+
+    }
+
+  }
+</script>
+
+</html>

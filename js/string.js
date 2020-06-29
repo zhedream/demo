@@ -4,9 +4,12 @@ let str = '1,2,3,4'
 
 let ext = 'can.al'
 
-console.log(ext.lastIndexOf('a', -1)); // searchValue, <=index
 
-console.log(str.substring(0, -2)); // [indexStart,indexEnd)
+console.log(ext.split('can')) // ['','.al']
+
+console.log(ext.lastIndexOf('a', 5)); // searchValue, <=index | index为正数
+
+console.log(str.substring(0, -2)); // [indexStart,indexEnd) | indexEnd为正数
 
 console.log(str.slice(0, -2)); // [start,end)  [0,1,2, ... ] OR [... -3,-2,-1]
 

@@ -7,8 +7,10 @@
 var moment = require('moment'); // 处理时间的包
 
 
-
-
+moment().get('D') // 本月 第几天
+moment().get('d') // 本周 第几天, 周日-周一 : 0-6
+moment().daysInMonth() // 本月有几天
+moment().month()
 // moment()  创建一个 moment 对象实例, 默认当前时间
 
 moment().format('YYYY-MM-DD HH:mm:ss') // 格式化时间
@@ -25,6 +27,7 @@ moment().date(); // 这个月几号
 moment().format('d') // 周几 [0,6]  周日第一天为 0  
 
 moment().isBetween()
+moment().isAfter()
 
 moment().isBefore('2020-01-05'); // false 某天之前
 moment() < moment('2020-01-05') // false 
@@ -76,3 +79,24 @@ Date.prototype.format = function (format) {
 new Date('2020-04-24 10:50:20').getTime(); // 1587696620000
 moment('2020-04-24 10:50:20').valueOf(); // 1587696620000
 
+/* ==== 时间交集 ===== */
+
+// time 1   10:00 - 13:00
+let s1 = new Date('2020-04-24 10:00:00').getTime();
+let e1 = new Date('2020-04-24 13:00:00').getTime();
+// time 2   09:00 - 12:00
+let s2 = new Date('2020-04-24 09:00:00').getTime();
+let e2 = new Date('2020-04-24 12:00:00').getTime();
+if (e1 < s2 || s1 > e2) return; // 无交集
+// 交集部分
+const s = s1 > s2 ? s1 : s2;
+const e = e1 < e2 ? e1 : e2;
+
+/* ==== 时长 ===== */
+
+const t1 = new Date('2020-06-19 11:56:13').getTime();
+const t2 = new Date('2020-06-20 12:58:20').getTime();
+// moment.duration(100); // 时长 默认毫秒, duration(100,'seconds'); // 秒
+const duration1 = moment.duration(t2 - t1).minutes(); // '0000:00:01 01:02:07' ->  获取分钟数 2 min
+const duration2 = moment.duration(t2 - t1).asMinutes() | 0; // 一般使用这个, 总共时差, `| 0` 位运算 取整
+console.log(duration1, duration2);
