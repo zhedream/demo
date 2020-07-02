@@ -1,6 +1,11 @@
 
 let arr = [1, 2, 3, 4, 5];
 
+arr.splice(3, 1)
+
+console.log(arr);
+
+
 arr.some(item => item === 1); // true 满足一项为真 true | false
 arr.every(item => item === 1); // false 满足所有为真 true | false
 
@@ -16,15 +21,17 @@ arr.slice(-1)[0]; // last item
 
 arr.push(6, 7, 8)
 
-arr.filter((value, index, data) => vavlue); // 去假值
+// arr.filter((value, index, data) => value); // 去假值
 arr.filter(v => v); // 去假值
 
 // 表格数据 筛选与去重
+let tasks = [];
 let CarNumbers = tasks.reduce(
   // 逗号操作符 acc.add 后 return acc
   (acc, item) => (acc.add(item.CarNumber), acc),
   new Set()
 );
+CarNumbers = Array.from(CarNumbers)
 
 // console.log(arr.join(''));
 

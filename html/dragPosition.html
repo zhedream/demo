@@ -49,11 +49,12 @@
       obj.onmousedown = function (e1) {
         let ev = e1 || event;
 
+        const target = e1.target;
         // 计算 偏移 父盒子 定位
-        const top = parrentBox.offsetTop
-        const left = parrentBox.offsetLeft
-        const width = parrentBox.clientWidth
-        const height = parrentBox.clientHeight
+        const top = target.parentNode.offsetTop
+        const left = target.parentNode.offsetLeft
+        const width = target.parentNode.clientWidth
+        const height = target.parentNode.clientHeight
 
         // const top = 0
         // const left = 0
@@ -65,15 +66,15 @@
         const ptop = -top; // 父盒子 距顶部 偏移
         const pleft = -left; // 距左侧 偏移
 
-        const pbottom = -ptop; // 距底部 偏移
-        const pright = -pleft; // 距右侧 偏移
+        const pbottom = top; // 距底部 偏移
+        const pright = left; // 距右侧 偏移
 
         let disX = ev.clientX - this.offsetLeft;
         let disY = ev.clientY - this.offsetTop;
-        // console.log(obj);
+        // console.log(target);
 
-        if (obj.setCapture) {
-          obj.setCapture();
+        if (target.setCapture) {
+          target.setCapture();
         }
 
         document.onmousemove = function (e2) {
@@ -87,25 +88,25 @@
 
           if (L < pleft + adsorb) {  //如果左侧的距离小于0，就让距离等于0.不能超出屏幕左侧。如果需要磁性吸附，把0改为100或者想要的数字即可
             L = pleft;
-          } else if (L > (document.documentElement.clientWidth - obj.offsetWidth - pright - adsorb)) {  //如果左侧的距离>屏幕的宽度-元素的宽度。也就是说元素的右侧超出屏幕的右侧，就让元素的右侧在屏幕的右侧上
-            L = document.documentElement.clientWidth - obj.offsetWidth - pright;
+          } else if (L > (document.documentElement.clientWidth - target.offsetWidth - pright - adsorb)) {  //如果左侧的距离>屏幕的宽度-元素的宽度。也就是说元素的右侧超出屏幕的右侧，就让元素的右侧在屏幕的右侧上
+            L = document.documentElement.clientWidth - target.offsetWidth - pright;
           }
 
           if (T < ptop + adsorb) {  // 和左右距离同理
             T = ptop;
-          } else if (T > (document.documentElement.clientHeight - obj.offsetHeight - pbottom - adsorb)) {
-            T = document.documentElement.clientHeight - obj.offsetHeight - pbottom;
+          } else if (T > (document.documentElement.clientHeight - target.offsetHeight - pbottom - adsorb)) {
+            T = document.documentElement.clientHeight - target.offsetHeight - pbottom;
           }
 
-          obj.style.left = L + 'px';
-          obj.style.top = T + 'px';
+          target.style.left = L + 'px';
+          target.style.top = T + 'px';
 
         }
 
         document.onmouseup = function () {
           document.onmousemove = document.onmouseup = null;
-          if (obj.releaseCapture) {
-            obj.releaseCapture();
+          if (target.releaseCapture) {
+            target.releaseCapture();
           }
         }
 

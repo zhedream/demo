@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+      <title>div 拉伸缩放</title>
+  <style>
+    #cut {
+      opacity: 0.6;
+      height: 150px;
+      width: 150px;
+      position: absolute;
+      top: 150px;
+      left: 150px;
+      cursor: pointer;
+      border: 1px dotted red;
+
+    }
+
+    .box {
+      height: 48.5%;
+      width: 48.5%;
+      float: left;
+      background-color: #F0F0F0;
+      opacity: 0.3;
+    }
+
+    .box-resize {
+      border: 1px solid black;
+      width: 4px;
+      height: 4px;
+      position: absolute;
+    }
+
+    .box-top-left {
+      top: -3px;
+      left: -3px;
+      cursor: nw-resize;
+    }
+
+    .box-top-right {
+      top: -3px;
+      right: -3px;
+      cursor: ne-resize;
+    }
+
+    .box-left-center {
+      top: 50%;
+      left: -3px;
+      cursor: w-resize;
+    }
+
+    .box-right-center {
+      top: 50%;
+      right: -3px;
+      cursor: e-resize;
+    }
+
+    .box-bottom-left {
+      left: -3px;
+      bottom: -3px;
+      cursor: sw-resize;
+    }
+
+    .box-bottom-right {
+      right: -3px;
+      bottom: -3px;
+      cursor: se-resize;
+    }
+
+    .box-top-center {
+      left: 50%;
+      top: -3px;
+      cursor: n-resize;
+    }
+
+    .box-bottom-center {
+      left: 50%;
+      bottom: -3px;
+      cursor: s-resize;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 
+    参考:
+    div 八个方向拉伸缩放
+    https://blog.csdn.net/jeb222222/article/details/80677900?utm_medium=distribute.pc_relevant.none-task-blog-baidujs-2
+
+   -->
+  <div id="cut">
+       <div style="height:50%;width:100%;border-bottom:1px dotted red;position:absolute;top:2px;left:0;"></div>
+       <div style="height:100%;width:50%;border-right:1px dotted red;position:absolute;z-index:10;top:0;left:2px"></div>
+       <div class="box-resize box-top-left"></div>
+       <div class="box-resize box-top-right"></div>
+       <div class="box-resize box-left-center"></div>
+            <div class="box-resize box-right-center"></div>
+       <div class="box-resize box-bottom-left"></div>
+            <div class="box-resize box-bottom-right"></div>
+       <div class="box-resize box-top-center"></div>
+       <div class="box-resize box-bottom-center"></div>
+     
+  </div>
+   
+  <script> 
+    window.onload = function () {
+
+      var resize = document.getElementsByClassName("box-resize");
+      var cut = document.getElementById("cut");
+      var cutWidth = 0;
+      var cutHeight = 0;
+      var startX = 0;
+      var startY = 0;
+      var top = 0;
+      var left = 0;
+      var dir = "";
+      console.log(resize);
+
+      for (var i = 0; i < resize.length; i++) {
+        resize[i].onmousedown = function (e) {
+
+          e.preventDefault();
+
+          startX = e.clientX;
+          startY = e.clientY;
+          cutWidth = cut.offsetWidth;
+          cutHeight = cut.offsetHeight;
+          top = cut.offsetTop;
+          left = cut.offsetLeft;
+          var className = this.className;
+          if (className.indexOf("box-right-center") > -1) {
+            dir = "E";
+          }
+          else if (className.indexOf("box-top-left") > -1) {
+            dir = "NW";
+          }
+          else if (className.indexOf("box-top-right") > -1) {
+            dir = "NE";
+          }
+          else if (className.indexOf("box-left-center") > -1) {
+            dir = "W";
+          }
+          else if (className.indexOf("box-bottom-left") > -1) {
+            dir = "SW";
+          }
+          else if (className.indexOf("box-bottom-right") > -1) {
+            dir = "SE";
+          }
+          else if (className.indexOf("box-bottom-center") > -1) {
+            dir = "S";
+          }
+          else if (className.indexOf("box-top-center") > -1) {
+            dir = "N";
+          }
+          document.addEventListener('mousemove', function test(e) {
+            var width = e.clientX - startX;
+            var height = e.clientY - startY;
+            if (dir == "E") {
+              cut.style.width = cutWidth + width + "px";
+            }
+            else if (dir == "S") {
+              cut.style.height = cutHeight + height + "px";
+            }
+            else if (dir == "N") {
+              if (height < cutHeight) {
+                cut.style.height = cutHeight - height + "px";
+                cut.style.top = top + height + "px";
+              }
+            }
+            else if (dir == "W") {
+              if (width < cutWidth) {
+                cut.style.width = cutWidth - width + "px";
+                cut.style.left = left + width + "px";
+              }
+            }
+            else if (dir == "NW") {
+              if (width < cutWidth && height < cutHeight) {
+                cut.style.width = cutWidth - width + "px";
+                cut.style.height = cutHeight - height + "px";
+                cut.style.top = top + height + "px";
+                cut.style.left = left + width + "px";
+              }
+            }
+            else if (dir == "NE") {
+              if (height < cutHeight) {
+                cut.style.width = cutWidth + width + "px";
+                cut.style.height = cutHeight - height + "px";
+                cut.style.top = top + height + "px";
+              }
+            }
+            else if (dir == "SW") {
+              if (width < cutWidth) {
+                cut.style.width = cutWidth - width + "px";
+                cut.style.height = cutHeight + height + "px";
+                cut.style.left = left + width + "px";
+              }
+            }
+            else if (dir == "SE") {
+              if (width < cutWidth) {
+                cut.style.width = cutWidth + width + "px";
+                cut.style.height = cutHeight + height + "px";
+              }
+            }
+          });
+
+          document.onmouseup = function (e) {
+            dir = "";
+            document.mousemove = document.onmouseup = null;
+            e.preventDefault();
+          }
+        }
+      }
+
+    }
+
+  </script>
+</body>
+
+</html>
