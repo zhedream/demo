@@ -2,6 +2,8 @@
 // 字符串分割
 let str = '1,2,3,4'
 
+console.log(str.substring(3, undefined));
+
 let ext = 'can.al'
 
 
