@@ -1,0 +1,68 @@
+<template>
+  <Card style="margin: 0 auto;">
+    <i-form v-if="isRender" ref="form" :model="formData" :rules="rules" :label-width="90">
+      <template v-for="item in formItemList">
+        <!-- input 输入框 -->
+        <!-- 通用 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='input'">
+          <i-input :type="item.type" v-model="formData[item.key]" :placeholder="item.placeholder"></i-input>
+        </form-item>
+        <!-- 密码 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='input-pwd'">
+          <i-input type="password" password v-model="formData[item.key]" :placeholder="item.placeholder"></i-input>
+        </form-item>
+        <!-- radio 单选框 -->
+        <!-- 通用分组 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='radio'">
+          <radio-group v-model="formData[item.key]">
+            <Radio :label="list.value" v-for="list in item.list" :key="list.label">{{list.label}}</Radio>
+          </radio-group>
+        </form-item>
+        <!-- 性别 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='radio-sex'">
+          <radio-group v-model="formData[item.key]">
+            <Radio label="1" key="男">男</Radio>
+            <Radio label="0" key="女">女</Radio>
+          </radio-group>
+        </form-item>
+        <!-- Checkbox 多选框 -->
+        <!-- 真假 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='checkbox-boolean'">
+          <Checkbox v-model="formData[item.key]">{{item.connent}}</Checkbox>
+        </form-item>
+        <!-- 通用分组 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='checkbox'">
+          <Checkbox-Group v-model="formData[item.key]">
+            <Checkbox :label="list.value" v-for="list in item.list" :key="list.label" :disabled="item.disabled">
+              {{list.label}}</Checkbox>
+          </Checkbox-Group>
+        </form-item>
+        <!-- Switch 开关 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='switch'">
+          <i-switch v-model="formData[item.key]" @on-change="item.change" />
+        </form-item>
+        <!-- Select 选择器 -->
+        <form-item :key="item.key" :prop="item.key" :label="item.label" v-if="item.template=='select'">
+          <i-select v-model="formData[item.key]" :style="item.style">
+            <i-option v-for="list in item.list" :value="list.value" :key="list.value">{{ list.label }}</i-option>
+          </i-select>
+        </form-item>
+        <!-- AutoComlete 自动完成 -->
+        <!-- Slider 滑块 -->
+        <!-- DatePicker 日期选择器 -->
+        <!-- TimePicker 时间选择器 -->
+        <!-- Cascader 级联选择 -->
+        <!-- Trasfer 穿梭框 -->
+        <!-- inpuNumber 数字输入框 -->
+        <!-- Tate 评分 -->
+        <!-- Upload 评分 -->
+        <!-- ColorPicker 颜色选择器 -->
+
+        <form-item :key="item.key" v-if="item.template=='form-button'">
+          <i-button v-if="item.submit" :type="item.submit.type" @click="handleSubmit">{{item.submit.label}}</i-button>
+          <i-button v-if="item.reset" :type="item.reset.type" @click="handleReset">{{item.reset.label}}</i-button>
+        </form-item>
+      </template>
+    </i-form>
+  </Card>
+</template>

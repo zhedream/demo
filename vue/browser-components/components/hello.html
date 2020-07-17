@@ -1,0 +1,18 @@
+<template id="hello-template">
+  <div>
+    {{text}}
+  </div>
+</template>
+<script>
+  Vue.component('hello', {
+    // render: h => h(App),
+    template: '#hello-template',
+    name: "hello",
+    props: {},
+    data() {
+      return {
+        text: 'hello-component'
+      }
+    }
+  })
+</script>

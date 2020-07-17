@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <!-- vue -->
+  <script src="../node_modules/vue/dist/vue.js"></script>
+  <!-- iview -->
+  <link rel="stylesheet" href="../node_modules/iview/dist/styles/iview.css" />
+  <script src="../node_modules/iview/dist/iview.js"></script>
+
+  <!-- aynamic-iview-form -->
+  <script src="../dist/dynamic-view-form.js"></script>
+
+</head>
+
+<body>
+  <div id="app">
+    <dynamic-iview-form></dynamic-iview-form>
+  </div>
+
+  <script>
+
+    let vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          isRender: false,
+          // 循环规则
+          formOption: [
+            {
+              template: "input",
+              key: "name",
+              label: "用户名：",
+              type: "text",
+              placeholder: "请输入用户名",
+              rules: ['required']
+            },
+            {
+              template: "input",
+              key: "email",
+              label: "邮箱：",
+              type: "text",
+              placeholder: "请输入邮箱",
+              rules: ['required', 'email']
+            },
+            {
+              template: "input-pwd",
+              key: "pwd",
+              label: "密码：",
+              type: "",
+              placeholder: "请输入密码",
+              rules: ['required']
+
+            },
+            {
+              template: "input-pwd",
+              key: "rpwd",
+              label: "密码：",
+              type: "",
+              placeholder: "请确认密码",
+              rules: ['required', 'chekcPassword:pwd']
+            },
+            {
+              template: "radio",
+              key: 'sex',
+              label: "性别：",
+              type: 'radio',
+              list: [{
+                label: "男",
+                value: "1",
+              }, {
+                label: "女",
+                value: "0",
+              }],
+            },
+            {
+              template: "radio-sex",
+              key: 'sex2',
+              label: '男女'
+            },
+            // Checkbox
+            {
+              template: "checkbox",
+              key: 'like',
+              label: '爱好',
+              list: [{
+                label: "抽烟",
+                value: "1",
+              }, {
+                label: "喝酒",
+                value: "2",
+              }, {
+                label: "烫头",
+                value: "3",
+              },
+              ]
+            },
+            {
+              template: "checkbox-boolean",
+              key: 'isOk',
+              label: '同意',
+              connent: '协议'
+            },
+            // switch
+            {
+              template: "switch",
+              key: 'isUse',
+              label: '开关',
+              change: () => this.change()
+
+            },
+            // 选择器
+            {
+              template: "select",
+              key: 'bumen',
+              label: '部门',
+              list: [{
+                label: "智慧环保1",
+                value: "1",
+              }, {
+                label: "智慧环保2",
+                value: "2",
+              }, {
+                label: "智慧环保3",
+                value: "3",
+              },
+              ]
+            },
+
+
+            {
+              template: "form-button",
+              key: 'form-button',
+              submit: {
+                label: "提交",
+                type: "primary",
+                mode: 'submit',
+                style: ""
+              },
+              reset: {
+                label: "重置",
+                type: "default",
+                mode: 'reset',
+                style: "margin-left: 8px"
+              }
+
+            }
+          ],
+          rules: {},
+          formData: {},
+        }
+      },
+      methods: {},
+      mounted() {
+
+      }
+    })
+  </script>
+
+</body>
+
+</html>

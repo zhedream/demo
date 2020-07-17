@@ -1,0 +1,18 @@
+<template id="world-template">
+  <div>
+    {{text}}
+  </div>
+</template>
+<script>
+  Vue.component('world', {
+    // render: h => h(App),
+    template: '#world-template',
+    name: "world",
+    props: {},
+    data() {
+      return {
+        text: 'world-component'
+      }
+    }
+  })
+</script>

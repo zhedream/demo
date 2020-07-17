@@ -1,0 +1,11 @@
+{
+  "name": "html-components",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "iview": "^3.5.4",
+    "jquery": "^3.5.1",
+    "vue": "^2.6.11"
+  }
+}
