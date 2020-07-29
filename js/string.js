@@ -23,7 +23,7 @@ console.log(str.substr(0, 3)); // [index,length]
 // 字符串截取 [0,1) , 不包含 1 
 str.substring(0, 1);
 
-str.includes(',2'); // 是否包含 字符串
+str.includes(',2'); // 是否包含 字符串 true | false
 
 // 字符串 .. 处理
 const sub = function (str) {

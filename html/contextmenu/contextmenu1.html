@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>contextmenu Demo1</title>
+</head>
+
+<body>
+
+  <!-- 右键菜单 -->
+  <div class="mousemenu" id="mousemenu">
+    <a href="javascript:;">修改名称</a>
+    <a href="javascript:;">删除</a>
+  </div>
+</body>
+
+<script></script>
+
+<style type="text/css">
+  .mousemenu {
+    /* 位置层级 */
+    z-index: 999;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    /* 边框阴影 */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
+
+    display: block;
+    /* 内容 颜色 背景 布局 */
+    text-align: center;
+    color: #2c3e50;
+    background: #fff;
+
+  }
+
+  .mousemenu a {
+    padding: 2px 15px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    display: block;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .mousemenu a:last-child {
+    border-bottom: none;
+  }
+
+  .mousemenu a:hover {
+    background: #42b983;
+    color: #fff;
+  }
+</style>
+
+</html>

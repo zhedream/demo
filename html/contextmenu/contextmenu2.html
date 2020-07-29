@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>contextmenu Demo2</title>
+</head>
+
+<body>
+
+
+
+
+  <!-- 右键菜单 demo -->
+  <div class="mousemenu" id="mousemenu">
+    <a href="javascript:;" onclick="edit(this)">修改名称</a>
+    <a href="javascript:;" onclick="del(this)">删除</a>
+  </div>
+
+  <div>
+    <div class="box">one</div>
+    <div class="box"></div>
+    <div class="box">three</div>
+  </div>
+
+
+</body>
+
+<script>
+
+  var selectBox = null; // 保存右键选中的.
+
+  function edit(target) {
+
+    console.log('edit');
+    // console.log(selectBox);
+    let text = prompt('新的名称', selectBox.innerText)
+    console.log(text);
+    if (text !== null) selectBox.innerText = text;
+    else console.log('取消了');
+
+
+  }
+  function del(target) {
+
+    // 点击不会隐藏 menu
+    event.stopPropagation(); // 阻止事件传递
+
+    // 手动处理 menu
+    const clear = () => {
+      const menu = document.querySelector('.mousemenu');
+      menu.style.display = 'none';
+      document.onclick = null; // 严谨一些, 把 onclick 清除了, 不清的话会 重复清理一次
+    }
+
+    if (confirm('are you sure?')) {
+      console.log('del');
+      console.dir(selectBox);
+
+      selectBox.parentNode.removeChild(selectBox)
+
+      clear();
+    } else {
+      console.log('什么以不做');
+    }
+  }
+
+  function mouseRight(b) {
+
+    // const box = document.querySelector('.box');
+    const box = b;
+
+    const menu = document.querySelector('.mousemenu');
+    menu.oncontextmenu = () => event.preventDefault(); // 组织默认菜单事件
+
+    box.onmouseup = function () {
+
+      if (event.button !== 2) return;
+
+      box.oncontextmenu = () => event.preventDefault(); // 阻止浏览器默认菜单事件
+
+      const clientX = event.clientX;
+      const clientY = event.clientY;
+
+
+      console.log('鼠标右击了');
+      selectBox = event.target; // 保存2
+
+      menu.style.display = "block";
+      menu.style.left = clientX + "px";
+      menu.style.top = clientY + "px";
+
+      document.onclick = () => {
+        console.log('处理menu');
+        document.onclick = null;
+        menu.style.display = 'none';
+      }
+    }
+  }
+
+
+  let boxs = document.querySelectorAll('.box')
+  boxs = Array.from(boxs)
+  boxs.forEach(box => mouseRight(box))
+
+</script>
+
+<style>
+  .box {
+
+    /* position: relative; */
+    /* top: 100px; */
+    /* left: 100px; */
+
+    display: inline-block;
+
+    width: 300px;
+    height: 300px;
+    background-color: lightblue;
+    /* 对齐方式 */
+    vertical-align: top;
+
+  }
+
+  .mousemenu {
+    /* 位置层级 */
+    z-index: 999;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    /* 边框阴影 */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    box-shadow: 0 0.5em 1em 0 rgba(0, 0, 0, 0.1);
+
+    display: none;
+    /* 内容 颜色 背景 布局 */
+    text-align: center;
+    color: #2c3e50;
+    background: #fff;
+  }
+
+  .mousemenu a {
+    padding: 2px 15px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    display: block;
+    color: #1a1a1a;
+    text-decoration: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .mousemenu a:last-child {
+    border-bottom: none;
+  }
+
+  .mousemenu a:hover {
+    background: #42b983;
+    color: #fff;
+  }
+</style>
+
+</html>

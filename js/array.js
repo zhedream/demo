@@ -37,6 +37,7 @@ CarNumbers = Array.from(CarNumbers)
 
 let aaa = arr.find((item, index) => item === 8) // item or undefined
 aaa = arr.findIndex((item, index) => item === 8) // index or -1
+aaa = arr.indexOf(4) // index or -1
 
 console.log(aaa);
 
