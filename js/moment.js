@@ -75,7 +75,7 @@ Date.prototype.format = function (format) {
 };
 
 // 时间戳
-
+Date.now();
 new Date('2020-04-24 10:50:20').getTime(); // 1587696620000
 moment('2020-04-24 10:50:20').valueOf(); // 1587696620000
 
