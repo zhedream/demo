@@ -36,6 +36,17 @@ const getExt = function (str) {
     return str.substr(str.lastIndexOf('.'))
 }
 
+
+// slice()、substring()、substr()
+
+/*
+
+slice() // [begin ,end) 浅拷贝, 索引可负数 , 超出索引范围为 默认为 0
+substr()  //   [index,length] , 索引可负数 , MDN 不推荐 未来将可能会被移除掉,
+substring() // [begin,end) , 索引非负数 , 索引可交换 , #注意: [index, 超出] -> [0,index]
+
+*/
+
 /*
 
 1. JS - 字符串截取方法汇总（slice、substring、substr等）

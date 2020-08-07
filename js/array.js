@@ -16,7 +16,7 @@ let remove = arr.splice(1, 3); // [index,length,insert]:移除的
 arr.slice(1, 3);
 
 arr.slice(-1)[0]; // last item
-
+arr.includes() // Boolean
 // console.log(arr);
 
 arr.push(6, 7, 8)

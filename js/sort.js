@@ -44,6 +44,12 @@ array1.sort((a, b) => String(a).toUpperCase() > String(b).toUpperCase() ? 1 : -1
 array1.sort((a, b) => String(a).toUpperCase() < String(b).toUpperCase() ? 1 : -1); // 降序
 console.log(array1);
 
+
+
+// TODO: 数组对象排序,多字段 
+function s(arr, option) { }
+s(arr, { name: 'desc', age: 'asc', })
+
 /*
 
 1. 引用
