@@ -44,6 +44,14 @@ console.log(aaa);
 // Array.from()
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from
 
+/* == 清空数组 */
+// - js 清空数组的方法 https://www.cnblogs.com/jichi/p/10516576.html
+arr.length = 0;
+arr.splice(0, arr.length);
+arr = [];
+
+
+
 /*
 
 let a = [1, 2, 3] // 新数组
