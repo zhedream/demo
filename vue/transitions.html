@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>过度,动画</title>
+</head>
+
+<body>
+  <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js">
+  </script>
+  <style>
+    /* 动画样式 , 跟随生命周期 */
+    .fade-enter,
+    .fade-leave-to {
+      /* dom 入场前状态, 初始样式, vue 会给 dom 绑定样式(xx-enter), 并且入场后立刻(存在一帧)移除 */
+      opacity: 0;
+    }
+
+    .fade-enter-to,
+    .fade-leave {
+      /* 入场后样式, 入场后 xx-enter-to 会替换 xx-enter 样式  */
+      opacity: 1;
+      color: red;
+    }
+
+    .fade-enter-active,
+    .fade-leave-active {
+      /* 入场过度效果 , 入场效果结束后, vue 会将 xx-enter-to xx-enter-active 移除 */
+      transition: opacity .618s
+    }
+  </style>
+  <!-- 宿主文件 -->
+  <div id="app">
+
+    <transition name="fade">
+      <div style="position: relative;" v-show="show">aaa</div>
+    </transition>
+    <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
+      <div style="position: relative;" v-show=" show">bbb</div>
+    </transition>
+    <transition @before-enter="beforeEnter" @enter="enter" @before-leave="beforeLeave" @leave="leave">
+      <div style="position: relative;" v-show="show">ccc</div>
+    </transition>
+  </div>
+
+
+
+  <script src="vue.js"></script>
+  <script>
+    // 1.创建vue实例
+    const app = new Vue({
+      el: "#app",
+      data() {
+        return {
+          show: false
+        };
+      },
+      methods: {
+        beforeEnter(el) {
+          el.style.opacity = 0
+        },
+        enter(el, done) {
+          Velocity(el, { opacity: 1 }, { duration: 1000, complete: done })
+        },
+        beforeLeave(el) {
+          el.style.opacity = 1
+        },
+        leave(el, done) {
+          console.log('leave');
+          document.body.offsetHeight
+          Velocity(el, { opacity: 0 }, { duration: 1000, complete: done })
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

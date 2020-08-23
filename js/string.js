@@ -25,6 +25,9 @@ str.substring(0, 1);
 
 str.includes(',2'); // 是否包含 字符串 true | false
 
+// 以 .. 开始
+str.startsWith('ca');
+
 // 字符串 .. 处理
 const sub = function (str) {
     // 显示字数 三个字
