@@ -49,7 +49,7 @@ console.log(aaa);
 /* == 清空数组 */
 // - js 清空数组的方法 https://www.cnblogs.com/jichi/p/10516576.html
 arr.length = 0;
-arr.splice(0, arr.length);
+arr.splice(0, arr.length, ...[]);
 arr = [];
 
 

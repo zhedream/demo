@@ -23,21 +23,69 @@
     <div id="viewDiv"></div>
 
     <script>
+
+
         require([
+            "esri/layers/WebTileLayer",
+            "esri/Basemap",
             "esri/Map",
-            "esri/views/MapView"
-        ], function (Map, MapView) {
+            "esri/views/MapView",
+            "esri/views/SceneView",
+        ], function (WebTileLayer, Basemap, Map, MapView, SceneView) {
+
+            let baselayer = new WebTileLayer({
+                urlTemplate: "http://mt{subDomain}.google.cn/vt/lyrs=m@167000000&hl=zh-CN&gl=cn&x={col}&y={row}&z={level}&s=Galil",
+                id: 'tdt1',
+                subDomains: ['1', '2', '3']
+            });
+            // baselayer.subDomains = ['1', '2', '3']
+            let baseLayers = [baselayer];
+
+            let basemap = new Basemap({
+                baseLayers: baseLayers,
+                thumbnailUrl: "images/mapicon/gray.jpg",
+                title: '高德影像',
+                id: 'tdt1'
+            });
 
             var map = new Map({
-                basemap: "satellite" //  topo-vector, gray-vector，dark-gray-vector，satellite，streets-relief-vector，和 streets-navigation-vector
+                basemap,
+                // basemap: "satellite", //  topo-vector, gray-vector，dark-gray-vector，satellite，streets-relief-vector，和 streets-navigation-vector
+                uiComponents: [], //隐藏导航栏
             });
 
             var view = new MapView({
                 container: "viewDiv",
                 map: map,
-                center: [113.5411, 22.2399], // longitude, latitude
-                zoom: 11
+                center: [116.3974589, 39.93888382],
+                // scale: 500000, // 比例尺
+                zoom: 12, // 缩放级别
             });
+            var sceneView = new SceneView({
+                container: "viewDiv",
+                map: map,
+                // center: [113.5411, 22.2399], // longitude, latitude
+                center: [116.3974589, 39.93888382],
+                // scale: 500000, // 比例尺
+                // zoom: 12, // 缩放级别
+                // 相机角度
+                camera: {
+                    heading: 0, // face due east
+                    tilt: 10, // looking from a bird's eye view
+                    position: [
+                        116.3974589,
+                        39.93888382,
+                        50000,
+                    ], // creates a point instance (x,y,z)
+                }
+            });
+
+            /* 
+            
+                view.container = null;
+            
+            */
+
         });
     </script>
 </body>
