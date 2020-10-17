@@ -1,0 +1,126 @@
+<style>
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 1em;
+  }
+
+  video {
+    width: 80%;
+    border-radius: 5px;
+    border: 1px solid black;
+  }
+</style>
+
+<title>Screen Recording | RecordRTC</title>
+<h1>Screen Recording using RecordRTC</h1>
+
+<br>
+
+<button id="btn-start-recording">Start Recording</button>
+<button id="btn-stop-recording" disabled>Stop Recording</button>
+<button id="TEST">TEST</button>
+
+<hr>
+<video controls autoplay playsinline></video>
+
+<script src="./node_modules/recordrtc/RecordRTC.js"></script>
+<script>
+
+  if (!navigator.getDisplayMedia && !navigator.mediaDevices.getDisplayMedia) {
+    var error = 'Your browser does NOT support the getDisplayMedia API.';
+    document.querySelector('h1').innerHTML = error;
+
+    document.querySelector('video').style.display = 'none';
+    document.getElementById('btn-start-recording').style.display = 'none';
+    document.getElementById('btn-stop-recording').style.display = 'none';
+    throw new Error(error);
+  }
+  const video = document.querySelector('video');
+  var recorder; // globally accessible
+
+  TEST.addEventListener('click', () => {
+    console.log(recorder);
+  })
+  // 开始录屏
+  document.getElementById('btn-start-recording').onclick = function () {
+    this.disabled = true;
+    const option = { video: true };
+
+    navigator.mediaDevices.getDisplayMedia(option).then(result => {
+      recorder = result
+      console.log(result);
+    })
+
+    // invokeGetDisplayMedia();
+  };
+
+  // 调取浏览器 录屏
+  async function invokeGetDisplayMedia() {
+    const option = { video: true };
+    const stream = await navigator.mediaDevices.getDisplayMedia(option);
+
+
+
+    // 监听流 
+    let stop = () => document.getElementById('btn-stop-recording').click()
+    function disPathStop() {
+      stop();
+      stop = function () { };
+    }
+    stream.addEventListener('ended', function () {
+      console.log('ended');
+      disPathStop();
+    }, false);
+    stream.addEventListener('inactive', function () {
+      console.log('inactive');
+      disPathStop();
+    }, false);
+    stream.getTracks().forEach(function (track) {
+      track.addEventListener('ended', function () {
+        console.log('track.ended');
+
+        disPathStop();
+      }, false);
+      track.addEventListener('inactive', function () {
+        console.log('track.inactive');
+        disPathStop();
+      }, false);
+    });
+
+    // RTC
+    video.srcObject = stream;
+    recorder = RecordRTC(stream, { type: 'video' });
+    recorder.startRecording();
+
+    // release screen on stopRecording
+    recorder.stream = stream;
+
+    document.getElementById('btn-stop-recording').disabled = false;
+
+  }
+
+
+  // 停止按钮
+  document.getElementById('btn-stop-recording').onclick = function () {
+    this.disabled = true;
+    recorder.stopRecording(stopRecordingCallback);
+  };
+
+  // 停止录屏
+  function stopRecordingCallback() {
+    video.src = video.srcObject = null;
+    video.src = URL.createObjectURL(recorder.getBlob());
+
+    recorder.stream.stop(); // 手动停止 录屏
+    recorder.destroy();
+    recorder = null;
+
+    document.getElementById('btn-start-recording').disabled = false;
+  }
+
+
+</script>

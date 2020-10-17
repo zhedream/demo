@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <img src="/a.png" alt="">
+
+  <video style="position: relative;  object-fit: fill;" preload="auto" id="video1" controls autoplay playsinline
+    src="test0.2854936908995147.webm"></video>
+  <video style="position: relative;  object-fit: fill;" preload="auto" id="video2" controls autoplay playsinline
+    src="bigbuckbunny.webm"></video>
+  <canvas id="myCanvas" width="200" height="200"></canvas>
+</body>
+
+<script>
+  var timer = null;
+  var video = document.getElementById('video1');
+  var video2 = document.getElementById('video2');
+  var canvas = document.getElementById("myCanvas");
+  var context = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth * 1;  //获取屏幕宽度作为canvas的宽度  这个设置的越大，画面越清晰（相当于绘制的图像大，然后被css缩小）
+  canvas.height = window.innerHeight * 1;
+
+  function render() {
+    // if(video.play) video.play()
+    window.requestAnimationFrame(render)
+    // debugger
+    // console.log(video);
+    context.drawImage(video, 0, 0, canvas.width, canvas.height / 2);//绘制视频
+    context.drawImage(video2, 0, canvas.height / 2, canvas.width / 2, canvas.height / 2);//绘制视频
+  };
+  render()
+</script>
+
+<style>
+  canvas {
+    width: 500px;
+    height: 500px;
+  }
+
+  /* video {
+    display: none
+  } */
+</style>
+
+</html>
