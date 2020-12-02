@@ -2,40 +2,51 @@
 
 let arr = [
     {
-        key: "key1",
+        key: "vcdsaga",
         label: "2020-03-03测试图片1",
         count: 1
     },
     {
-        key: "key2",
-        label: "测试图谱1",
+        key: "a015",
+        label: "",
         count: 2
 
     },
     {
-        key: "key3",
+        key: "asdgsa",
         label: "测试图谱2",
         count: 3
     }
 ]
 
-// let a = go(arr, 'key', 'label');
-// let a = go(arr, 'key', ['label', 'key']);
-let a = go(arr, 'key', 'label');
-console.log(a);
+let map = toObj(arr, 'key', 'count')
+
+
+
+// let a = toObj(arr, 'key', 'label');
+// let a = toObj(arr, 'key', ['label', 'key']);
+// let a = toObj(arr, 'key', ['label', 'key'], true);
+console.log(map);
 
 /**
- * 
+ * 数组转对象
  * @param {[{}]} arr  对像数组
  * @param {string} key  键
  * @param {string | [string]} keys 
- * @param {boolean} flag   限制 keys 为 数组时, 保留或剔除的标志
+ * @param {boolean} flag 反选, 仅 keys 为数组时, 不选的标志
  */
-function go(arr, k, keys, flag = false) {
+/**
+ * 数组转对象
+ * @param {[{}]} arr  对像数组
+ * @param {string} key  键
+ * @param {string | [string]} keys 
+ * @param {boolean} flag 反选, 仅 keys 为数组时, 不选的标志
+ */
+function toObj(arr, k, keys, flag = false) {
     let object = {}
-    if (typeof (keys) == 'string') {
+    if (typeof keys == 'string') {
         return arr.reduce((acc, item, index, _) => {
-            acc[item.key] = item.label
+            acc[item[k]] = item[keys]
             return acc
         }, {})
     }

@@ -6,6 +6,9 @@
 // npm i moment -S
 var moment = require('moment'); // 处理时间的包
 
+console.log(moment('2020-01-04').isBefore('2020-01-05'));
+
+
 
 moment().get('D') // 本月 第几天
 moment().get('d') // 本周 第几天, 周日-周一 : 0-6
