@@ -40,6 +40,34 @@ const getExt = function (str) {
 }
 
 
+
+
+// 正则替换
+var regex = /rgba\((.+),(.+),(.+),(.+)\)/;
+var str = `color:rgba(0.2, 130, 101, 0.2);`
+
+var m = str.match(regex);
+var temp = `rgba($1,$2,${m[3]}, 1)`;
+/* 
+占位符 变量
+$& : 匹配到的
+$` : 匹配的左边
+$' : 匹配的右边
+$n : 第 1-100 个括号匹配的字符串
+*/
+// var c = str.replace(regex, "❤ $& ❤");
+var c = str.replace(regex, temp);
+// var c = str.replace('130', '140');
+
+
+console.log(regex);
+console.log(m);
+console.log(c);
+
+
+
+
+
 // slice()、substring()、substr()
 
 /*
