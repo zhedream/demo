@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>generator </title>
+</head>
+
+<body>
+  <div id="count:a"></div>
+  <div id="count:b"></div>
+</body>
+<script>
+
+  /* ================= ===================== ===================== */
+  /* ================= promise  ===================== */
+  /* ================= ===================== ===================== */
+
+  let p1 = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+      resolve(1);
+    }, 500);
+  });
+  let p2 = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+      resolve(2);
+    }, 1000);
+  });
+  let p3 = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+      resolve(3);
+    }, 1200);
+  });
+
+  let pArr = [p1, p2, p3];
+
+  /* ================= ===================== ===================== */
+  /* ================= promise function & async function ===================== */
+  /* ================= ===================== ===================== */
+
+  function pFunc(params) {
+    return new Promise(res => res(1))
+  }
+
+  async function asFunc(params) {
+    return 1;
+  }
+
+
+  /* ================= ===================== ===================== */
+  /* ================= promiseFuncs Generator ===================== */
+  /* ================= ===================== ===================== */
+
+  function fp1(params) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(() => {
+        resolve(params);
+      }, 1000);
+    });
+  }
+  function fp2(params) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(() => {
+        resolve(1 + params);
+      }, 1200);
+    });
+  }
+  function fp3(params) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(() => {
+        resolve(1 + params);
+      }, 1400);
+    });
+  }
+
+  let pFuns = [fp1, fp2, fp3];
+  /* ================= ===================== ===================== */
+  /* ================= promiseFuncs Generator ===================== */
+  /* ================= ===================== ===================== */
+
+  // generator , 可暂停的 状态机器, 控制流程, 异步/同步
+  // 这里的 是同步状态机, Promise 在 暂停期间完成了, runFpg 在执行的时候,  通过 递归 .then 回调 完成的
+  function* promiseFuncs_Generator(pFuncs, firstParam, callback) {
+    const length = pFuncs.length;
+    let count = 0;
+    // 循环生成 迭代器/状态
+    let pFunc;
+    let ladtValue;
+    while (pFunc = pFuncs.shift()) {
+      count++;
+      console.log('next option.');
+      let p;
+      if (count == 1) p = pFunc(firstParam);
+      else p = pFunc(ladtValue);
+      if (length == count) {
+        ladtValue = yield p;
+        console.log('return done: ', ladtValue);
+        callback(count);
+        return ladtValue;
+      } else {
+        ladtValue = yield p;
+        console.log('yield done: ', ladtValue);
+        callback(count);
+      }
+    }
+  };
+  // 执行状态机 的方法
+  function runPromiseFuncs_Generator(generator, ...params) {
+    const it = generator(...params);
+    function go(result) {
+      if (result.done) return result.value;
+      return result.value.then(function (value) {
+        return go(it.next(value));
+      }, function (error) {
+        return go(it.throw(error));
+      });
+    }
+    return go(it.next());
+  }
+  runPromiseFuncs_Generator(promiseFuncs_Generator, [...pFuns], 100, (count) => {
+    const div = document.getElementById('count:a')
+    div.innerText = count
+  }).then(result => {
+    console.log('a:result: ', result);
+  })
+
+
+  /* ================= ===================== ===================== */
+  /* ================= promiseFuncs AsyncGenerator ===================== */
+  /* ================= ===================== ===================== */
+
+  // generator , 可暂停的 状态机器, 控制流程, 异步
+  async function* promiseFuncs_AsyncGenerator(pFuncs, firstParam, callback) {
+    const length = pFuncs.length;
+    let count = 0;
+    // 循环生成 迭代器/状态
+    let pFunc;
+    let ladtValue;
+    while (pFunc = pFuncs.shift()) {
+      count++;
+      console.log('next option.');
+      let p;
+      if (count == 1) p = pFunc(firstParam);
+      else p = pFunc(ladtValue);
+      if (length == count) {
+        ladtValue = yield p;
+        console.log('return done: ', ladtValue);
+        callback(count);
+        return ladtValue;
+      } else {
+        ladtValue = yield p;
+        console.log('yield done: ', ladtValue);
+        callback(count);
+      }
+    }
+  };
+  // 执行状态机 的方法
+  async function runPromiseFuncs_AsyncGenerator(generator, ...params) {
+    const it = generator(...params);
+    // console.log('it: ', it.next());
+    // return
+    async function go(result) {
+      if (result.done) return result.value;
+      let value = result.value;
+      console.log('value: ', value);
+      return go(await it.next(value))
+    }
+    return await go(await it.next());
+  }
+  runPromiseFuncs_AsyncGenerator(promiseFuncs_AsyncGenerator, [...pFuns], 10, (count) => {
+    const div = document.getElementById('count:b')
+    div.innerText = count
+  }).then(result => {
+    console.log('b:result: ', result);
+  })
+
+
+  /* ================= ===================== ===================== */
+  /* ================= promiseArr  Generator ===================== */
+  /* ================= ===================== ===================== */
+
+  function* promiseArr_Generator(pArr, callback) {
+    let p;
+    while (p = pArr.shift()) {
+      yield p;
+    }
+    return;
+  }
+  function runPromiseArr_Generator(generator, ...params) {
+    const it = generator(...params);
+    function go(result) {
+      if (result.done) return result.value;
+      return result.value.then(function (value) {
+        return go(it.next(value));
+      }, function (error) {
+        return go(it.throw(error));
+      });
+    }
+    go(it.next());
+  }
+
+  runPromiseArr_Generator(promiseArr_Generator, pArr)
+
+
+</script>
+
+</html>
