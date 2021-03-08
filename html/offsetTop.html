@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<style>
+  html {
+    /* line-height: 0px; */
+    /* font-size: 0px; */
+  }
+</style>
+
+<body>
+  <!-- 判断换行, 可用于 导航zi -->
+  <div id="box" style="height: 80px;overflow:hidden;background-color: #fff;">
+
+    <div class="item" style="height:inherit; display: inline-block;width: 400px;background-color: aliceblue;"></div>
+    <div class="item" style="height:inherit; display: inline-block;width: 400px;background-color: beige;"></div>
+    <div class="item" style="height:inherit; display: inline-block;width: 400px;background-color: blueviolet;"></div>
+    <div class="item" style="height:inherit; display: inline-block;width: 400px;background-color: burlywood;"></div>
+  </div>
+
+  <div style="
+    margin-top: 10px;
+    background-color: lightblue;height: 500px;
+    position: relative;
+  ">
+    <div>
+      <div style="height: 100%;background-color: lightcoral;position: absolute;">
+        使用 绝对定位, 脱离文档流, 对标最近的一个 absolute/relative 父盒子
+      </div>
+
+    </div>
+  </div>
+  <div style="
+    margin-top: 10px;
+    background-color: lightblue;height: 500px;
+    position: relative;
+  ">
+
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+    <span style="display: inline-block;"></span>
+
+    <span style="display: inline-block;">
+      <div style="height: 100%;width: 100%  ;background-color: lightcoral;position: absolute;">
+        bb
+      </div>
+    </span>
+  </div>
+
+
+</body>
+
+
+<script>
+
+  window.onresize = function (params) {
+    const box = document.getElementById('box')
+    box.querySelectorAll('.item').forEach((el, index) => {
+      console.log(index + '个:', el.offsetTop);
+    })
+
+  }
+
+</script>
+
+</html>
