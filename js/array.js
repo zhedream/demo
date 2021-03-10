@@ -25,7 +25,7 @@ arr.push(6, 7, 8)
 // arr.filter((value, index, data) => value); // 去假值
 arr.filter(v => v); // 去假值
 
-// 表格数据 筛选与去重
+// 表格数据 筛选与去重 , 聚合函数, 把元素处理, 返回一个结果
 let tasks = [];
 let CarNumbers = tasks.reduce(
   // 逗号操作符 acc.add 后 return acc
