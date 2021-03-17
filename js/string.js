@@ -64,6 +64,14 @@ console.log(regex);
 console.log(m);
 console.log(c);
 
+// 替换2
+var key = '11';
+var ins = '<span style="color:red;">11</span>';
+var str = `(港) aqms-1100-2020110015`;
+var c = str.replace('11', ins)
+var c = str.split(key).join('#;#' + ins).split('#;#').join()
+console.log(c);
+
 
 
 
