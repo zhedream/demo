@@ -56,8 +56,29 @@ export function trim(str) {
  * @param {*} columnCount 一行几个
  * @return {number} 1 <= curColumn <= columnCount
  */
-function whichColumn(count, columnCount) {
-  const remainder = (count - 1) % columnCount; // 下标的余数
-  const restCount = columnCount - remainder - 1; // 剩余的个数
-  return columnCount - restCount; // 第几个
+export function whichColumn(count, columnCount) {
+    const remainder = (count - 1) % columnCount; // 下标的余数
+    const restCount = columnCount - remainder - 1; // 剩余的个数
+    return columnCount - restCount; // 第几个
+}
+
+/**
+ * 获取变化的数组
+ * @param {[*]} pre 
+ * @param {[*]} next 
+ * @param {function} get 
+ * @returns {{add:array,sub:array}} 增加的元素 add , 减少的元素 sub
+ */
+export function diffArr(pre, next, get) {
+    // get = get ? get : (e) => e;
+    let add = [], sub = [];
+    let difference = next
+        .concat(pre)
+        .filter((v) => !next.includes(v) || !pre.includes(v)); // 对称差集
+    sub = difference.filter((v) => pre.includes(v)); // difference - a  相对补集
+    add = difference.filter((v) => !pre.includes(v)); // difference - (difference - a) 的 相对补集
+    console.log("对称差集", difference);
+    console.log("新增", add);
+    console.log("减少", sub);
+    return { add, sub }
 }
