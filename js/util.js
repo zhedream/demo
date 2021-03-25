@@ -4,7 +4,8 @@
  * @param {*} pageSize 条数
  * @param {*} array 数组
  */
-export const paginationFromArr = (pageNo, pageSize, array) => {
+export const paginationFromArray = (pageNo, pageSize, array) => {
+    if (!array) return array;
     const offset = (pageNo - 1) * pageSize;
     return (offset + pageSize >= array.length) ? array.slice(offset, array.length) : array.slice(offset, offset + pageSize);
 }
@@ -81,4 +82,14 @@ export function diffArr(pre, next, get) {
     console.log("新增", add);
     console.log("减少", sub);
     return { add, sub }
+}
+
+/**
+ * 获取数据类型
+ * @param {*} value 
+ * @return {string} String Array Object Boolean 等
+ */
+const _toString = Object.prototype.toString;
+export const toRowTYpe = function toRowType(value) {
+    _toString.call(value).slice(8, -1)
 }
