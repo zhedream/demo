@@ -93,3 +93,21 @@ const _toString = Object.prototype.toString;
 export const toRowTYpe = function toRowType(value) {
     _toString.call(value).slice(8, -1)
 }
+
+/**
+ * 复制内容
+ * @param {string} content
+ * @returns {Boolean}
+ */
+export function copy(content) {
+    // input 不能换行
+    // textarea 支持 \n 换行复制
+    // 复制 dom.innerText
+    let temp = document.createElement("textarea");
+    temp.value = content;
+    document.body.appendChild(temp);
+    temp.select();
+    let flag = document.execCommand("Copy");
+    temp.remove();
+    return flag;
+}
