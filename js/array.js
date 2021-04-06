@@ -45,6 +45,9 @@ console.log(aaa);
 // 对 伪数组 或 可迭代对象 转换成 数组(浅拷贝)
 // Array.from()
 //  [...] 
+function toArray(linkArr) {
+  return [].slice.call(linkArr);
+}
 // https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/from
 
 /* == 清空数组 */
