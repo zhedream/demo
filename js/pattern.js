@@ -1,3 +1,9 @@
+
+// 菜鸟教程-正则教程 https://www.runoob.com/regexp/regexp-tutorial.html
+// 菜鸟教程-在线工具 http://c.runoob.com/front-end/854
+// vscode 扩展, any-rule
+
+
 // js 中的, 正则表达式的使用
 
 var pattern = /pages\/(.+)\/(.+)\.js/;
@@ -30,3 +36,25 @@ var pattern = /^1[34578]\d{9}$|^[0-9]{3,4}[-][0-9]{8}$/;
 // 密码强度: 对应的验证规则是：密码中必须包含字母、数字、特称字符，至少8个字符，最多30个字符。
 var regex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,30}');
 console.log(regex.test('a123456-'));
+
+// 去除首尾空格
+
+str.replace(/(^\s*)|(\s*$)/g, "");
+
+// 读取非 空白字符串  \S
+
+var a = ` 
+1 2
+3  
+4
+`.match(/\S+/g)
+console.log(a);
+
+// 匹配多行文本
+var a = ` 
+1 2
+  
+3   
+4
+`.split(/[\r\n]/)
+console.log(a);
