@@ -73,8 +73,13 @@ var c = str.split(key).join('#;#' + ins).split('#;#').join()
 console.log(c);
 
 
+// 进制转换
 
-
+var num = 11;
+var s32 = num.toString(32); // 转其他进制: 转成 32 进制
+var int10 = parseInt(s32, 32); // 转10进制: 待转换, 带转换进制
+console.log('int10: ', int10);
+var radixto = (s, a, b) => parseInt(s, a).toString(b)
 
 // slice()、substring()、substr()
 

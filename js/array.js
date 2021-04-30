@@ -79,3 +79,33 @@ https://excaliburhan.com/post/js-set-operation.html
 https://jingyan.baidu.com/article/22fe7ced4e36bd7002617fae.html
 
 */
+
+
+// 在一个数组范围 安全设置数组, 保留原顺序
+function arrayOverwriteRange(arr, insert, range) {
+  const remove = diff(range, insert);
+  arr = removeArrRange(arr, remove);
+  arr = insertArrRange(arr, insert, range);
+  return arr;
+}
+
+// 差集 , A 有 B 没有
+function diff(arr, arr2) {
+  return arr.filter(v => arr2.indexOf(v) == -1);
+}
+// 交集 A 有 且 B 有
+function inter(a, b) {
+  return a.filter(v => b.indexOf(v) > -1);
+}
+
+// 剔除
+function removeArrRange(arr, remove, range) {
+  let _intersection = range ? inter(remove, range) : remove; // 交集
+  return diff(arr, _intersection);
+}
+// 添加
+function insertArrRange(arr, insert, range) {
+  let _intersection = range ? inter(insert, range) : insert; // 交集
+  let _add = diff(_intersection, arr); // 差集
+  return arr.push(..._add), arr;
+}
