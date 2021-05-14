@@ -144,3 +144,6 @@ function getElementTop(element) {
     return actualTop;
 }
 
+// 生成随机字符
+
+Math.random().toString(36).substr(2);
