@@ -52,9 +52,20 @@ console.log(a);
 
 // 匹配多行文本
 var a = ` 
-1 2
+1 2 
   
 3   
 4
 `.split(/[\r\n]/)
+console.log(a);
+
+// 读取行 数组s
+var a = `
+1 2
+3 4
+`
+  .split(/[\r\n]/) // 读行
+  .map(s => s.replace(/(^\s*)|(\s*$)/g, "")) // trim
+  .filter(v => v) // 去空
+  .map(s => s.match(/\S+/g)) // 非空白字符
 console.log(a);

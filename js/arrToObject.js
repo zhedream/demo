@@ -19,7 +19,7 @@ let arr = [
     }
 ]
 
-let map = toObj(arr, 'key', 'count')
+let map = toObj(arr, 'key', [], true)
 
 
 

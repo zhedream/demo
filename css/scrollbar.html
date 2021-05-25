@@ -1,67 +1,102 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-      .content {
-        width: 200px;
-        height: 150px;
-        padding-left: 10px;
-        border: 1px solid #ccc;
-        overflow-y: hidden;
-      }
 
-      .content:hover {
-        overflow-y: auto;
-      }
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>
+    .content {
+      width: 200px;
+      height: 150px;
+      padding-left: 10px;
+      border: 1px solid #ccc;
+      overflow-y: hidden;
+    }
 
-      .scrollbar::-webkit-scrollbar {
-        width: 2px;
-      }
+    .content:hover {
+      overflow-y: auto;
+    }
 
-      .scrollbar::-webkit-scrollbar-track-piece {
-        background-color: #fff;
-      }
+    .scrollbar::-webkit-scrollbar {
+      width: 2px;
+    }
 
-      /* 滚动条的内层滑轨背景颜色 */
+    .scrollbar::-webkit-scrollbar-track-piece {
+      background-color: #fff;
+    }
 
-      .scrollbar::-webkit-scrollbar-track {
-        background-color: #fff;
-      }
+    /* 滚动条的内层滑轨背景颜色 */
 
-      /* 滚动条的外层滑轨背景颜色 */
+    .scrollbar::-webkit-scrollbar-track {
+      background-color: #fff;
+    }
 
-      .scrollbar::-webkit-scrollbar-thumb {
-        background-color: #d4d8e2;
-      }
+    /* 滚动条的外层滑轨背景颜色 */
 
-      /* 滚动条的内层滑块颜色 */
+    .scrollbar::-webkit-scrollbar-thumb {
+      background-color: #d4d8e2;
+    }
 
-      .scrollbar::-webkit-scrollbar-button {
-        background-color: #fff;
-        display: none;
-      }
+    /* 滚动条的内层滑块颜色 */
 
-      /* 滑轨两头的监听按钮颜色 */
-    </style>
-  </head>
+    .scrollbar::-webkit-scrollbar-button {
+      background-color: #fff;
+      display: none;
+    }
 
-  <body>
-    1. demo 来源 https://www.cnblogs.com/-nothing-/p/6826820.html
-    <br />
-    2. css scrollbar样式设置
-    <a href="https://segmentfault.com/a/1190000012800450"
-      >css scrollbar样式详细设置</a
-    >
+    /* 滑轨两头的监听按钮颜色 */
+  </style>
+</head>
 
-    <div class="content scrollbar">
-      <p>内容1</p>
-      <p>内容2</p>
-      <p>内容3</p>
-      <p>内容4</p>
-      <p>内容5</p>
-      <p>内容6</p>
-      <p>内容7</p>
+<body>
+  1. demo 来源 https://www.cnblogs.com/-nothing-/p/6826820.html
+  <br />
+  2. css scrollbar样式设置
+  <a href="https://segmentfault.com/a/1190000012800450">css scrollbar样式详细设置</a>
+
+  <div class="content scrollbar">
+    <p>内容1</p>
+    <p>内容2</p>
+    <p>内容3</p>
+    <p>内容4</p>
+    <p>内容5</p>
+    <p>内容6</p>
+    <p>内容7</p>
+  </div>
+
+
+  <h2>多滚动条 联动</h2>
+  <div>如 表格和表头</div>
+  <div> 多滚动条 错位问题,</div>
+  <div>head: overflow:hidden . body: overflow:auto. 由于 head 没有滚动条 导致错位,</div>
+  <div> head-wraper, body-wraper : 是用 width 固定宽度 或 max-content, 选其一</div>
+
+  <div>错位的 head-wraper 增加 padding-right: 18px. 就可以解决错位的问题.默认的滚动条样式 + 18px 即可</div>
+  <div class="table" style="display: flex;flex-direction: column;">
+    <div id="head" style="width:620px;height:30px;overflow:hidden;background-color: lightblue;">
+      <div class="head-wraper" style="height:100%;width:1000px;width: max-content;">
+        <div class="item" style="display: inline-block;width: 400px;">111</div>
+        <div class="item" style="display: inline-block;width: 400px;">222</div>
+        <div class="item" style="display: inline-block;width: 400px;">333</div>
+      </div>
     </div>
-  </body>
+    <div id="body" style="width:620px; height:500px;overflow:scroll" onscroll="funcsrcoll(event)">
+      <div class="body-wraper" style="height:1000px;width:1000px;width: max-content;">
+        <div class="row">
+          <div class="item" style="display: inline-block;width: 400px;">444</div>
+          <div class="item" style="display: inline-block;width: 400px;">555</div>
+          <div class="item" style="display: inline-block;width: 400px;">666</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    //控制两个div的滚动条联动，便于页面对比
+    function funcsrcoll(e) {
+      document.getElementById("head").scrollLeft = e.target.scrollLeft
+    }
+  </script>
+
+</body>
+
 </html>
