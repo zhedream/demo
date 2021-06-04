@@ -56,6 +56,13 @@ arr.length = 0;
 arr.splice(0, arr.length, ...[]);
 arr = [];
 
+/* == 数组判断 */
+
+[] == false; // true
+[0] == false; // true
+[1] == false; // false
+
+
 
 
 /*
