@@ -58,12 +58,30 @@ arr = [];
 
 /* == 数组判断 */
 
+if (data && data.length);
+
 [] == false; // true
 [0] == false; // true
 [1] == false; // false
 
+if ([]) 'true'; // true
+if ([] == '') 'true'; // true
+if ([] == '0') 'false'; // false
+if ([] == 0) 'true'; // true
+if ([] == 1) 'false'; // false
 
+if ([] == undefined) 'false'; // false
+if ([] == null) 'false'; // false
 
+if ([] == false) 'true'; // true
+if ([] == true) 'false'; // false
+
+[] == []; //false
+undefined == false; // false
+undefined == true; // false
+null == false; // false
+null == true; // false
+undefined == null; // true, 特殊
 
 /*
 
