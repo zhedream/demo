@@ -147,3 +147,25 @@ function getElementTop(element) {
 // 生成随机字符
 
 Math.random().toString(36).substr(2);
+
+
+
+/**
+ * 获取行,所在页码
+ * @param {*} dataIndex 数据行
+ * @param {*} pageSize 数量
+ * @returns [number,number] 页码 第几个
+ */
+function getDataIndex(dataIndex, pageSize) {
+    if (dataIndex == 0) return [0, 0]
+    let page = 0;
+    let count = 0;
+    if (dataIndex % pageSize == 0) {
+        page = dataIndex / pageSize
+        count = pageSize
+    } else {
+        page = parseInt(dataIndex / pageSize) + 1
+        count = dataIndex % pageSize
+    }
+    return [page, count]
+}

@@ -107,10 +107,10 @@ https://jingyan.baidu.com/article/22fe7ced4e36bd7002617fae.html
 
 
 // 在一个数组范围 安全设置数组, 保留原顺序
-function arrayOverwriteRange(arr, insert, range) {
-  const remove = diff(range, insert);
+function arrayOverwriteRange(arr, insert, scpoe) {
+  const remove = diff(scpoe, insert);
   arr = removeArrRange(arr, remove);
-  arr = insertArrRange(arr, insert, range);
+  arr = insertArrRange(arr, insert, scpoe);
   return arr;
 }
 
@@ -123,14 +123,30 @@ function inter(a, b) {
   return a.filter(v => b.indexOf(v) > -1);
 }
 
+// 交集2 A 有 且 B 有
+function inter2(a, b) {
+  let vmapcount = new Map();
+  new Set(a).forEach((v) => {
+    if (vmapcount.has(v)) vmapcount.set(v, vmapcount.get(v) + 1);
+    else vmapcount.set(v, 1);
+  });
+  new Set(b).forEach((v) => {
+    if (vmapcount.has(v)) vmapcount.set(v, vmapcount.get(v) + 1);
+    else vmapcount.set(v, 1);
+  });
+  let res = [];
+  vmapcount.forEach((count, v) => count > 1 && res.push(v));
+  return res;
+}
+
 // 剔除
-function removeArrRange(arr, remove, range) {
-  let _intersection = range ? inter(remove, range) : remove; // 交集
+function removeArrRange(arr, remove, scpoe) {
+  let _intersection = scpoe ? inter(remove, scpoe) : remove; // 交集
   return diff(arr, _intersection);
 }
 // 添加
-function insertArrRange(arr, insert, range) {
-  let _intersection = range ? inter(insert, range) : insert; // 交集
+function insertArrRange(arr, insert, scpoe) {
+  let _intersection = scpoe ? inter(insert, scpoe) : insert; // 交集
   let _add = diff(_intersection, arr); // 差集
-  return arr.push(..._add), arr;
+  return arr.concat(_add);
 }

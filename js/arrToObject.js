@@ -19,7 +19,7 @@ let arr = [
     }
 ]
 
-let map = toObj(arr, 'key', [], true)
+let map = toObj(arr, 'key')
 
 
 
@@ -43,6 +43,9 @@ console.log(map);
  * @param {boolean} flag 反选, 仅 keys 为数组时, 不选的标志
  */
 function toObj(arr, k, keys, flag = false) {
+    if (keys === undefined) {
+        keys = []; flag = true
+    }
     let object = {}
     if (typeof keys == 'string') {
         return arr.reduce((acc, item, index, _) => {
@@ -70,6 +73,35 @@ function toObj(arr, k, keys, flag = false) {
     return object;
 }
 
+
+/**
+ * 数据转对象, 字典映射
+ * @param {*} arr 
+ * @param {*} key 
+ * @returns 
+ */
+function toObj1(arr, key) {
+    let ResObj = {};
+    arr.forEach(RowObj => {
+        ResObj[RowObj[key]] = RowObj;
+    })
+    return ResObj;
+}
+
+/**
+ * 数据转对象, 字典映射
+ * @param {*} arr 
+ * @param {*} key 
+ * @param {*} key2 
+ * @returns 
+ */
+function toObj2(arr, key, key2) {
+    let ResObj = {};
+    arr.forEach(RowObj => {
+        ResObj[RowObj[key]] = RowObj[key2];
+    })
+    return ResObj;
+}
 
 
 /*
