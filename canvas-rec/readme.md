@@ -118,6 +118,9 @@ https://js-video-converter.com/zh/
 1. 如何合并多个 canvas 的内容
    https://bbs.csdn.net/topics/391039251
 
+1. 二进制数据、编码
+   https://zhuanlan.zhihu.com/p/27435098
+
 ## canvas <==> 视频
 
 多媒体自动播放限制 必须由用户 click 点击事件触发 play()
@@ -148,4 +151,18 @@ window.open(src);
 let data = Uint8Array.from([1, 2, 3, 4]);
 var foobar = data.subarray(0, 2);
 var arrayBuffer = foobar.buffer;
+// --
+var aa = Uint8Array.from([97, 98]); // 片段1
+var bb = Uint8Array.from([99, 100]); // 片段2
+var bb = new Blob([aa, bb]);
+bb.text(); // abcd
+
+// --
+
+btoa("a"); // YQ==   , 字符串到 base64
+atob("YQ=="); // a   , 字符串到 base64
+
+// -- node
+console.log(Buffer.from("a").toString("base64"));
+console.log(JSON.stringify(Buffer.from("ab")));
 ```
