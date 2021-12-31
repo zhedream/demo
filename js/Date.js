@@ -85,6 +85,17 @@ function isLeap(year) {
 date = new Date(date);
 date2 = date.setMonth(date.getMonth() - 1);
 
+function getDate(index) {
+  var date = new Date();
+  //当前日期
+  var newDate = new Date();
+  newDate.setDate(date.getDate() + index);
+  //官方文档上虽然说setDate参数是1-31,其实是可以设置负数的
+  var time = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + newDate.getDate();
+  return time;
+}
+
+
 /* 
   月份
 */

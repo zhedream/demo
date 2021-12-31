@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    #canvas {
+      border: 1px solid #ccc;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <img id="canvas"></img>
+</body>
+<script>
+
+  /* 
+
+    利用canvas画定位图标
+    https://www.codenong.com/cs106228312/
+
+  */
+  const PI = Math.PI;
+  // const aa = drawPointB64('1');
+  const aa = drawPointB64('点');
+  console.log('aa: ', aa);
+  canvas.src = aa;
+
+  function drawLine(ctx, xy1, xy2) {
+    ctx.beginPath();
+    ctx.moveTo(...xy1);       //设置起点状态
+    ctx.lineTo(...xy2);       //设置末端状态
+
+
+    ctx.lineWidth = 1;          //设置线宽状态
+    ctx.strokeStyle = '#000';  //设置线的颜色状态
+
+    ctx.stroke();               //进行绘制
+
+  }
+
+  function drawRect(ctx, x, y, size = 3) {
+    ctx.fillStyle = 'red';
+    ctx.fillRect(x, y, size, size);
+    // ctx.clearRect(45, 45, 60, 60);
+    // ctx.strokeRect(50, 50, 50, 50);
+
+  }
+
+  // 3 点 顺时针
+  function getxy1(a, b, r, 弧度) {
+    var X坐标 = a + Math.cos(弧度) * r
+    var Y坐标 = b + Math.sin(弧度) * r
+    return [X坐标, Y坐标]
+  }
+
+  // 角度转弧度
+  function toRadian(angle) {
+    // while (angle < 0) angle += 360;
+    return (loopNumber(angle, 360) * Math.PI / 180);
+  }
+
+  // 数循环
+  function loopNumber(num, fullNum) {
+    // 0:0   1:1  360:360  361:1 
+    const rest = num % fullNum; // 余数
+    const multiple = parseInt(num / fullNum); // 倍数
+    if (rest == 0) {
+      const isFull = multiple % 2 != 0;
+      if (isFull) return fullNum;
+      return 0;
+    }
+    return rest
+  }
+
+  // 辅助线
+  function drawHelpLines(ctx, canvas) {
+    // \
+    drawLine(ctx, [0, 0], [canvas.width, canvas.height])
+    // /
+    drawLine(ctx, [0, canvas.height], [canvas.width, 0])
+    // 横
+    drawLine(ctx, [0, canvas.height / 2], [canvas.height, canvas.height / 2],)
+    // 竖
+    drawLine(ctx, [canvas.width / 2, 0], [canvas.width / 2, canvas.height])
+
+  }
+  /**
+   * 画水滴坐标点 base64
+   * @param {*} text 显示的文字
+   * @returns {string} base64
+   */
+  function drawPointB64(text) {
+    // locationPoint
+    const PI = Math.PI;
+    const R = 50; // 半径
+    const an = 75; // 角度
+    const angle1 = - 180 - an; // 起弧度
+    const angle2 = an; // // 终弧度
+    const center = [R, R]; // 圆心
+
+    const canvas = document.createElement('canvas');
+
+    canvas.width = R * 2;
+    const triangleHeight = 3;
+    canvas.height = (R * 2 + triangleHeight) * 2 + 10; // 两倍的图形
+    const ctx = canvas.getContext('2d');
+
+    // const center = [canvas.width / 2, canvas.height / 2]; // 圆心(相对画布)
+
+    let xy1 = getxy1(...center, R, toRadian(angle1));
+    let xy2 = getxy1(...center, R, toRadian(angle2));
+
+
+    // 半圆
+    ctx.beginPath();
+    ctx.arc(...center, R, toRadian(angle1), toRadian(angle2), false);
+    // ctx.fillStyle = '#3d93fd';
+    // ctx.fill();
+    // ctx.closePath();
+
+    // 三角
+    // ctx.beginPath();
+    ctx.moveTo(...xy1);
+    ctx.lineTo(...xy2);
+    ctx.lineTo(canvas.width / 2, canvas.height / 2); // 画布中心
+    ctx.fillStyle = '#3d93fd';
+    ctx.fill();
+    ctx.closePath();
+
+    // drawHelpLines(ctx, canvas);
+
+    // 文字
+    ctx.beginPath();
+    ctx.font = '60px Microsoft YaHei';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    // ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2 - 10);
+    ctx.fillText(text, center[0], center[1] + 20);
+    ctx.closePath();
+
+    // drawRect(ctx, ...xy1)
+    // drawRect(ctx, ...xy2)
+    return canvas.toDataURL();
+  }
+
+  function drawCoorPoint(text) {
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+
+    const ctx = canvas.getContext('2d');
+
+    // 底座
+    ctx.beginPath();
+    ctx.ellipse(64, 110, 40, 18, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#1A2E67';
+    ctx.fill();
+    ctx.closePath();
+
+    // 半圆
+    ctx.beginPath();
+    ctx.arc(64, 40, 40, 0.3, Math.PI - 0.3, true);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.closePath();
+
+    // 三角
+    ctx.beginPath();
+    ctx.moveTo(25.5, 51);
+    ctx.lineTo(102.5, 51);
+    ctx.lineTo(64, 110);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    ctx.closePath();
+
+    // 文字
+    ctx.beginPath();
+    ctx.font = '30px Microsoft YaHei';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'yellow';
+    ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2 - 10);
+    ctx.closePath();
+
+    return canvas.toDataURL();
+  }
+</script>
+
+</html>

@@ -63,26 +63,6 @@ export function whichColumn(count, columnCount) {
     return columnCount - restCount; // 第几个
 }
 
-/**
- * 获取变化的数组
- * @param {[*]} pre 
- * @param {[*]} next 
- * @param {function} get 
- * @returns {{add:array,sub:array}} 增加的元素 add , 减少的元素 sub
- */
-export function diffArr(pre, next, get) {
-    // get = get ? get : (e) => e;
-    let add = [], sub = [];
-    let difference = next
-        .concat(pre)
-        .filter((v) => !next.includes(v) || !pre.includes(v)); // 对称差集
-    sub = difference.filter((v) => pre.includes(v)); // difference - a  相对补集
-    add = difference.filter((v) => !pre.includes(v)); // difference - (difference - a) 的 相对补集
-    console.log("对称差集", difference);
-    console.log("新增", add);
-    console.log("减少", sub);
-    return { add, sub }
-}
 
 /**
  * 获取数据类型
@@ -126,6 +106,7 @@ function getDom(selector) {
 function getElementLeft(element) {
     var actualLeft = element.offsetLeft;
     var current = element.offsetParent;
+    console.log('current: ', current);
 
     while (current !== null) {
         actualLeft += current.offsetLeft;
@@ -148,6 +129,7 @@ function getElementTop(element) {
 
 Math.random().toString(36).substr(2);
 
+URL.createObjectURL(new Blob()).substr(-36)
 
 
 /**
@@ -168,4 +150,29 @@ function getDataIndex(dataIndex, pageSize) {
         count = dataIndex % pageSize
     }
     return [page, count]
+}
+
+/**
+ * 下载文件
+ * @param {*} url 
+ */
+function downLoadUrl(url) {
+    let link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    let event = new MouseEvent('click');
+    link.dispatchEvent(event);
+    link.remove();
+    link = null;
+}
+
+/**
+ * 获取后缀
+ * @param {*} name 
+ * @returns string
+ * @description getExt('a.jpg') => 'jpg'
+ */
+function getExt(name) {
+    let ext = name.split('.');
+    return ext[ext.length - 1];
 }

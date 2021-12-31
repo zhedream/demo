@@ -69,3 +69,13 @@ var a = `
   .filter(v => v) // 去空
   .map(s => s.match(/\S+/g)) // 非空白字符
 console.log(a);
+
+
+// 逗号分隔
+let arr = 'a,b,，c'.split(/[,，]/).reduce((arr, str) => {
+  const str2 = str.replace(/(^\s*)|(\s*$)/g, "");
+  if (!str2) return arr;
+  arr.push(str2);
+  return arr;
+}, [])
+console.log('arr: ', arr);
