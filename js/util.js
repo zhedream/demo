@@ -176,3 +176,19 @@ function getExt(name) {
     let ext = name.split('.');
     return ext[ext.length - 1];
 }
+
+
+
+/**
+ * @param {string} base64
+ */
+function getBase64Img(base64) {
+    let image = new Image();
+    return new Promise(res => {
+        image.src = base64;
+        image.onload = function () {
+            image.onload = null;
+            return res(image)
+        };
+    })
+}
