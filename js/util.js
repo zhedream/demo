@@ -192,3 +192,57 @@ function getBase64Img(base64) {
         };
     })
 }
+
+export function domResize(selector, callback, timeout = 100) {
+    const that = callback;
+    let container;
+    if (selector instanceof HTMLElement) container = selector;
+    else container = document.querySelector(selector)
+
+    // 监测 宽度变化
+    const lastWidth_symbol = Symbol('lastWidth');
+    const lastHeight_symbol = Symbol('lastHeight');
+    const time_symbol = Symbol('time');
+    if (window.ResizeObserver) {
+        const ob_symbol = Symbol('ob');
+
+        const Observer = (entries) => {
+            if (that[time_symbol]) {
+                clearTimeout(that[time_symbol]);
+                that[time_symbol] = null;
+            }
+            that[time_symbol] = setTimeout(() => {
+                for (let entry of entries) {
+                    const cr = entry.contentRect;
+                    // console.log("Element:", entry.target);
+                    // console.log(`Element size: ${cr.width}px x ${cr.height}px`);
+                    // console.log(`Element padding: ${cr.top}px ; ${cr.left}px`);
+
+                    if (cr.width > 0 && cr.width !== that[lastWidth_symbol]) {
+                        that[lastWidth_symbol] = cr.width;
+                        callback()
+                        return;
+                    }
+                    if (cr.height > 0 && cr.height !== that[lastHeight_symbol]) {
+                        that[lastHeight_symbol] = cr.height;
+                        callback()
+                        return;
+                    }
+                }
+            }, timeout);
+        };
+        that[ob_symbol] = new ResizeObserver((entries) => Observer(entries));
+        that[ob_symbol].observe(container);
+        return () => that[ob_symbol].disconnect();
+    } else {
+        const onresize = () => {
+            if (that[time_symbol]) {
+                clearTimeout(that[time_symbol]);
+                that[time_symbol] = null;
+            }
+            that[time_symbol] = setTimeout(() => callback(), timeout);
+        }
+        window.addEventListener('resize', onresize)
+        return () => window.removeEventListener('resize', onresize);
+    }
+}

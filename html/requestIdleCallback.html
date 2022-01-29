@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>requestIdleCallback Demo</title>
+</head>
+
+<body>
+  <h2>RequestIdleCallback Demo</h2>
+  <input type="text" id="input">
+  <button onclick="add(input.value);input.value=''">Add</button>
+
+  <input type="text" id="number">
+  <button onclick="test(number.value);input.value=''">Test</button>
+  <button onclick="test2(number.value);input.value=''">Test2</button>
+
+  <div id="box">
+
+  </div>
+
+
+  <script>
+
+    requestIdleCallback(deadline => {
+      // 异步,类似 setTimeout
+      // deadline.timeRemaining() 计算本次剩余时间 (毫秒)
+      // deadline.didTimeout , 是否超时调用. ps: 超时调用 deadline.timeRemaining() === 0
+      console.log('deadline.didTimeout: ', deadline.didTimeout);
+    }, { timeout: 1000 })
+
+    function useData(v = null) {
+
+      // return (() => {
+      let data = v;
+
+      return [
+        () => data,
+        (v) => data = v,
+      ];
+      // })()
+
+    }
+
+    // requestIdleCallback 异步调用
+    var [getData, setData] = useData([]);
+
+    function add(num) {
+      let data = getData();
+      setData(data.concat(num))
+      updateDom()
+    }
+
+    function del(index) {
+      let data = getData();
+      data.splice(index, 1);
+      setData([].concat(data));
+      updateDom();
+    }
+
+    let arrBak = [];
+
+    function updateDom() {
+
+      let data = getData();
+
+      // console.time('diff')
+      const { add, sub } = diffArr(arrBak, data);
+      // console.timeEnd('diff')
+
+      arrBak = data;
+
+      const box = document.getElementById('box');
+
+      // box.innerHTML = '';
+
+      // 处理新增的
+      add.forEach((v, index) => {
+
+        const span_del = document.createElement('span');
+        span_del.innerText = 'x'
+        span_del.onclick = () => del(index)
+
+        const div = document.createElement('div');
+        div.innerText = v
+        div.appendChild(span_del)
+
+        div.addEventListener('click', () => {
+          div.style.color = div.style.color ? '' : 'red';
+        })
+
+        box.appendChild(div)
+      });
+
+      // 处理删除的
+
+      // 处理排序的
+
+    }
+
+
+    function diffArr(pre, next) {
+      let add = [], sub = [];
+      let difference = next
+        .concat(pre)
+        .filter((v) => !next.includes(v) || !pre.includes(v)); // 对称差集
+      sub = difference.filter((v) => pre.includes(v)); // difference - a  相对补集
+      add = difference.filter((v) => !pre.includes(v)); // difference - (difference - a) 的 相对补集
+      return { add, sub }
+    }
+
+
+    function test(nnn = 10) {
+
+      // 生成数据
+      let dataList = [];
+      for (let index = 0; index < nnn; index++) {
+        dataList.push(index + '::' + Math.random().toString(32).substring(2))
+      }
+
+      // 包装 任务
+      let wraperTask = (num) => () => {
+        add(num);
+      }
+
+      // 任务列表
+      let taskList = [];
+      dataList.forEach(num => {
+        taskList.push(wraperTask(num))
+      })
+
+      console.time('one');
+      runRequestIdleCallbackOne(taskList, 200).then(() => {
+        console.timeEnd('one');
+      })
+
+    }
+
+    function test2(nnn = 10) {
+      // 生成数据
+      let dataList = [];
+      for (let index = 0; index < nnn; index++) {
+        dataList.push(index + '::' + Math.random().toString(32).substring(2))
+      }
+      // 包装 任务
+      let wraperTask = (num) => () => {
+        add(num);
+      }
+      // 任务列表
+      let taskList = [];
+      dataList.forEach(num => {
+        taskList.push(wraperTask(num))
+      })
+      console.time('while');
+      runRequestIdleCallbackWhile(taskList, 200).then(() => {
+        console.timeEnd('while');
+      })
+    }
+
+    function runRequestIdleCallbackWhile(tasks, timeout = 200) {
+      return new Promise(res => {
+        requestIdleCallback(whileRuner, { timeout });
+        function whileRuner(deadline) {
+          let call;
+          while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && (call = tasks.pop(), call instanceof Function)) {
+            call();
+          }
+          if (tasks.length > 0) {
+            requestIdleCallback(whileRuner, { timeout });
+          } else {
+            return res();
+          }
+        }
+      })
+
+    }
+
+    function runRequestIdleCallbackOne(tasks, timeout = 200) {
+      return new Promise(res => {
+        requestIdleCallback(OneRuner, { timeout });
+        function OneRuner(deadline) {
+          // 如果帧内有富余的时间，或者超时
+          let call;
+          if ((call = tasks.pop(), call instanceof Function)) {
+            call();
+          }
+          if (tasks.length > 0) {
+            requestIdleCallback(OneRuner, { timeout });
+          } else {
+            return res();
+          }
+        }
+      })
+    }
+
+
+  </script>
+
+
+</body>
+
+</html>
