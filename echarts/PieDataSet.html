@@ -1,0 +1,88 @@
+<!--
+    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=dataset-encode0
+-->
+<!DOCTYPE html>
+<html style="height: 100%">
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body style="height: 100%; margin: 0">
+        <div id="container" style="height: 100%"></div>
+
+        
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js"></script>
+        <!-- Uncomment this line if you want to dataTool extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/extension/dataTool.min.js"></script>
+        -->
+        <!-- Uncomment this line if you want to use gl extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+        -->
+        <!-- Uncomment this line if you want to echarts-stat extension
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+        -->
+        <!-- Uncomment this line if you want to use map
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/map/js/china.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/map/js/world.js"></script>
+        -->
+        <!-- Uncomment these two lines if you want to use bmap extension
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=<Your Key Here>"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@{{version}}/dist/extension/bmap.min.js"></script>
+        -->
+
+        <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+
+var option;
+
+
+
+option = {
+  title: { text: '饼图 Pie 的 dataset 和 encode' },
+  dataset: [
+    {
+      // 对象, 映射字段:  字段=>维度索引/维度名称
+      dimensions: ['value0', 'value1', 'value2', 'name3'],
+      // dimensions: { value: 'value', name: 'name' }, // 不能像 结构那样修名称
+      source: [
+        { value0: 1, value1: 1, name3: 'obj1' },
+        { value0: 1, value1: 2, name3: 'obj2' },
+        { value0: 1, value1: 3, name3: 'obj3' }
+      ]
+    },
+    {
+      // 数组: 索引=>维度名称. 数组形式 自带维度索引
+      dimensions: ['value0', 'value1', 'name2'],
+      source: [
+        [1, 1, 'arr1'],
+        [1, 2, 'arr2'],
+        [1, 2, 'arr3']
+      ]
+    }
+  ],
+  series: {
+    type: 'pie',
+    // 对象形式的数据 dataset
+    datasetIndex: 0,
+    encode: { itemName: 'name3', value: 'value0' }, // 使用 维度名称
+    encode: { itemName: 3, value: 0 }, // 使用 维度索引
+
+    // 数组形式的数据 dataset
+    datasetIndex: 1,
+    encode: { itemName: 'name2', value: 'value0' }, // 使用 维度名称
+    encode: { itemName: 2, value: 0 } // 使用 维度索引
+
+    // 建议: 定义 dimensions 和 指定 encode, 否则定会根据类型判断.
+  }
+};
+
+
+if (option && typeof option === 'object') {
+    myChart.setOption(option);
+}
+
+        </script>
+    </body>
+</html>
+    

@@ -246,3 +246,44 @@ export function domResize(selector, callback, timeout = 100) {
         return () => window.removeEventListener('resize', onresize);
     }
 }
+
+/**
+ * 转树结构
+ * @param {*} arr 
+ * @returns 
+ */
+export function arrayToTree(arr) {
+
+    const PIDKey = 'pid';
+    const IDKey = 'id';
+    const ChildrenKey = 'children'
+
+    // const allHaveChildren = false;
+    // if (allHaveChildren === true) {
+    //   arr.forEach(v => v[ChildrenKey] = [])
+    // }
+
+    let res = [];
+
+    arr.forEach(child => {
+
+        let hasParent = arr.some(parent => {
+
+            if (child[PIDKey] === parent[IDKey]) {
+                if (parent[ChildrenKey] === undefined) {
+                    parent[ChildrenKey] = [child];
+                } else {
+                    parent[ChildrenKey].push(child);
+                }
+                return true;
+            }
+        })
+
+        if (hasParent === false) {
+            res.push(child)
+        }
+
+    })
+
+    return res;
+}

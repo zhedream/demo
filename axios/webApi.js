@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import router from '../router';
 const router = [];
-import { notification } from 'ant-design-vue';
+// import { notification } from 'ant-design-vue';
 
 let api = sessionStorage.getItem('api');
 if (api && api[api.length - 1] != '/') {
@@ -43,11 +43,11 @@ service.interceptors.response.use(response => {
   } else {
 
     console.info(error.message)
-    notification['warn']({
-      message: '请求超时',
-      description: ((error.response || {}).data || {}).message || error.message || '请求出现错误，请稍后再试',
-      duration: 3
-    })
+    // notification['warn']({
+    //   message: '请求超时',
+    //   description: ((error.response || {}).data || {}).message || error.message || '请求出现错误，请稍后再试',
+    //   duration: 3
+    // })
     return Promise.reject(error)
   }
 
