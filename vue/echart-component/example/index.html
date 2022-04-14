@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>echart-component demo</title>
+
+    <!-- vue -->
+    <script src="../node_modules/vue/dist/vue.js"></script>
+
+    <!-- echart -->
+    <script src="../node_modules/echarts/dist/echarts.js"></script>
+
+    <!-- ehcart-component -->
+    <script src="../dist/ehcart-component.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <div style="height: 300px">
+        <echart-component :option="option"></echart-component>
+      </div>
+    </div>
+
+    <script>
+      let vm = new Vue({
+        el: "#app",
+        data() {
+          return {
+            option: {
+              xAxis: {
+                type: "category",
+                data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+              },
+              yAxis: {
+                type: "value",
+              },
+              series: [
+                {
+                  data: [150, 230, 224, 218, 135, 147, 260],
+                  type: "line",
+                },
+              ],
+            },
+          };
+        },
+      });
+    </script>
+  </body>
+</html>
