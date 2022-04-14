@@ -287,3 +287,48 @@ export function arrayToTree(arr) {
 
     return res;
 }
+
+function get_centerNumber_index(total, count, index) {
+    let centerNumber = total / count;
+    return centerNumber * (index + 1) - centerNumber / 2;
+}
+
+
+// 统计 data key 次数
+function get_key_count(data, key) {
+    let key_count = {};
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        if (key_count[item[key]]) {
+            key_count[item[key]]++;
+        } else {
+            key_count[item[key]] = 1;
+        }
+    }
+    return key_count;
+}
+
+// 统计 data key 次数
+function get_key_count_array(data, key) {
+    let keys_count_array = [];
+    let key2Index = {};
+
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        let key_value = item[key];
+        if (!key_value) {
+            key_value = "未知";
+        }
+        if (key2Index[key_value] === undefined) {
+            let index = keys_count_array.length;
+            key2Index[key_value] = index;
+            keys_count_array.push({
+                name: key_value,
+                value: 1,
+            });
+        } else {
+            keys_count_array[key2Index[key_value]].value++;
+        }
+    }
+    return keys_count_array;
+}
