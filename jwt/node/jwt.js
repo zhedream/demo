@@ -1,4 +1,5 @@
-var fs = require('fs');
+const fs = require('fs');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 
 /* =============================HS256========================================= */
@@ -29,8 +30,8 @@ jwt.verify(token, 'pwd', function(err, decoded) {
  */
 
 
-var private = fs.readFileSync('private.key');  // get private key
-var public = fs.readFileSync('public.key');  // get private key
+var private = fs.readFileSync(path.resolve(__dirname,'private.key'));  // get private key
+var public = fs.readFileSync(path.resolve(__dirname,'public.key'));  // get public key
 var token = jwt.sign({ foo: 'bar' }, private, { algorithm: 'RS256' });
 console.log(token);
 

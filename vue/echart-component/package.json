@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "license": "MIT",
+  "homepage": "https://github.com/zhedream",
   "scripts": {
     "build": "webpack --config build/webpack.prod.js",
     "dev": "webpack-dev-server --config build/webpack.dev.js"

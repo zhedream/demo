@@ -1,5 +1,7 @@
 # 如何用 webpack 打包 vue 组件
 
+背景: 公司有个项目使用浏览器引包的形式, 所以打包一个 echart-component 组件
+
 打包一个 vue2.0 echarts 组件, 使其作为 vue 插件引入.
 
 可以在 浏览器 和 node 中打包使用
