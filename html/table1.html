@@ -1,0 +1,288 @@
+<div id="app" style="height: 500px">
+  <div class="many-main">
+    <div class="many-center">
+      <div class="center-head" id="center-head-id">
+        <div class="head-wraper">
+          <div class="head-item" key="time">时间日期</div>
+          <div :key="v.value" class="head-item" v-for="v in PollutantList">
+            {{v.label}}
+          </div>
+        </div>
+      </div>
+      <div @scroll="manyBodyScroll" class="center-body">
+        <div class="body-wraper">
+          <div class="body-row" v-for="time in tims_tt">
+            <div class="row-wraper">
+              <div class="row-time">{{time}}</div>
+              <template v-for="(v,index) in PollutantList">
+                <a :href="getManyImgUrl(time,v.value)" onclick="false">
+                  <div
+                    :key="v.value"
+                    :style="getManyImgStyles(time,v.value)"
+                    class="row-img"
+                    v-show="!rateLoading"
+                  >
+                    <!-- <my-img style="height: 100%;" :code="v.value" :All="All" :time="time"
+                        :sector-code="sectorCode"></my-img> -->
+                    <!-- <img style="height:100%;" :src="getManyImgUrl(time,v.value)" alt="" srcset=""> -->
+                  </div>
+                </a>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="many-fixed">
+      <div class="fixed-time-title" key="fixed-time-title">时间日期</div>
+      <div class="fixed-time-center" id="fixed-time-center-id">
+        <div class="fixed-time-wraper">
+          <div :key="time" class="fixed-time" v-for="time in tims_tt">
+            <div>{{time}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script>
+  var vm = new Vue({
+    el: "#app",
+    data() {
+      return {
+        tims_tt: [
+          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+          21, 22, 23, 24,
+        ],
+        rateLoading: false,
+        PollutantList: [
+          {
+            label: "AQI",
+            value: "AQI",
+          },
+          {
+            label: "PM₂.₅",
+            value: "a34004",
+          },
+          {
+            label: "PM₁₀",
+            value: "a34002",
+          },
+          {
+            label: "SO₂",
+            value: "a21026",
+          },
+          {
+            label: "NO₂",
+            value: "a21004",
+          },
+          {
+            label: "CO",
+            value: "a21005",
+          },
+          {
+            label: "O₃",
+            value: "a05024",
+          },
+        ],
+      };
+    },
+    methods: {
+      getManyImgUrl() {
+        return "";
+      },
+      manyBodyScroll(e) {
+        document.getElementById("center-head-id").scrollLeft =
+          e.target.scrollLeft;
+        document.getElementById("fixed-time-center-id").scrollTop =
+          e.target.scrollTop;
+      },
+      getManyImgStyles(time, code) {
+        const backgroundImage = `background-image: url(${this.getManyImgUrl(
+          time,
+          code
+        )})`;
+        // const size = 100 * this.rate; // 1.5
+        // const backgroundSize = `background-size: ${size}% ${size}%;`;
+        const backgroundSize = `background-size: contain;`;
+        return `${backgroundImage};${backgroundSize};`;
+      },
+    },
+  });
+</script>
+
+<!-- 多图平铺 -->
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    line-height: 1.5;
+  }
+  .many {
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+    padding: 15px;
+  }
+
+  .many-main {
+    margin-top: 40px;
+    overflow: hidden;
+    flex: 1;
+    position: relative;
+  }
+
+  .many-center {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .center-head {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .head-wraper {
+    width: max-content;
+    display: flex;
+    padding-right: 18px;
+  }
+
+  .center-body {
+    width: 100%;
+    overflow: auto;
+    flex: 1;
+  }
+
+  .head-item {
+    background-color: #f5f7f9;
+    border: 1px solid;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    width: 300px;
+    padding: 10px;
+    display: inline-block;
+  }
+
+  /* .head-body {} */
+
+  .body-row {
+    width: 100%;
+    /* display: flex; */
+    height: 200px;
+  }
+
+  .row-wraper {
+    width: max-content;
+    display: flex;
+  }
+
+  /* .center-body .body-wraper {} */
+
+  .center-body .row-time {
+    background-color: #f5f7f9;
+    border: 1px solid;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    width: 300px;
+    height: 200px;
+    padding: 10px;
+    display: inline-block;
+  }
+
+  .center-body a {
+    cursor: default;
+    text-decoration: none;
+    color: #333;
+    width: 300px;
+    height: 200px;
+    display: inline-block;
+  }
+
+  .show-img .row-img {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    width: 100%;
+    height: calc(100vh - 200px);
+    padding: 10px;
+    display: inline-block;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  .show-img h2,
+  .show-img p {
+    text-align: center;
+    font-size: 18px;
+  }
+
+  .center-body .row-img {
+    background-color: #f5f7f9;
+    border: 1px solid;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    width: 300px;
+    height: 200px;
+    padding: 10px;
+    display: inline-block;
+
+    /* background-image: url('http://172.16.12.16:3000/images/140400-AF5C9667-FB89-4AE8-A249-9050326E2B00/20210701/AQI-202107011500.png?v=451494'); */
+    /* background-size: 100% 100%; */
+    background-position: center;
+  }
+
+  /* fixed */
+  .many-fixed * {
+    box-sizing: border-box;
+  }
+
+  .many-fixed {
+    position: absolute;
+    top: 0;
+    width: 300px;
+    height: 100%;
+  }
+
+  .fixed-time-title {
+    background-color: #f5f7f9;
+    border: 1px solid;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    width: 300px;
+    padding: 10px;
+    display: inline-block;
+  }
+
+  .fixed-time-center {
+    height: calc(100% - 64px);
+    overflow: hidden;
+  }
+
+  .fixed-time-wraper {
+    padding-bottom: 18px;
+  }
+
+  .fixed-time {
+    background-color: #f5f7f9;
+    border: 1px solid;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    width: 300px;
+    height: 200px;
+    line-height: 200px;
+    padding: 10px;
+    display: inline-block;
+  }
+</style>

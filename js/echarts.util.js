@@ -98,13 +98,13 @@ export async function getEchartB64(params) {
  */
 function getNextB64_p(chart, option, type = 'jpg') {
 
-  chart.setOption(option);
 
   return new Promise(res => {
     chartOnceEvent(chart, 'finished', () => {
       const image64 = chart.getDataURL({ type });
       return res(image64);
-    })
+    });
+    chart.setOption(option);
   })
 
 }
@@ -174,7 +174,7 @@ function runTaskListRequestIdleCallbackWhile(tasks, callback, timeout = 200) {
     function whileRunner(deadline) {
       let call;
       while ((deadline.timeRemaining() > 0 || deadline.didTimeout) &&
-      (call = taskList.pop(), call instanceof Function)) {
+        (call = taskList.pop(), call instanceof Function)) {
         callback && callback(call);
       }
       if (taskList.length > 0) {
