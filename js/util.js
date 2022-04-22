@@ -332,3 +332,64 @@ function get_key_count_array(data, key) {
     }
     return keys_count_array;
 }
+
+/**
+ * 判断非空 '' null undefined
+ * @param value
+ * @returns {boolean}
+ */
+export function notEmpty(value) {
+    switch (value) {
+        case "":
+        case null:
+        case undefined:
+            return false;
+        default:
+            return true;
+    }
+}
+
+export function isEmpty(value) {
+    return !notEmpty(value);
+}
+
+
+export function groupByToArray(data, f) {
+    let result = [];
+    let fKeyIndex = {};
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        let fKey = f(item);
+
+        if (fKeyIndex[fKey] === undefined) {
+            fKeyIndex[fKey] = result.length;
+            result.push([item]);
+        } else {
+            result[fKeyIndex[fKey]].push(item);
+        }
+    }
+    return result;
+}
+
+export function groupByToArrayObject(data, f, titleKey, dataKey) {
+
+    titleKey = titleKey === undefined ? 'title' : titleKey;
+    dataKey = dataKey === undefined ? 'data' : dataKey;
+
+    let result = [];
+    let fKeyIndex = {};
+    for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        let fKey = f(item);
+        if (fKeyIndex[fKey] === undefined) {
+            fKeyIndex[fKey] = result.length;
+            result.push({
+                [titleKey]: fKey,
+                [dataKey]: [item]
+            });
+        } else {
+            result[fKeyIndex[fKey]][dataKey].push(item);
+        }
+    }
+    return result;
+}
