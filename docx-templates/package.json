@@ -1,0 +1,17 @@
+{
+  "name": "docx-templates-browser",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "browserify ./node_modules/docx-templates/lib/index.js --s docxTemplates > ./docx-templates.js",
+    "server": "http-server"
+  },
+  "author": "liuhaozhe",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^17.0.0",
+    "docx-templates": "^4.9.2",
+    "http-server": "^14.1.1",
+    "pizzip": "^3.1.1"
+  }
+}
