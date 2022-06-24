@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>获取input type=file 的文件内容</title>
+  </head>
+  <body>
+    <!-- base form https://www.shuzhiduo.com/A/GBJrkpAB50/  -->
+    <div id="app">
+      <a @click="chooseFile">选择文件</a>
+      <!-- 使用 accept 属性可以限定 文件选择的格式 -->
+      <input
+        type="file"
+        id="file"
+        style="display: none"
+        accept=".txt"
+        @change="fileInfo(getFileContent)"
+      />
+      <p>{{fileName}}</p>
+      <p>{{fileContent}}</p>
+      <p>{{buffStr}}</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jschardet/1.4.1/jschardet.min.js"></script>
+    <script type="text/javascript">
+      var buff = new Uint8Array([
+        49, 49, 49, 49, 13, 10, 97, 98, 99, 100, 13, 10, 65, 66, 67, 68, 13, 10,
+        13, 10,
+      ]);
+
+      var blob = new Blob([buff], { type: "text/plain" });
+      var file = new File([blob], "test.txt", { type: "text/plain" });
+
+      // 下载file
+      function downloadFile(file) {
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(file);
+        a.download = file.name;
+        a.click();
+      }
+
+      var vm = new Vue({
+        el: "#app",
+        data() {
+          return {
+            file: {},
+            fileName: "",
+            fileContent: "",
+            buff: "",
+            buff8: "",
+            buffStr: "",
+          };
+        },
+        methods: {
+          chooseFile() {
+            // 弹出文件选择框
+            let input = document.getElementById("file");
+            input.click();
+          },
+          fileInfo(callback) {
+            // 获取input标签选择的文件,并选择第一条
+            let resultFile = document.getElementById("file").files[0];
+            // 如果文件存在
+            if (resultFile) {
+              // 获取文件信息
+              this.file = resultFile;
+              // 获取文件名
+              this.fileName = resultFile.name;
+
+              // arrayBuffer
+              let reader = new FileReader();
+              reader.readAsArrayBuffer(resultFile);
+              reader.onload = function (e) {
+                let arrayBuffer = e.target.result;
+                console.log('arrayBuffer: ', arrayBuffer);
+                // let buff = new Uint8Array(arrayBuffer);
+                // console.log("buff: ", buff);
+              };
+              // 获取文件内容
+
+              readTextFileBase64(resultFile)
+                .then((data) => {
+                  this.fileContent = data;
+                  callback(data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }
+          },
+          getFileContent(fileContent) {
+            this.fileContent = fileContent;
+          },
+        },
+      });
+
+      function readTextFileBase64(file) {
+        let p1 = readAsTextByEncoding(file, "utf-8");
+        let p2 = readAsTextByEncoding(file, "gbk"); // gbk = gb2312
+        return Promise.all([p1, p2])
+          .then(([utf8, gbk]) => {
+            let text = "";
+            if (utf8.indexOf("�") === -1) {
+              text = utf8;
+            } else if (gbk.indexOf("�") === -1) {
+              text = gbk;
+            } else {
+              return Promise.reject("文件编码错误");
+            }
+            const blob = new Blob([text], { type: "text/plain" });
+            const reader = new FileReader();
+            return new Promise((res, rej) => {
+              reader.onload = () => {
+                res(reader.result);
+              };
+              reader.onerror = (err) => {
+                rej(err);
+              };
+              reader.readAsDataURL(blob);
+            });
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      function textFileAutoEncoding(file) {
+        let p1 = readAsTextByEncoding(file, "utf-8");
+        let p2 = readAsTextByEncoding(file, "gbk"); // gbk = gb2312
+        return Promise.all([p1, p2])
+          .then(([utf8, gbk]) => {
+            let text = "";
+            if (utf8.indexOf("�") === -1) {
+              text = utf8;
+            } else if (gbk.indexOf("�") === -1) {
+              text = gbk;
+            } else {
+              return Promise.reject("文件编码错误");
+            }
+            const blob = new Blob([text], { type: "text/plain" });
+            return new File([blob], file.name, { type: "text/plain" });
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      function readAsTextByEncoding(file, encoding = "utf-8") {
+        return new Promise((res, rej) => {
+          const reader = new FileReader();
+          reader.onload = function () {
+            console.log(reader.result);
+            res(reader.result);
+          };
+          reader.onerror = function (e) {
+            console.log("error: ", e);
+            rej(e);
+          };
+          reader.readAsText(file, encoding);
+        });
+      }
+    </script>
+  </body>
+</html>
