@@ -1,4 +1,17 @@
-import { colorGradualChange, fColorToHex } from './colorGradualChange'
+import { colorGradualChange, fColorToHex } from "./colorGradualChange";
+
+// 正则判断 rgb
+function isRGB(color) {
+  var rgb =
+    /^rgb|RGB\((([0-9]|[1-9]\d|1\d\d|2([0-4]\d|5[0-5])),){2}([0-9]|[1-9]\d|1\d\d|2([0-4]\d|5[0-5]))\)$/;
+  return rgb.test(color);
+}
+
+// 判断 是否是hex
+function isHex(color) {
+  var hex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
+  return hex.test(color);
+}
 
 var allColorList = [];
 
@@ -17,34 +30,29 @@ allColorList = allColorList.concat(
 allColorList.forEach((item, index, data) => {
   let hex = fColorToHex(...item);
   data[index] = hex;
-})
+});
 
 let val = 15; // 值
 let min = 5; // 最小值 , #2860fd
 let max = 105; // 最大值 , #ff0000
 
+let color = getColor(min, max, val);
 
-let color = getColor(min, max, val)
-
-console.log(color)
+console.log(color);
 
 function getColor(min, max, val) {
-
   const stopCount = allColorList.length; // 80个色阶, 80种过度颜色
 
   if (val < min) {
     return allColorList[0];
   } else if (val > max) {
-    return allColorList[allColorList.length - 1]
+    return allColorList[allColorList.length - 1];
   }
-  let percent = (val - min) / (max - min); // 
+  let percent = (val - min) / (max - min); //
 
-  let color = allColorList[
-    parseInt(percent * stopCount)
-  ];
+  let color = allColorList[parseInt(percent * stopCount)];
 
-  return color
-
+  return color;
 }
 
 window.getColor = getColor;
