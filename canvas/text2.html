@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Text of Canvas</title>
+  </head>
+
+  <body>
+    <canvas id="canvas"></canvas>
+    <img id="img" src="" alt="" />
+  </body>
+</html>
+
+<style>
+  #canvas {
+    border: 1px solid black;
+  }
+</style>
+
+<script>
+  /*
+
+      MDN 教程: https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Drawing_text
+
+  */
+
+  main();
+
+  async function main() {
+    // 增加标志
+    const addSignHook = (canvas) => {
+      const ctx = canvas.getContext("2d");
+
+      const canvasBak = cloneCanvas(canvas);
+
+      const fontSize = 16;
+      const color = "#70b603";
+      const offsetRight = 8;
+
+      // 判断文字
+      ctx.font = `${fontSize}px Arial`; // 文本字体
+      ctx.textBaseline = "top";
+      ctx.fillStyle = color; // 文本颜色
+      const text = "证";
+      const textInfo = ctx.measureText(text);
+
+      // 增加画板的宽度
+      canvas.width += textInfo.width + offsetRight;
+      // 重绘 背景颜色
+      ctx.fillStyle = "#20405b";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 重绘canvas
+      ctx.drawImage(canvasBak, 0, 0);
+
+      // 绘制文本
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.font = `${fontSize}px Arial`; // 文本字体
+      ctx.textBaseline = "top";
+      ctx.fillStyle = color; // 文本颜色
+
+      ctx.fillText(
+        text,
+        width - textInfo.width - offsetRight, // 文字左上角 X 坐标
+        height / 2 - fontSize / 2 // 文字左上角 Y 坐标
+      ); // 填充文本, 坐标
+
+      // 画圈
+      ctx.beginPath();
+      ctx.arc(
+        width - textInfo.width / 2 - offsetRight, // X
+        height / 2, // Y
+        fontSize - 5, // 半径
+        0,
+        Math.PI * 2
+      );
+      ctx.closePath();
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    };
+
+    var b64 = getTextBase64(
+      "石化一小第一小学",
+      {
+        fontSize: 16,
+        color: "#fff",
+        backgroundColor: "#20405b",
+        paddingRight: 8,
+        paddingLeft: 8,
+        paddingTop: 8,
+        paddingBottom: 8,
+      },
+      addSignHook
+    );
+    console.log(b64);
+    let img = await getBase64Img(b64);
+    console.dir(img);
+
+    document.getElementById("img").src = b64;
+
+    var canvas = document.getElementById("canvas");
+    canvas.width = 300;
+    canvas.height = 300;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+  }
+
+  function getTextBase64(text, option, hook) {
+    const fontSize = option.fontSize || 16;
+    const color = option.color || "#000";
+    const backgroundColor =
+      option.backgroundColor === undefined ? "#fff" : option.backgroundColor;
+
+    const defaultPadding = 5;
+    const paddingTop = option.paddingTop || defaultPadding;
+    const paddingBottom = option.paddingBottom || defaultPadding;
+    const paddingLeft = option.paddingLeft || defaultPadding;
+    const paddingRight = option.paddingRight || defaultPadding;
+
+    const canvas = document.createElement("canvas"); // canvas 作为一个画布, 获取Canvas
+    const ctx = canvas.getContext("2d"); // 获取一个  2D上下文,
+
+    ctx.font = `${fontSize}px Arial`; // 文本字体
+    const textInfo = ctx.measureText(text);
+
+    canvas.width = textInfo.width + paddingLeft + paddingRight;
+    canvas.height = fontSize + paddingTop + paddingBottom;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // 擦除(0,0)位置大小为 整个Canvas , 擦除的意思是把该区域变为透明
+
+    // 背景
+    if (backgroundColor) {
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // 文字
+    // ctx.shadowOffsetX = 2; // 影音 x
+    // ctx.shadowOffsetY = 2; // 阴影 y
+    // ctx.shadowBlur = 2; // 聚焦度 , 高度?
+    // ctx.shadowColor = '#666666'; // 阴影颜色
+    ctx.font = `${fontSize}px Arial`; // 文本字体
+    ctx.textBaseline = "top";
+    ctx.fillStyle = color; // 文本颜色
+
+    ctx.fillText(text, paddingLeft, paddingTop); // 填充文本, 坐标
+
+    hook && hook(canvas);
+
+    return canvas.toDataURL();
+  }
+
+  /**
+   * @param {string} base64
+   */
+  function getBase64Img(base64) {
+    let image = new Image();
+    return new Promise((res) => {
+      image.src = base64;
+      image.onload = function () {
+        image.onload = null;
+        return res(image);
+      };
+    });
+  }
+
+  function fetchImg(url) {
+    return new Promise((res) => {
+      let img = new Image();
+      img.src = url;
+      img.onload = function () {
+        img.onload = null;
+        return res(img);
+      };
+    });
+  }
+
+  function cloneCanvas(oldCanvas) {
+    //create a new canvas
+    var newCanvas = document.createElement("canvas");
+    var context = newCanvas.getContext("2d");
+
+    //set dimensions
+    newCanvas.width = oldCanvas.width;
+    newCanvas.height = oldCanvas.height;
+
+    //apply the old canvas to the new one
+    context.drawImage(oldCanvas, 0, 0);
+
+    //return the new canvas
+    return newCanvas;
+  }
+</script>

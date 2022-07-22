@@ -10,6 +10,7 @@
 
 <body>
 <canvas id="canvas"></canvas>
+<img id="img" src="" alt="">
 
 </body>
 
@@ -33,14 +34,24 @@
 
   async function main() {
     var b64 = getTextBase64('石化一小', {
-      fontSize: 100,
+      fontSize: 16,
       color: '#6e8aa0',
-      backgroundColor: '#20405b'
+      backgroundColor: '#20405b',
+      paddingRight: 30,
+      paddingLeft: 5,
+      paddingTop: 5,
+      paddingBottom: 5,
     });
     console.log(b64)
     let img = await getBase64Img(b64);
     console.dir(img);
+
+
+    document.getElementById('img').src = b64;
+
     var canvas = document.getElementById("canvas");
+    canvas.width = 300
+    canvas.height = 300
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0);
 
@@ -99,6 +110,17 @@
       image.onload = function () {
         image.onload = null;
         return res(image)
+      };
+    })
+  }
+
+  function fetchImg(url) {
+    return new Promise(res => {
+      let img = new Image();
+      img.src = url;
+      img.onload = function () {
+        img.onload = null;
+        return res(img)
       };
     })
   }
