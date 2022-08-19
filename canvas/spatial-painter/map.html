@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- Start -->
+
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link
+      href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+      rel="stylesheet"
+    />
+    <script src="https://js.arcgis.com/4.24/"></script>
+
+    <script src="./data.js"></script>
+    <script src="./util.js"></script>
+
+    <div id="greenhouseGases">
+      <!-- 地图 -->
+      <div id="viewDiv"></div>
+    </div>
+
+    <script>
+      init();
+      function init() {
+        loadModules([
+          "esri/Map",
+          "esri/views/MapView",
+          "esri/layers/WebTileLayer",
+          "esri/layers/MapImageLayer",
+          "esri/layers/GraphicsLayer",
+        ]).then(
+          ([Map, MapView, WebTileLayer, MapImageLayer, GraphicsLayer]) => {
+            var map = new Map({
+              // basemap: "satellite",
+            });
+            var view = new MapView({
+              container: "viewDiv",
+              map: map,
+              center: [106.89374561958043, 37.73011692624135],
+              zoom: 4,
+              constraints: {
+                // rotationEnabled: false,
+                minZoom: 12,
+                maxZoom: 3,
+              },
+            });
+
+            let tileLayer = new WebTileLayer({
+              id: "tileLayer",
+              title: "tileLayer",
+              subDomains: ["webrd01"],
+              urlTemplate:
+                "http://{subDomain}.is.autonavi.com/appmaptile?x={col}&y={row}&z={level}&lang=zh_cn&size=1&scale=1&style=8",
+            });
+            map.add(tileLayer);
+            map.reorder(tileLayer, 0);
+
+            // 点位
+            const pointLayer = new GraphicsLayer({
+              id: "pointLayer",
+              // maxScale: zoomMap[12][1],
+              // minScale: zoomMap[4][1], // 设置 缩放比例 进行显示隐藏图层
+            });
+
+            map.add(pointLayer);
+
+
+            // 广东数据点
+
+            let points = []; // turf points
+            let paths2 = [];
+            data.datas.forEach((v) => {
+              layerAdd(pointLayer, getPoint([v.lng, v.lat]));
+              points.push(turf.point([v.lng, v.lat]));
+              paths2.push([v.lng, v.lat]);
+            });
+
+            // 绝对中心点
+            var features = turf.featureCollection(points);
+            var centerPoint = turf.center(features);
+            console.log("center: ", centerPoint.geometry.coordinates);
+            layerAdd(pointLayer, getTriangle(centerPoint.geometry.coordinates));
+
+            // 数据覆盖区域
+
+            var line = turf.lineString(paths2);
+            var bbox = turf.bbox(line);
+            var bboxPolygon = turf.bboxPolygon(bbox);
+            // console.log("bboxPolygon222: ", bboxPolygon);
+            const bboxData = bboxPolygon.bbox;
+            // layerAdd(pointLayer, getPolygon(bboxPolygon.geometry.coordinates));
+            layerAdd(
+              pointLayer,
+              getPolyLine(bboxPolygon.geometry.coordinates[0])
+            );
+
+            // enveloped
+            var enveloped = turf.envelope(features);
+            console.log("enveloped: ", enveloped);
+            // layerAdd(pointLayer, getPolygon(enveloped.geometry.coordinates));
+
+            // 根据 边角画质 矩形
+            var bbox = [105.361046, 30.934089, 111.59974, 35.356724]; // 左下右上经纬度
+            var poly = turf.bboxPolygon(bbox);
+            layerAdd(pointLayer, getTriangle([105.361046, 30.934089]));
+            layerAdd(pointLayer, getTriangle([111.59974, 35.356724]));
+            layerAdd(pointLayer, getPolyLine(poly.geometry.coordinates));
+            // console.log("poly.geometry.coordinates: ", poly.geometry.coordinates);
+
+            // 插值图
+            var canvas;
+            let sw, ne;
+            {
+              let minX = bboxData[0];
+              let minY = bboxData[1];
+              let maxX = bboxData[2];
+              let maxY = bboxData[3];
+              let width = maxX - minX;
+              let height = maxY - minY;
+              console.log(width / height);
+
+              // 100 / height = width / height
+
+              // const center = [114.2363, 21.1572];
+              const center = centerPoint.geometry.coordinates;
+              // const scale = 4000;
+              let w = 500;
+
+              console.log(w / width);
+
+              const size = [500, 500 / (width / height)];
+
+              // 投影
+
+              console.log("minX, minY: ", minX, minY);
+              // console.log(projection([minX, minY]));
+
+              let projection = getProjectionFitSize(size, features);
+
+
+              console.log("features: ", features);
+
+              console.log(1111, projection.invert([0, size[1]]));
+
+              // window.projection = projection;
+
+              sw = projection.invert([0, size[1]]); // 左下角坐标
+              ne = projection.invert([size[0], 0]); // 右上角坐标
+
+              canvas = createCanvas(size[0], size[1]);
+              const painter = new SpatialPainter();
+              // const max = Math.max(...data.datas.map(item => item.value));
+              // const min = Math.min(...data.datas.map(item => item.value));
+              // data.min = min;
+              // data.max = max;
+              polygons = [];
+              console.time("paintSpatial");
+              painter.paintSpatial(canvas, data, projection, polygons, 0.5, true);
+              // document.body.appendChild(canvas);
+              console.timeEnd("paintSpatial");
+            }
+            // 贴图
+            getCustomImageOverlayLayer()
+              .then((CustomImageOverlayLayer) => {
+                console.log(
+                  "CustomImageOverlayLayer: ",
+                  CustomImageOverlayLayer
+                );
+                const view1 = view;
+                const map1 = map;
+
+                let layerId = "imageLayer";
+
+                // 单例图层
+                const layer = map1.findLayerById(layerId);
+                if (layer) map1.remove(layer);
+
+                var ImageOverlayLayer = new CustomImageOverlayLayer({
+                  id: layerId,
+                  // picUrl: "0.png",
+                  extent: {
+                    xmin: sw[0],
+                    ymin: sw[1],
+                    xmax: ne[0],
+                    ymax: ne[1],
+                  },
+                  picUrl: canvas.toDataURL(),
+                  // picUrl:
+                  //   "http://127.0.0.1:5500/canvas/spatial-painter/Snipaste_2022-08-16_15-09-39.png",
+                  // extent: extent,
+                  view: view1,
+                });
+                map1.add(ImageOverlayLayer);
+                //地图移动刷新,防止地图初始化时候，图片叠加图层加载刷新不过来
+                // setTimeout(function () {
+                //   var center = view1.center.clone();
+                //   center.x -= 0.0001; //底图是经纬度
+                //   view1.center = center;
+                //   view1.goTo(view1.center, {
+                //     speedFactor: 0.1,
+                //     easing: "linear", //linear, in-cubic, out-cubic, in-out-cubic, in-expo, out-expo, in-out-expo
+                //   });
+                // }, 500);
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        );
+      }
+
+      async function layerAdd(layer, graphicPromice) {
+        layer.add(await graphicPromice);
+      }
+
+      function getPoint([longitude, latitude]) {
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const point = {
+              //Create a point
+              type: "point",
+              longitude: longitude,
+              latitude: latitude,
+            };
+            const simpleMarkerSymbol = {
+              type: "simple-marker",
+              color: [226, 119, 40], // Orange
+              outline: {
+                color: [255, 255, 255], // White
+                width: 1,
+              },
+            };
+
+            const pointGraphic = new Graphic({
+              geometry: point,
+              symbol: simpleMarkerSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(pointGraphic);
+          });
+        });
+      }
+
+      function getPolyLine(paths) {
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const polyline = {
+              type: "polyline", // autocasts as new Polyline()
+              paths: paths,
+            };
+            const simpleMarkerSymbol = {
+              type: "simple-line",
+              color: [226, 119, 40], // Orange
+              outline: {
+                color: [255, 255, 255], // White
+                width: 1,
+              },
+              width: 2,
+            };
+
+            const pointGraphic = new Graphic({
+              geometry: polyline,
+              symbol: simpleMarkerSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(pointGraphic);
+          });
+        });
+      }
+      function getPolygon(rings) {
+        /*
+      一个
+      [ [],[],[],... ]
+      多个
+      [
+        [ [],[],[] ]
+        ...
+      ]
+      */
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const Polygon = {
+              type: "polygon", // autocasts as new Polygon()
+              rings: rings,
+            };
+            const fillSymbol = {
+              type: "simple-fill", // autocasts as new SimpleFillSymbol()
+              color: [227, 139, 79, 0.7],
+              outline: {
+                // autocasts as new SimpleLineSymbol()
+                color: [255, 255, 255],
+                width: 1,
+              },
+            };
+
+            const polygon = new Graphic({
+              geometry: Polygon,
+              symbol: fillSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(polygon);
+          });
+        });
+      }
+
+      function getTriangle([longitude, latitude]) {
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const point = {
+              //Create a point
+              type: "point",
+              longitude: longitude,
+              latitude: latitude,
+            };
+
+            const radius = 30; //Create a radius
+            var iconpathString = `M0 ${radius}a${radius} ${radius} 0 0 1 ${radius} -${radius}h0a${radius} ${radius} 0 0 1 ${radius} ${radius}v0a${radius} ${radius} 0 0 1 -${radius} ${radius}h0a${radius} ${radius} 0 0 1 -${radius} -${radius}z`;
+
+            const simpleMarkerSymbol = {
+              type: "simple-marker",
+              color: [226, 119, 40], // Orange
+              // style:'triangle',
+              // style:'path',
+              // path: iconpathString,
+              size: 20,
+              path: "M 0 0 L 300 0 L150 240 Z",
+              outline: {
+                color: [255, 255, 255], // White
+                width: 1,
+              },
+            };
+
+            let pointGraphic = new Graphic({
+              geometry: point,
+              symbol: simpleMarkerSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(pointGraphic);
+          });
+        });
+      }
+
+      function loadModules(params) {
+        return new Promise((res) => {
+          require(params, function () {
+            res(arguments);
+          });
+        });
+      }
+    </script>
+    <style>
+      .title {
+        border-bottom: 1px solid #ccc;
+        padding: 8px;
+      }
+
+      #greenhouseGases {
+        height: calc(100vh - 50px);
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        position: relative;
+      }
+
+      #viewDiv {
+        position: relative;
+        margin-top: 10px;
+        flex: 1;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* 碳汇图例 */
+      .legend {
+        width: 20px;
+        height: 200px;
+        z-index: 1;
+        position: absolute;
+        bottom: 20px;
+        right: 50px;
+        /* 背景色垂直渐变  #ff0000 - #ffff00 - #00ffff - #0000ff*/
+        background: linear-gradient(
+          to bottom,
+          #ff0000,
+          #ffff00,
+          #00ffff,
+          #0000ff
+        );
+      }
+
+      .legend-title {
+        /* transform 向上平移 100% */
+        transform: translateY(-100%) translateX(-50%);
+        left: 50%;
+        position: absolute;
+        width: max-content;
+      }
+
+      .legend .gears {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+
+      .gear {
+        background: #e9e9e9;
+        position: relative;
+        left: 8px;
+        width: 8px;
+        height: 2px;
+      }
+
+      .gear span {
+        position: absolute;
+        display: inline-block;
+        transform: translateY(-50%);
+        top: 50%;
+        left: 10px;
+      }
+
+      /* arcgis js 图例 */
+      .esri-legend__layer-caption {
+        display: none;
+      }
+    </style>
+
+    <!--  End -->
+  </body>
+</html>

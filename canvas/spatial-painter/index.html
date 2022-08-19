@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>插值图</title>
+  </head>
+  <body>
+    <!--  FORM:  https://github.com/leogle/SpatialImageService  -->
+    <!-- 
+
+      云图和热力图
+      https://blog.csdn.net/lweiyue/article/details/119103957
+
+
+
+     -->
+
+    <style>
+      td {
+        padding: 0;
+        width: 50px;
+      }
+    </style>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- 公共 -->
+    <script src="./util.js"></script>
+    <script src="./data.js"></script>
+    <script src="../DataUtil.js"></script>
+    <!-- 墨卡托投影 -->
+    <script>
+      {
+        const center = [114.2363, 21.1572];
+        const scale = 4000;
+        const size = [800, 400];
+        const projection = d3
+          .geoMercator()
+          .center(center)
+          .scale(scale)
+          .translate([size[0] / 2, size[1] / 2]);
+
+        console.log(
+          "114.2363, 21.1572  转换后的坐标：",
+          projection([114.2363, 21.1572]).map((v) => parseInt(v))
+        );
+
+        console.log(
+          "[108.50672204869178, 18.462252874841177]  转换后的坐标：",
+          projection([108.50672204869178, 18.462252874841177]).map((v) =>
+            parseInt(v)
+          )
+        );
+        /*
+         *   n
+         * w   e
+         *   s
+         * */
+        let sw = projection.invert([0, size[1]]); // 左下角坐标
+        let ne = projection.invert([size[0], 0]); // 右上角坐标
+        console.log("左下", sw);
+        console.log("右上", ne);
+      }
+    </script>
+
+    <!-- 矩阵插值 -->
+    <script>
+      {
+        // 矩阵 9*9 填充 null
+        let matrix = [
+          [2, null, null, null, null, null, null, null, null],
+          [null, null, null, 1, null, null, null, null, null],
+          [null, 3, null, null, null, null, null, null, null],
+          [null, null, null, null, 8, null, null, null, null],
+          [null, null, null, null, null, 3, null, 5, null],
+          [null, null, 7, null, null, null, null, null, null],
+          [null, null, null, null, 6, null, null, null, null],
+          [null, null, null, null, null, null, null, null, null],
+          [null, null, null, null, null, null, null, null, null],
+        ];
+
+        // 调色板
+        let colors = [
+          "#00ff00",
+          "#c0ff3e",
+          "#ffff00",
+          "#ff8000",
+          "#ff0000",
+          "#9933fa",
+          "#551a8b",
+        ];
+
+        const p = usePalete(colors, 0, 10);
+
+        console.log("p: ", p.getColor(10));
+
+        showMatrixTable(matrix, p.getColor);
+
+        // 获取已知点: 遍历 matrix, 非 null 值放入数组, 记录 x, y , value
+        let points = [];
+        for (let i = 0; i < matrix.length; i++) {
+          for (let j = 0; j < matrix[i].length; j++) {
+            if (matrix[i][j] != null) {
+              points.push({
+                x: j,
+                y: i,
+                value: matrix[i][j],
+              });
+            }
+          }
+        }
+
+        // 矩阵插值: 遍历 matrix
+        insertMatrix(matrix, points);
+
+        showMatrixTable(matrix, p.getColor);
+
+        const m = DataUtil.scaleData(500, 500, matrix);
+        showMatrixCanvas(m, p.getData);
+      }
+    </script>
+    <!-- 输出图片 -->
+    <script>
+      const center = [113.2363, 23.1572]; // 点位中心
+      const scale = 4000; // 缩放比例
+      const size = [600, 500]; // 点位宽高比
+
+      const projection = d3
+        .geoMercator()
+        .center(center)
+        .scale(scale)
+        .translate([size[0] / 2, size[1] / 2]);
+
+      const canvas = createCanvas(size[0], size[1]);
+      const painter = new SpatialPainter();
+      // const max = Math.max(...data.datas.map(item => item.value));
+      // const min = Math.min(...data.datas.map(item => item.value));
+      // data.min = min;
+      // data.max = max;
+      polygons = [];
+      console.time("paintSpatial");
+      painter.paintSpatial(canvas, data, projection, polygons, 0.5, true);
+      document.body.appendChild(canvas);
+      console.timeEnd("paintSpatial");
+    </script>
+    <!-- 输出图片2 -->
+    <script>
+      {
+        const center = [113.2363, 23.1572]; // 点位中心
+        const scale = 4000; // 缩放比例
+        const size = [600, 500]; // 点位宽高比
+
+        const projection = d3
+          .geoMercator()
+          .center(center)
+          .scale(scale)
+          .translate([size[0] / 2, size[1] / 2]);
+
+        const arr = data.datas.map((item) => {
+          const [x, y] = projection([item.lng, item.lat]);
+          return {
+            x: parseInt(x),
+            y: parseInt(y),
+            value: item.value,
+          };
+        });
+        // console.log("arr: ", arr);
+        let matrix = createMatrix(size[0], size[1]);
+
+        matrix = fillMatrix(matrix, arr);
+
+        matrix = insertMatrix(matrix, arr);
+
+        // 调色板
+        let colors = [
+          "#00ff00",
+          "#c0ff3e",
+          "#ffff00",
+          "#ff8000",
+          "#ff0000",
+          "#9933fa",
+          "#551a8b",
+        ];
+
+        const p = usePalete(colors, 1, 420);
+        showMatrixCanvas(matrix, p.getData);
+      }
+    </script>
+  </body>
+</html>

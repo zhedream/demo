@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Demo</title>
+    <style type="text/css">
+      span {
+        margin: 0px;
+        display: inline-block;
+        text-align: center;
+        color: #ccc;
+      }
+      .canvascfg .num {
+        width: 20px;
+      }
+    </style>
+  </head>
+  <!-- FROM: https://www.imsry.cn/posts/babba23d.html -->
+  <body>
+    <div id="data" style="width: 100%; height: 100%; line-height: 20px"></div>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      let originalData = [
+        2275, 2250, 2350, 2350, 2325, 2350, 2325, 2400, 2325, 2275, 2350, 2350,
+        2350, 2350, 2325, 2350, 2275, 2300, 2325, 2350, 2325, 2300, 2350, 2325,
+        2200, 2275, 2250, 2275, 2325, 2275, 2300, 2275, 2250, 2250, 2225, 2250,
+        2275, 2325, 2325, 2350, 2200, 2250, 2275, 2250, 2300, 2275, 2300, 2325,
+        2200, 2250, 2200, 2250, 2375, 2325, 2250, 2250, 2100, 2125, 2225, 2300,
+        2450, 2325, 2200, 2225,
+      ];
+      let Color = {
+        Blue: [0, 0, 255],
+        Yellow: [255, 255, 0],
+        Red: [255, 0, 0],
+      };
+      let Config = {
+        canvasWidth: 8,
+        canvasHeight: 8,
+        xValue: 2, //线性插值次数为xVlaue-1
+      };
+      Draw(originalData);
+      function Linear(old, width) {
+        let data = [];
+        //横向插值
+        for (let i in old) {
+          i = parseInt(i);
+          let v = old[i];
+          let k = i * 2 - parseInt(i / width);
+          data[k] = v;
+          if (i % width != 0) {
+            data[k - 1] = (parseInt(data[k - 2]) + parseInt(data[k])) / 2;
+          }
+        }
+        let data2 = data;
+        data = [];
+        width = width * 2 - 1;
+        //纵向插值
+        for (let i in data2) {
+          i = parseInt(i);
+          let v = data2[i];
+          let k = i * 2 - (i % width);
+          data[k] = v;
+          if (k >= width) {
+            data[k - width] =
+              (parseInt(data[k]) + parseInt(data[k - width * 2])) / 2;
+          }
+        }
+        return data;
+      }
+      function ComputeColor(from, to, ratio) {
+        var r = Math.round(from[0] * (1 - ratio) + to[0] * ratio);
+        var g = Math.round(from[1] * (1 - ratio) + to[1] * ratio);
+        var b = Math.round(from[2] * (1 - ratio) + to[2] * ratio);
+        return [r, g, b];
+      }
+      function GetColor(num, max, min) {
+        var ratio = (num - min) / (max - min);
+        var color = ComputeColor(Color.Blue, Color.Red, ratio);
+        return color;
+      }
+
+      function Draw(tmp) {
+        let canvasHeight = Config.canvasHeight;
+        let canvasWidth = Config.canvasWidth;
+        for (let i = 1; i < Config.xValue; i++) {
+          tmp = Linear(tmp, (canvasWidth - 1) * Math.pow(2, i - 1) + 1);
+        }
+        if (Config.xValue > 1) {
+          canvasHeight =
+            (Config.canvasHeight - 1) * Math.pow(2, Config.xValue - 1) + 1;
+          canvasWidth =
+            (Config.canvasWidth - 1) * Math.pow(2, Config.xValue - 1) + 1;
+        }
+        low = high = tmp[0];
+        for (var i = tmp.length - 1; i >= 0; i--) {
+          if (tmp[i] > high) high = tmp[i];
+          if (tmp[i] < low) low = tmp[i];
+        }
+        let index = 2;
+        let span = "";
+        for (var i = 1; i <= canvasHeight; i++, index++) {
+          for (var j = 1; j <= canvasWidth; j++) {
+            // var idx = (i)*canvasWidth-j;
+            // var idx = (i-1)*canvasWidth+j-1;
+            var idx = canvasWidth * (canvasHeight - i + 1) - j;
+            var color = GetColor(tmp[idx], high, low);
+            span += GetSpan(color, tmp[idx]);
+          }
+          span += "<br>";
+        }
+        $("#data").html(span);
+      }
+      function GetSpan(color, num) {
+        var span =
+          '<span style="width:50px;height:50px;background-color:rgb(' +
+          color[0] +
+          "," +
+          color[1] +
+          "," +
+          color[2] +
+          ')">' +
+          num / 100 +
+          "</span>";
+        return span;
+        $("#wind").append(span);
+      }
+    </script>
+  </body>
+</html>
