@@ -125,8 +125,8 @@ function SpatialPainter() {
       //   "#9933fa",
       //   "#551a8b",
       // ];
-      // const p = usePalete(colors, 1, 420);
-      // p.palete.palette = this.palette;
+      // const p = usePalette(colors, 1, 420);
+      // p.palette.palette = this.palette;
       // showMatrixCanvas(matrixData, p.getData);
 
       //更新图片数据
@@ -526,7 +526,7 @@ function getProjectionFitSize(size, features) {
   return d3.geoMercator().fitSize([size[0], size[1]], features);
 }
 
-class Palete {
+class Palette {
   constructor(colors, steps = 256) {
     this.colors = colors;
     this.steps = steps;
@@ -574,15 +574,15 @@ class Palete {
   }
 }
 
-function usePalete(colors, min, max, steps = 256) {
-  let palete = new Palete(colors, steps);
+function usePalette(colors, min, max, steps = 256) {
+  let palette = new Palette(colors, steps);
   return {
-    palete,
+    palette,
     getColor(val) {
-      return palete.getColor(min, max, val);
+      return palette.getColor(min, max, val);
     },
     getData(val) {
-      return palete.getData(min, max, val);
+      return palette.getData(min, max, val);
     },
   };
 }

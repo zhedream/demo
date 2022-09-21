@@ -149,13 +149,15 @@
         const scale = 4000; // 缩放比例
         const size = [600, 500]; // 点位宽高比
 
+        // 创建投影
         const projection = d3
           .geoMercator()
           .center(center)
           .scale(scale)
           .translate([size[0] / 2, size[1] / 2]);
 
-        const arr = data.datas.map((item) => {
+        // 坐标转换
+        const pixPoints = data.datas.map((item) => {
           const [x, y] = projection([item.lng, item.lat]);
           return {
             x: parseInt(x),
@@ -163,12 +165,16 @@
             value: item.value,
           };
         });
+
+        // 创建矩阵
         // console.log("arr: ", arr);
         let matrix = createMatrix(size[0], size[1]);
 
-        matrix = fillMatrix(matrix, arr);
+        // 填充矩阵
+        matrix = fillMatrix(matrix, pixPoints);
 
-        matrix = insertMatrix(matrix, arr);
+        // 插值矩阵
+        matrix = insertMatrix(matrix, pixPoints);
 
         // 调色板
         let colors = [
@@ -180,8 +186,9 @@
           "#9933fa",
           "#551a8b",
         ];
+        const p = usePalette(colors, 1, 420);
 
-        const p = usePalete(colors, 1, 420);
+        // 输出矩阵 canvas 插值图
         showMatrixCanvas(matrix, p.getData);
       }
     </script>

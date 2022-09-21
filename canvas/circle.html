@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Text of Canvas</title>
+  </head>
+
+  <body></body>
+</html>
+
+<style>
+  canvas {
+    border: 1px solid black;
+  }
+</style>
+
+<script>
+  function getCircle(color = "green", size1 = 20) {
+    const canvas = createCanvas(size1, size1);
+
+    const ctx = canvas.getContext("2d"); // 获取一个  2D上下文,
+
+    const width = canvas.width;
+    const height = canvas.height;
+    let size = [size1, size1];
+
+    const center = [size[0] / 2, size[1] / 2];
+    const radius = size[0] / 2;
+
+    // 生成 调色板
+    let grad = ctx.createRadialGradient(
+      center[0],
+      center[1],
+      0,
+      center[0],
+      center[1],
+      radius
+    );
+    grad.addColorStop(0, "white");
+    grad.addColorStop(0.8, color);
+    grad.addColorStop(1, color);
+
+    // 半圆
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height / 2, 0, 180, false);
+    ctx.closePath();
+
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    return canvas;
+  }
+
+  function getCircleText(text, color = "#000", size1 = 20) {
+    const canvas = createCanvas(size1, size1);
+
+    const ctx = canvas.getContext("2d"); // 获取一个  2D上下文,
+
+    const width = canvas.width;
+    const height = canvas.height;
+    let size = [size1, size1];
+
+    const center = [size[0] / 2, size[1] / 2];
+    const radius = size[0] / 2;
+
+    // 半圆
+    ctx.beginPath();
+    ctx.arc(width / 2, height / 2, height / 2, 0, 180, false);
+    ctx.closePath();
+
+    ctx.fillStyle = color;
+    ctx.fill();
+
+    ctx.font = `${14}px Arial`; // 文本字体
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "#fff"; // 文本颜色
+
+    const textInfo = ctx.measureText(text);
+
+    const textWidth = textInfo.width;
+    const textHeight = 14;
+
+    ctx.fillText(text, (width - textWidth) / 2, (height - textHeight) / 2); // 填充文本, 坐标
+
+    return canvas;
+  }
+
+  function createCanvas(width, height, id) {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.id = id;
+    return canvas;
+  }
+
+  const canvas = getCircle("green", 20);
+  const canvas1 = getCircleText("国", "green", 25);
+  document.body.appendChild(canvas);
+  document.body.appendChild(canvas1);
+</script>
