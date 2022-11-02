@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>header-menu demo</title>
+
+    <!-- vue -->
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <!-- <script src="../node_modules/vue/dist/vue.min.js"></script> -->
+    <!-- <script src="../node_modules/vue/dist/vue.runtime.min.js"></script> -->
+    <script src="../node_modules/vue3-sfc-loader/dist/vue3-sfc-loader.js"></script>
+    <script src="../node_modules/vue3-sfc-loader/dist/vue2-sfc-loader.js"></script>
+    <script src="../node_modules/less/dist/less.min.js"></script>
+
+    <script src="./requireModule.js"></script>
+    <script src="./loadAsyncComponent.js"></script>
+
+    <!-- echart -->
+    <script src="../node_modules/echarts/dist/echarts.js"></script>
+
+    <script src="../node_modules/ant-design-vue/dist/antd.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="../node_modules/ant-design-vue/dist/antd.min.css"
+    />
+
+    <!-- ehcart-component -->
+    <!-- <script src="../dist/components.global.js"></script> -->
+  </head>
+
+  <body>
+    <div id="header-menu-app"></div>
+    <script>
+      /* <!-- */
+      const mainComponent = `
+      <template>
+        <span>Hello from Vue {{ require('myData').vueVersion }} !</span>
+      </template>
+    `;
+      /* --> */
+
+      const { loadModule: loadModule2, vueVersion } = window["vue2-sfc-loader"];
+
+      const options = {
+        moduleCache: {
+          vue: Vue,
+          myData: { vueVersion },
+        },
+        getFile(url) {
+          console.log("url: ", url);
+          return fetch(url).then((res) => res.text());
+        },
+        addStyle() {
+          /* unused here */
+        },
+      };
+
+      let a = loadModule2("./a.vue", options).then((component) => component);
+
+      console.log(a);
+
+      let vm = new Vue({
+        el: "#header-menu-app",
+        components: {
+          HeaderMenu: Vue.defineAsyncComponent(() => a),
+        },
+        render(h) {
+          return h("header-menu");
+        },
+      });
+    </script>
+  </body>
+</html>
