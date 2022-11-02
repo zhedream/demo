@@ -31,9 +31,9 @@
     "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.11",
     "vue3-sfc-loader": "^0.8.4",
-    "webpack": "^4.43.0",
+    "webpack": "^4.46.0",
     "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
     "@vue/babel-helper-vue-jsx-merge-props": "^1.4.0",
