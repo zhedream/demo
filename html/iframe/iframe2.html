@@ -1,35 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iframeB</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iframeB</title>
-</head>
+  <body>
+    <h1>BBB</h1>
 
-<body>
-  <input type="text" id="input">
-  <script>
+    <button onclick=""></button>
+    <script>
+      console.log(window.parent);
 
-    function receiveMessage(event) {
-      // 我们能信任信息来源吗？
-      if (event.origin !== "http://localhost:1111")
-        return;
+      function receiveMessage(event) {
+        console.log("event: ", event);
+        // 我们能信任信息来源吗？
+        if (event.origin !== "http://localhost:1111") return;
 
-      console.log(event.data);
+        console.log("BBB:", event.data);
 
-      // event.source 就当前弹出页的来源页面
-      // event.data 是 "hello there!"
+        // event.source 就当前弹出页的来源页面
+        // event.data 是 "hello there!"
 
-      // 假设你已经验证了所受到信息的origin (任何时候你都应该这样做), 一个很方便的方式就是把event.source
-      // 作为回信的对象，并且把event.origin作为targetOrigin
+        // 假设你已经验证了所受到信息的origin (任何时候你都应该这样做), 一个很方便的方式就是把event.source
+        // 作为回信的对象，并且把event.origin作为targetOrigin
 
-      event.source.postMessage("hi there yourself!  the secret response " +
-        "is: rheeeeet!",
-        event.origin);
-    }
-    window.addEventListener("message", receiveMessage, false);
-  </script>
-</body>
-
+        event.source.postMessage(
+          "hi there yourself!  the secret response " + "is: rheeeeet!",
+          event.origin
+        );
+      }
+      window.addEventListener("message", receiveMessage, false);
+    </script>
+  </body>
 </html>

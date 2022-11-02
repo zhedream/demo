@@ -65,6 +65,12 @@ export default {
         return ["click"];
       },
     },
+    resizeSelector: {
+      type: String,
+      default: () => {
+        return "";
+      },
+    },
   },
   data() {
     this.ob = null; // 自适应1
@@ -130,7 +136,10 @@ export default {
     },
     // 自动 resize
     initAutoResize() {
-      this.removeDomResize = domResize(this.container, this.resize);
+      const resizeDom = this.resizeSelector
+        ? document.querySelector(this.resizeSelector)
+        : this.container;
+      this.removeDomResize = domResize(resizeDom, this.resize);
     },
     removeAutoResize() {
       if (this.removeDomResize instanceof Function) {
