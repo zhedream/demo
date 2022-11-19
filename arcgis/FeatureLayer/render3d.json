@@ -1,0 +1,2318 @@
+{
+  "type": "classBreaks",
+  "field": "value",
+  "defaultSymbol": {
+    "type": "LineSymbol3D",
+    "symbolLayers": [
+      {
+        "type": "Path",
+        "material": {
+          "color": [0, 0, 0, 255]
+        },
+        "profile": "quad",
+        "width": 500,
+        "color": [0, 0, 0, 255],
+        "height": 2660
+      }
+    ]
+  },
+  "classBreakInfos": [
+    {
+      "classMaxValue": -1,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 26
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 0,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 1,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 26
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 2,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 43
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 3,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 60
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 4,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 76
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 5,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 93
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 6,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 110
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 7,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 126
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 8,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 143
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 9,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 160
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 10,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 176
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 11,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 193
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 12,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 210
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 13,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 226
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 14,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 243
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 15,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 260
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 16,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 276
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 17,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 293
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 18,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 310
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 19,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 326
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 20,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 343
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 21,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 360
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 22,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 376
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 23,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 393
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 24,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 410
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 25,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 426
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 26,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 443
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 27,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 460
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 28,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 476
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 29,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 493
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 30,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 510
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 31,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 526
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 32,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 543
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 33,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 560
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 34,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 576
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 35,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 593
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 36,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 610
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 37,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 626
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 38,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 643
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 39,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 660
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 40,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 676
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 41,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 693
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 42,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 710
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 43,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 726
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 44,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 743
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 45,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 760
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 46,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 776
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 47,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 793
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 48,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 810
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 49,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 826
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 50,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 843
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 51,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 860
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 52,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 876
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 53,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 893
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 54,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 910
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 55,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 926
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 56,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 943
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 57,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 960
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 58,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 976
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 59,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 993
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 60,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1010
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 61,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1026
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 62,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1043
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 63,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1060
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 64,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1076
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 65,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1093
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 66,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1110
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 67,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1126
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 68,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1143
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 69,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1160
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 70,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1176
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 71,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1193
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 72,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1210
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 73,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1226
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 74,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1243
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 75,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1260
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 76,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1276
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 77,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1293
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 78,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1310
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 79,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1326
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 80,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1343
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 81,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1360
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 82,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1376
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 83,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1393
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 84,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1410
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 85,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1426
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 86,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1443
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 87,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1460
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 88,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1476
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 89,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1493
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 90,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1510
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 91,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1526
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 92,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1543
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 93,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1560
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 94,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1576
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 95,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1593
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 96,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1610
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 97,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1626
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 98,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1643
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 99,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1660
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 100,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1676
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 101,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1693
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 102,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1710
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 103,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1726
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 104,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1743
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 105,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1760
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 106,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1776
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 107,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1793
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 108,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1810
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 109,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1826
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 110,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1843
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 111,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1860
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 112,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1876
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 113,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1893
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 114,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1910
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 115,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1926
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 116,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1943
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 117,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1960
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 118,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1976
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 119,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 1993
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 120,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2010
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 121,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2026
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 122,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2043
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 123,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2060
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 124,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2076
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 125,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2093
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 126,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2110
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 127,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2126
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 128,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2143
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 129,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2160
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 130,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2176
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 131,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2193
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 132,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2210
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 133,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2226
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 134,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2243
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 135,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2260
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 136,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2276
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 137,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2293
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 138,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2310
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 139,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2326
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 140,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2343
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 141,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2360
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 142,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2376
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 143,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2393
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 144,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2410
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 145,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2426
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 146,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2443
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 147,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2460
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 148,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2476
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 149,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2493
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 150,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2510
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 151,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2526
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 152,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2543
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 153,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2560
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 154,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2576
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 155,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2593
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 156,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2610
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 157,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2626
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 158,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2643
+          }
+        ]
+      }
+    },
+    {
+      "classMaxValue": 159,
+      "symbol": {
+        "type": "LineSymbol3D",
+        "symbolLayers": [
+          {
+            "type": "Path",
+            "profile": "quad",
+            "width": 15,
+            "height": 2660
+          }
+        ]
+      }
+    }
+  ],
+  "visualVariables": [
+    {
+      "type": "colorInfo",
+      "field": "value",
+      "legendOptions": {
+        "title": "Population per square kilometer"
+      },
+      "stops": [
+        {
+          "color": [0, 255, 0, 155],
+          "value": 0
+        },
+        {
+          "color": [163, 255, 52, 155],
+          "value": 21.428571428571427
+        },
+        {
+          "color": [236, 255, 18, 155],
+          "value": 42.857142857142854
+        },
+        {
+          "color": [255, 185, 0, 155],
+          "value": 64.28571428571428
+        },
+        {
+          "color": [255, 76, 0, 155],
+          "value": 85.71428571428571
+        },
+        {
+          "color": [229, 12, 62, 155],
+          "value": 107.14285714285714
+        },
+        {
+          "color": [146, 48, 238, 155],
+          "value": 128.57142857142856
+        },
+        {
+          "color": [88, 27, 144, 155],
+          "value": 150
+        }
+      ]
+    }
+  ]
+}

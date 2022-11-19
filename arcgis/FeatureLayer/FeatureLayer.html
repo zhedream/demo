@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeatureLayer</title>
+    <link
+      href="https://js.arcgis.com/4.23/esri/themes/light/main.css"
+      rel="stylesheet"
+    />
+    <script src="https://js.arcgis.com/4.23/"></script>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="viewDiv" style="height: calc(100vh - 100px)"></div>
+
+    <button onclick="change()">change</button>
+    <button onclick="add()">add</button>
+
+    <script>
+      function loadModules(modules) {
+        return new Promise((res) => {
+          window.require(modules, function (...args) {
+            res(args);
+          });
+        });
+      }
+
+      function fetchJson(url) {
+        return fetch(url).then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error("Network response was not ok.");
+        });
+      }
+
+      /**
+       *
+       * @param view
+       * @param eventName
+       * @param layers layer Or layers
+       * @param callback
+       * @param outCallback
+       * @returns {*}
+       */
+      function viewOn(view, eventName, layers, callback, outCallback) {
+        if (!(layers instanceof Array)) {
+          layers = [layers];
+        }
+        return view.on(eventName, (e) => {
+          view.hitTest(e).then(function (response) {
+            let results = response.results;
+            let graphics = results.filter(function (result) {
+              // check if the graphic belongs to the layer of interest
+              return layers.some((layer) => layer === result.graphic.layer);
+            });
+            if (graphics.length > 0) {
+              callback && callback(graphics, e);
+            } else {
+              outCallback && outCallback();
+            }
+          });
+        });
+      }
+
+      var zoomMap = [
+        [0, 591657527.591555],
+        [1, 295828763.795777],
+        [2, 147914381.897889],
+        [3, 73957190.948944],
+        [4, 36978595.474472],
+        [5, 18489297.737236],
+        [6, 9244648.868618],
+        [7, 4622324.434309],
+        [8, 2311162.217155],
+        [9, 1155581.108577],
+        [10, 577790.554289],
+        [11, 288895.277144],
+        [12, 144447.638572],
+        [13, 72223.819286],
+        [14, 36111.909643],
+        [15, 18055.954822],
+        [16, 9027.977411],
+        [17, 4513.988705],
+        [18, 2256.994353],
+        [19, 1128.497176],
+        [20, 564.248588],
+        [21, 282.124294],
+        [22, 141.062147],
+        [23, 70.5310735],
+      ];
+
+      var map;
+      var view;
+      var fLayer;
+    </script>
+
+    <script type="module">
+      const [
+        Map,
+        MapView,
+        SceneView,
+        WebTileLayer,
+        FeatureLayer,
+        Polyline,
+        jsonUtils,
+      ] = await loadModules([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/views/SceneView",
+        "esri/layers/WebTileLayer",
+        "esri/layers/FeatureLayer",
+        "esri/geometry/Polyline",
+        "esri/renderers/support/jsonUtils",
+      ]);
+
+      let arr = await fetchJson("./data.json");
+
+      console.log("arr: ", arr);
+
+      // let renderJson = await fetchJson("./render2d.json");
+      let renderJson = await fetchJson("./render3d.json");
+      let renderJson2 = await fetchJson("./render3d_2.json");
+      const renderer = jsonUtils.fromJSON(renderJson);
+      const renderer2 = jsonUtils.fromJSON(renderJson2);
+
+      map = new Map({
+        // basemap: "satellite",
+      });
+
+      // view = new MapView({
+      //   center: [119.74477699948523, 41.12294917376106],
+      //   container: "viewDiv",
+      //   map: map,
+      //   zoom: 3,
+      // });
+
+      view = new SceneView({
+        center: [119.74477699948523, 41.12294917376106],
+        container: "viewDiv",
+        map: map,
+        zoom: 13,
+        camera: {
+          tilt: 30,
+          heading: 0,
+          position: [119.74477699948523, 41.08294917376106, zoomMap[16][1]],
+        },
+      });
+
+      // 捷泰智图/矢量Blue,暗夜
+      let BlueTile = new WebTileLayer({
+        id: "BlueTile",
+        title: "BlueTile",
+        subDomains: [],
+        urlTemplate:
+          "http://map.geoq.cn/arcgis/rest/services/ChinaOnlineStreetPurplishBlue/MapServer/tile/{level}/{row}/{col}",
+      });
+      map.add(BlueTile);
+
+      let graphics = [];
+
+      arr.forEach((item) => {
+        let graphic = {
+          // geometry: new Polyline({
+          //   paths: item.paths,
+          // }),
+          geometry: {
+            type: "polyline",
+            paths: item.paths,
+          },
+          attributes: item.attributes,
+        };
+        graphics.push(graphic);
+      });
+
+      //字段定义
+      let fields = [
+        {
+          name: "ObjectID",
+          alias: "ObjectID",
+          type: "oid",
+        },
+      ];
+      let item = arr[0];
+
+      if (item.attributes) {
+        for (let col in item.attributes) {
+          let colType = "string";
+          if (typeof item["attributes"][col] == "number") colType = "double";
+          else if (typeof item["attributes"][col] == "object") continue;
+          fields.push({
+            name: col,
+            alias: col,
+            type: colType,
+          });
+        }
+      }
+
+      // console.log("fields: ", fields);
+
+      fLayer = new FeatureLayer({
+        fields: fields,
+        objectIdField: "ObjectID",
+        title: "FeatureLayer",
+        id: "FeatureLayer",
+        source: graphics,
+        geometryType: "polyline",
+        spatialReference: {
+          wkid: 4326,
+        },
+        renderer,
+      });
+
+      map.add(fLayer);
+      console.log("fLayer: ", fLayer);
+
+      viewOn(view, "click", fLayer, (graphics) => {
+        console.log("graphics: ", graphics[0]);
+      });
+
+      let flag = false;
+
+      function add() {
+        if (flag) {
+          flag = !flag;
+
+          fLayer.renderer.defaultSymbol.symbolLayers.items[0].width = 500;
+        } else {
+          flag = !flag;
+
+          fLayer.renderer.defaultSymbol.symbolLayers.items[0].width = 1000;
+        }
+      }
+
+      function change() {
+        console.log(123123);
+        if (flag) {
+          flag = !flag;
+          fLayer.renderer = renderer;
+        } else {
+          flag = !flag;
+          fLayer.renderer = renderer2;
+        }
+      }
+      Object.assign(window, {
+        change,
+        add,
+      });
+    </script>
+  </body>
+</html>
