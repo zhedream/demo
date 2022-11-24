@@ -1,3 +1,5 @@
+// form vben admin
+
 const DEFAULT_CONFIG = {
   id: "id",
   children: "children",
@@ -33,12 +35,29 @@ export function treeToList(tree, config = {}) {
 export function findNode(tree, func, config = {}) {
   config = getConfig(config);
   const { children } = config;
+  // 广度优先
   const list = [...tree];
   for (const node of list) {
     if (func(node)) return node;
     node[children] && list.push(...node[children]);
   }
   return null;
+}
+export function findNode2(tree, func, config = {}) {
+  config = getConfig(config);
+  const { children } = config;
+  // 深度优先
+  return go(tree);
+  function go(tree) {
+    for (const node of tree) {
+      if (func(node)) return node;
+      if (node[children] && node[children].length) {
+        const res = go(node[children]);
+        if (res) return res;
+      }
+    }
+    return null;
+  }
 }
 export function findNodeAll(tree, func, config = {}) {
   config = getConfig(config);

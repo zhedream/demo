@@ -172,23 +172,23 @@ export function diffArr(pre, next) {
 }
 
 /**
-* 获取变化的数组
-* @param {[*]} pre 
-* @param {[*]} next 
-* @param {function} getValue 
-* @returns {{add:array,sub:array}} 增加的元素 add , 减少的元素 sub
-*/
-export function diffArr2(pre, next, getValue) {
+ * 获取变化的数组
+ * @param {[*]} pre
+ * @param {[*]} next
+ * @param {function} getValue
+ * @returns {{add:array,sub:array}} 增加的元素 add , 减少的元素 sub
+ */
+ export function diffArrBy(pre, next, getValue) {
   let g = (e) => e;
-  if (getValue instanceof Function) g = getValue
+  if (getValue instanceof Function) g = getValue;
   let add = [], sub = [];
   let difference = next
     .concat(pre)
-    .filter((item) => !next.includes(g(item)) || !pre.includes(g(item))); // 对称差集
-  sub = difference.filter((item) => pre.includes(g(item))); // difference - a  相对补集
-  add = difference.filter((item) => !pre.includes(g(item))); // difference - (difference - a) 的 相对补集
+    .filter((item) => !next.some(v => g(v) === g(item)) || !pre.some(v => g(v) === g(item))); // 对称差集
+  sub = difference.filter((item) => pre.some(v => g(v) === g(item)) ); // difference - a  相对补集
+  add = difference.filter((item) => !pre.some(v => g(v) === g(item))); // difference - (difference - a) 的 相对补集
   // console.log("对称差集", difference);
   // console.log("新增", add);
   // console.log("减少", sub);
-  return { add, sub }
+  return { add, sub };
 }

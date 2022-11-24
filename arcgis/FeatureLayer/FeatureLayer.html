@@ -6,10 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FeatureLayer</title>
     <link
-      href="https://js.arcgis.com/4.23/esri/themes/light/main.css"
+      href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
       rel="stylesheet"
     />
-    <script src="https://js.arcgis.com/4.23/"></script>
+    <script>
+      window.dojoConfig = {
+        paths: {
+          plugins: "/arcgis/FeatureLayer/plugins",
+        },
+      };
+    </script>
+    <script src="https://js.arcgis.com/4.24/"></script>
     <style>
       html,
       body,
@@ -25,7 +32,7 @@
     <div id="viewDiv" style="height: calc(100vh - 100px)"></div>
 
     <button onclick="change()">change</button>
-    <button onclick="add()">add</button>
+    <button onclick="change2()">add</button>
 
     <script>
       function loadModules(modules) {
@@ -62,6 +69,7 @@
           view.hitTest(e).then(function (response) {
             let results = response.results;
             let graphics = results.filter(function (result) {
+              console.log("result: ", result);
               // check if the graphic belongs to the layer of interest
               return layers.some((layer) => layer === result.graphic.layer);
             });
@@ -115,6 +123,7 @@
         FeatureLayer,
         Polyline,
         jsonUtils,
+        RasterLayer,
       ] = await loadModules([
         "esri/Map",
         "esri/views/MapView",
@@ -123,14 +132,29 @@
         "esri/layers/FeatureLayer",
         "esri/geometry/Polyline",
         "esri/renderers/support/jsonUtils",
+        // "plugins/RasterLayer",
       ]);
 
-      let arr = await fetchJson("./data.json");
+      RasterLayer;
+      console.log("RasterLayer: ", RasterLayer);
+
+      let arr = await fetchJson("./data.json").then((arr) => {
+        return arr.map((v) => {
+          return {
+            paths: v.paths,
+            attributes: {
+              active: v.attributes.active,
+              MonitorTime: v.attributes.MonitorTime,
+              value: v.attributes.value,
+            },
+          };
+        });
+      });
 
       console.log("arr: ", arr);
 
-      // let renderJson = await fetchJson("./render2d.json");
-      let renderJson = await fetchJson("./render3d.json");
+      let renderJson = await fetchJson("./render2d.json");
+      // let renderJson = await fetchJson("./render3d.json");
       let renderJson2 = await fetchJson("./render3d_2.json");
       const renderer = jsonUtils.fromJSON(renderJson);
       const renderer2 = jsonUtils.fromJSON(renderJson2);
@@ -139,24 +163,24 @@
         // basemap: "satellite",
       });
 
-      // view = new MapView({
-      //   center: [119.74477699948523, 41.12294917376106],
-      //   container: "viewDiv",
-      //   map: map,
-      //   zoom: 3,
-      // });
-
-      view = new SceneView({
+      view = new MapView({
         center: [119.74477699948523, 41.12294917376106],
         container: "viewDiv",
         map: map,
         zoom: 13,
-        camera: {
-          tilt: 30,
-          heading: 0,
-          position: [119.74477699948523, 41.08294917376106, zoomMap[16][1]],
-        },
       });
+
+      // view = new SceneView({
+      //   center: [119.74477699948523, 41.12294917376106],
+      //   container: "viewDiv",
+      //   map: map,
+      //   zoom: 13,
+      //   camera: {
+      //     tilt: 30,
+      //     heading: 0,
+      //     position: [119.74477699948523, 41.08294917376106, zoomMap[16][1]],
+      //   },
+      // });
 
       // 捷泰智图/矢量Blue,暗夜
       let BlueTile = new WebTileLayer({
@@ -169,6 +193,7 @@
       map.add(BlueTile);
 
       let graphics = [];
+      console.log("graphics: ", graphics);
 
       arr.forEach((item) => {
         let graphic = {
@@ -179,25 +204,34 @@
             type: "polyline",
             paths: item.paths,
           },
-          attributes: item.attributes,
+          attributes: {
+            // ...item.attributes,
+            value: item.attributes.value,
+            time: 123,
+          },
         };
         graphics.push(graphic);
       });
 
       //字段定义
       let fields = [
-        {
-          name: "ObjectID",
-          alias: "ObjectID",
-          type: "oid",
-        },
+        // {
+        //   name: "ObjectID",
+        //   alias: "ObjectID",
+        //   type: "oid",
+        // },
       ];
-      let item = arr[0];
+      let item = graphics[0];
 
       if (item.attributes) {
         for (let col in item.attributes) {
+          if (col == "ObjectID") {
+            console.log("ObjectID is exist");
+            continue;
+          }
           let colType = "string";
           if (typeof item["attributes"][col] == "number") colType = "double";
+          else if (col == "ObjectID") continue;
           else if (typeof item["attributes"][col] == "object") continue;
           fields.push({
             name: col,
@@ -207,10 +241,27 @@
         }
       }
 
-      // console.log("fields: ", fields);
+      console.log("fields: ", fields);
 
       fLayer = new FeatureLayer({
-        fields: fields,
+        fields: [
+          // {
+          //   name: "ObjectID",
+          //   alias: "ObjectID",
+          //   type: "oid",
+          // },
+          {
+            name: "value",
+            alias: "value",
+            type: "double",
+          },
+          // {
+          //   name: "time",
+          //   alias: "time",
+          //   type: "string",
+          // },
+        ], // 渲染字段
+        outFields: ["*"], // 显示所有其他字段
         objectIdField: "ObjectID",
         title: "FeatureLayer",
         id: "FeatureLayer",
@@ -229,17 +280,79 @@
         console.log("graphics: ", graphics[0]);
       });
 
+      // 自动缩放至
+      fLayer.when(function () {
+        console.log("fLayer: ", fLayer);
+        fLayer.queryExtent().then(function (results) {
+          // go to the extent of the results satisfying the query
+
+          console.log("results.extent: ", results.extent);
+
+          let { xmax, xmin, ymax, ymin } = results.extent;
+          let xDiff = xmax - xmin;
+          let yDiff = ymax - ymin;
+
+          let min = Math.min(xDiff, yDiff);
+
+          // view.goTo(results.extent);
+          view.goTo(results.extent.expand(1.5));
+
+          if (min < 0.0001) {
+            view.goTo({
+              center: results.extent.center,
+              zoom: 18,
+            });
+          }
+        });
+      });
+
       let flag = false;
 
-      function add() {
+      function change2() {
         if (flag) {
           flag = !flag;
-
-          fLayer.renderer.defaultSymbol.symbolLayers.items[0].width = 500;
+          fLayer.renderer = renderer;
         } else {
           flag = !flag;
 
-          fLayer.renderer.defaultSymbol.symbolLayers.items[0].width = 1000;
+          // fLayer.renderer = jsonUtils.fromJSON({
+          //   type: "uniqueValue", // type = 'heatmap', 'simple', 'unique-value', 'class-breaks', 'dot-density', 'dictionary', 'pie-chart'
+          //   field: "value",
+          //   defaultSymbol: {
+          //     type: "LineSymbol3D",
+          //     symbolLayers: [
+          //       {
+          //         type: "Path",
+          //         material: {
+          //           color: [0, 0, 0, 255],
+          //         },
+          //         profile: "quad",
+          //         width: 50,
+          //         color: [0, 0, 0, 255],
+          //         height: 2660,
+          //       },
+          //     ],
+          //   },
+          // });
+          fLayer.renderer = {
+            type: "unique-value", // type = 'heatmap', 'simple', 'unique-value', 'class-breaks', 'dot-density', 'dictionary', 'pie-chart'
+            field: "value",
+            defaultSymbol: {
+              type: "line-3d",
+              symbolLayers: [
+                {
+                  type: "path",
+                  material: {
+                    color: [236, 255, 18, 155],
+                  },
+                  profile: "quad",
+                  width: 50,
+                  color: [0, 0, 0, 255],
+                  height: 1000,
+                },
+              ],
+            },
+          };
         }
       }
 
@@ -255,7 +368,7 @@
       }
       Object.assign(window, {
         change,
-        add,
+        change2,
       });
     </script>
   </body>
