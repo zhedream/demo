@@ -1,669 +1,697 @@
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      content="initial-scale=1,maximum-scale=1,user-scalable=no"
-      name="viewport"
-    />
-    <title>GraphicsLayer | minScale | ArcGIS API for JavaScript 4.23</title>
 
-    <link
-      href="https://js.arcgis.com/4.23/esri/themes/light/main.css"
-      rel="stylesheet"
-    />
-    <script src="https://js.arcgis.com/4.23/"></script>
+<head>
+  <meta charset="utf-8" />
+  <meta content="initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport" />
+  <title>GraphicsLayer | minScale | ArcGIS API for JavaScript 4.23</title>
 
-    <style>
-      html,
-      body,
-      #viewDiv {
-        padding: 0;
-        margin: 0;
-        height: 100%;
-        width: 100%;
-      }
-    </style>
+  <link href="https://js.arcgis.com/4.23/esri/themes/light/main.css" rel="stylesheet" />
+  <script src="https://js.arcgis.com/4.23/"></script>
 
-    <script>
-      // zoom to scale
-      const zoomMap = [
-        [0, 591657527.591555],
-        [1, 295828763.795777],
-        [2, 147914381.897889],
-        [3, 73957190.948944],
-        [4, 36978595.474472],
-        [5, 18489297.737236],
-        [6, 9244648.868618],
-        [7, 4622324.434309],
-        [8, 2311162.217155],
-        [9, 1155581.108577],
-        [10, 577790.554289],
-        [11, 288895.277144],
-        [12, 144447.638572],
-        [13, 72223.819286],
-        [14, 36111.909643],
-        [15, 18055.954822],
-        [16, 9027.977411],
-        [17, 4513.988705],
-        [18, 2256.994353],
-        [19, 1128.497176],
-        [20, 564.248588],
-        [21, 282.124294],
-        [22, 141.062147],
-        [23, 70.5310735],
-      ];
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
 
-      require([
-        "esri/Map",
-        "esri/views/MapView",
-        "esri/Graphic",
-        "esri/layers/FeatureLayer",
-        "esri/layers/GraphicsLayer",
-        "esri/geometry/Circle",
-      ], (Map, MapView, Graphic, FeatureLayer, GraphicsLayer, Circle) => {
-        window.map = new Map({
-          basemap: "hybrid",
-        });
-        window.view = new MapView({
-          center: [-111.3, 52.68],
-          container: "viewDiv",
-          map: map,
-          zoom: 3,
-        });
+  <script>
+    // zoom to scale
+    const zoomMap = [
+      [0, 591657527.591555],
+      [1, 295828763.795777],
+      [2, 147914381.897889],
+      [3, 73957190.948944],
+      [4, 36978595.474472],
+      [5, 18489297.737236],
+      [6, 9244648.868618],
+      [7, 4622324.434309],
+      [8, 2311162.217155],
+      [9, 1155581.108577],
+      [10, 577790.554289],
+      [11, 288895.277144],
+      [12, 144447.638572],
+      [13, 72223.819286],
+      [14, 36111.909643],
+      [15, 18055.954822],
+      [16, 9027.977411],
+      [17, 4513.988705],
+      [18, 2256.994353],
+      [19, 1128.497176],
+      [20, 564.248588],
+      [21, 282.124294],
+      [22, 141.062147],
+      [23, 70.5310735],
+    ];
 
-        // 点位
-        const pointLayer = new GraphicsLayer({
-          id: "pointLayer",
-          // maxScale: zoomMap[12][1],
-          minScale: zoomMap[4][1], // 设置 缩放比例 进行显示隐藏图层
-        });
-
-        // 标题名称
-        const titleLayer = new GraphicsLayer({
-          id: "titleLayer",
-          // maxScale: zoomMap[12][1],
-          minScale: zoomMap[14][1],
-        });
-
-        // 圆圈图层
-        const circleLayer = new GraphicsLayer({
-          id: "circleLayer",
-          // maxScale: zoomMap[12][1],
-          minScale: zoomMap[12][1],
-        });
-
-        map.add(circleLayer);
-        map.add(pointLayer);
-        map.add(titleLayer);
-
-        // 调整图层顺序
-        map.reorder(circleLayer, 1);
-        map.reorder(pointLayer, 10);
-        map.reorder(titleLayer, 20);
-
-        const pointList = [
-          {
-            isSignal: true,
-            center: [-111.3, 52.68],
-            name: "希望小学",
-            type: "小学",
-          },
-          {
-            isSignal: true,
-            center: [-113.9, 52.68],
-            name: "中心小学",
-            type: "小学",
-          },
-          {
-            isSignal: true,
-            center: [-115.9, 52.68],
-            name: "南大门酒店",
-            type: "酒店",
-          },
-        ];
-
-        pointLayer.add(getPoint([-111.3, 52.68]));
-        titleLayer.add(getImageTitle([-111.3, 52.68]));
-
-        pointLayer.add(getPoint([-113.9, 52.68]));
-        pointLayer.add(getTriangle([-115.9, 52.68]));
-
-        // pointLayer.add(getRect([-117.9, 52.68]));
-
-        circleLayer.add(getCircle([-118.9, 52.68]));
-        pointLayer.add(getImagePoint([-118.9, 52.68]));
-        titleLayer.add(getImageTitle([-118.9, 52.68]));
-
-        // TODO: 冒泡问题
-        viewOn(view, "click", pointLayer, (graphics) => {
-          console.log("gLayer");
-          console.log(graphics);
-        });
-
-        viewOn(view, "click", titleLayer, (graphics) => {
-          console.log("titleLayer");
-          console.log(graphics);
-        });
-
-        function getCircle([longitude, latitude]) {
-          const circleGeometry = new Circle({
-            center: [longitude, latitude],
-            geodesic: true,
-            numberOfPoints: 100, // 沿圆曲线的点数
-            radius: 1000,
-            radiusUnit: "meters",
-          });
-
-          return new Graphic({
-            geometry: circleGeometry,
-            symbol: {
-              type: "simple-fill",
-              // style: "none",    ////可能的值："backward-diagonal"|"cross"|"diagonal-cross"|"forward-diagonal"|"horizontal"|"none"|"solid"
-              color: [61, 145, 255, 0.3],
-              outline: {
-                width: 1,
-                color: "dodgerblue",
-              },
-            },
-          });
-        }
-
-        // 点位名称
-        function getImageTitle([longitude, latitude]) {
-          const point = {
-            //Create a point
-            type: "point",
-            longitude: longitude,
-            latitude: latitude,
-          };
-
-          const canvasText = getText("第一小学", {
-            fontSize: 16,
-            color: "#fff",
-            backgroundColor: "#20405b",
-            paddingRight: 8,
-            paddingLeft: 8,
-            paddingTop: 8,
-            paddingBottom: 8,
-          });
-          addSignHook(canvasText);
-
-          console.log(canvasText.width);
-
-          // 定义 缩小倍数
-          const scale = 0.8;
-          const pictureMarkerSymbol = {
-            declaredClass: "test-aaa",
-            type: "picture-marker",
-            url: canvasText.toDataURL(), // require("@/assets/image/point-city.png"),
-            width: canvasText.width * scale,
-            height: canvasText.height * scale,
-            // xoffset: 0,
-            yoffset: 20,
-          };
-
-          return new Graphic({
-            geometry: point,
-            symbol: pictureMarkerSymbol,
-            attributes: {
-              name: "point",
-              age: 12,
-            },
-          });
-        }
-
-        // 点位图标
-        function getImagePoint([longitude, latitude]) {
-          const point = {
-            //Create a point
-            type: "point",
-            longitude: longitude,
-            latitude: latitude,
-          };
-
-          const canvasPoint = drawPointB64("1");
-
-          // 定义 缩小倍数
-          const scale = 0.2;
-          const pictureMarkerSymbol = {
-            type: "picture-marker",
-            url: canvasPoint.toDataURL(), // require("@/assets/image/point-city.png"),
-            width: canvasPoint.width * scale,
-            height: canvasPoint.height * scale,
-            // xoffset: 0,
-            yoffset: -12,
-          };
-
-          return new Graphic({
-            siteName: "点位1",
-            geometry: point,
-            symbol: pictureMarkerSymbol,
-            attributes: {
-              name: "point",
-              age: 12,
-            },
-          });
-        }
-
-        function getTriangle([longitude, latitude]) {
-          const point = {
-            //Create a point
-            type: "point",
-            longitude: longitude,
-            latitude: latitude,
-          };
-
-          const radius = 30; //Create a radius
-          var iconpathString = `M0 ${radius}a${radius} ${radius} 0 0 1 ${radius} -${radius}h0a${radius} ${radius} 0 0 1 ${radius} ${radius}v0a${radius} ${radius} 0 0 1 -${radius} ${radius}h0a${radius} ${radius} 0 0 1 -${radius} -${radius}z`;
-
-          const simpleMarkerSymbol = {
-            type: "simple-marker",
-            color: [226, 119, 40], // Orange
-            // style:'triangle',
-            // style:'path',
-            // path: iconpathString,
-            size: 20,
-            path: "M 0 0 L 300 0 L150 240 Z",
-            outline: {
-              color: [255, 255, 255], // White
-              width: 1,
-            },
-          };
-
-          return new Graphic({
-            geometry: point,
-            symbol: simpleMarkerSymbol,
-            attributes: {
-              name: "point",
-              age: 12,
-            },
-          });
-        }
-
-        function getRect([longitude, latitude]) {
-          const point = {
-            //Create a point
-            type: "point",
-            longitude: longitude,
-            latitude: latitude,
-          };
-          let fontSize = 16;
-          let textWidth = getTextWidth("实验小学(标准站)", fontSize); //strlen(cityName);
-          console.log(textWidth);
-          textWidth = textWidth + 15;
-          let rectWidth = textWidth;
-          let rectHeight = fontSize + 6;
-
-          const rect = rect2pathX(0, 0, rectWidth, rectHeight, 4, 4);
-          console.log(rect);
-          let simpleMarkerSymbol = {
-            type: "simple-marker",
-            color: [226, 119, 40], // Orange
-            // style:'solid',
-            // style:'path',
-            // path: iconpathString,
-            size: textWidth,
-            path: rect,
-            outline: null,
-            // outline: {
-            //   color: [255, 255, 255], // White
-            //   width: 1,
-            // },
-          };
-
-          return new Graphic({
-            geometry: point,
-            symbol: simpleMarkerSymbol,
-            attributes: {
-              name: "point",
-              age: 12,
-            },
-          });
-        }
-
-        function getPoint([longitude, latitude]) {
-          const point = {
-            //Create a point
-            type: "point",
-            longitude: longitude,
-            latitude: latitude,
-          };
-          const simpleMarkerSymbol = {
-            type: "simple-marker",
-            color: [226, 119, 40], // Orange
-            outline: {
-              color: [255, 255, 255], // White
-              width: 1,
-            },
-          };
-
-          const pointGraphic = new Graphic({
-            geometry: point,
-            symbol: simpleMarkerSymbol,
-            attributes: {
-              name: "point",
-              age: 12,
-            },
-          });
-
-          return pointGraphic;
-        }
-
-        //标注的颜色
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/Graphic",
+      "esri/layers/FeatureLayer",
+      "esri/layers/GraphicsLayer",
+      "esri/geometry/Circle",
+    ], (Map, MapView, Graphic, FeatureLayer, GraphicsLayer, Circle) => {
+      window.map = new Map({
+        basemap: "hybrid",
+      });
+      window.view = new MapView({
+        center: [-111.3, 52.68],
+        container: "viewDiv",
+        map: map,
+        zoom: 3,
       });
 
-      function viewOn(view, eventName, layer, callback) {
-        view.on(eventName, (e) => {
-          view.hitTest(e).then(function (response) {
-            let results = response.results;
-            let graphics = results.filter(function (result) {
-              // check if the graphic belongs to the layer of interest
-              return result.graphic.layer === layer;
-            });
+      let template = {
+        // autocasts as new PopupTemplate()
+        title: "{name} in {age} 22222",
+        content: [
+          {
+            // It is also possible to set the fieldInfos outside of the content
+            // directly in the popupTemplate. If no fieldInfos is specifically set
+            // in the content, it defaults to whatever may be set within the popupTemplate.
+            type: "fields",
+            fieldInfos: [
+              {
+                fieldName: "name",
+                label: "姓名"
+              },
+              {
+                fieldName: "age",
+                label: "年龄",
+              },
+            ]
+          }
+        ]
+      }
 
-            if (graphics.length > 0) {
-              callback(graphics);
-            }
-          });
+      // 点位
+      const pointLayer = new GraphicsLayer({
+        id: "pointLayer",
+        // maxScale: zoomMap[12][1],
+        minScale: zoomMap[4][1], // 设置 缩放比例 进行显示隐藏图层
+        popupTemplate: template
+
+      });
+
+      // 标题名称
+      const titleLayer = new GraphicsLayer({
+        id: "titleLayer",
+        // maxScale: zoomMap[12][1],
+        minScale: zoomMap[14][1],
+        popupTemplate: template
+
+      });
+
+      // 圆圈图层
+      const circleLayer = new GraphicsLayer({
+        id: "circleLayer",
+        // maxScale: zoomMap[12][1],
+        minScale: zoomMap[12][1],
+        popupTemplate: template
+      });
+
+      map.add(circleLayer);
+      map.add(pointLayer);
+      map.add(titleLayer);
+
+      // 调整图层顺序
+      map.reorder(circleLayer, 1);
+      map.reorder(pointLayer, 10);
+      map.reorder(titleLayer, 20);
+
+      const pointList = [
+        {
+          isSignal: true,
+          center: [-111.3, 52.68],
+          name: "希望小学",
+          type: "小学",
+        },
+        {
+          isSignal: true,
+          center: [-113.9, 52.68],
+          name: "中心小学",
+          type: "小学",
+        },
+        {
+          isSignal: true,
+          center: [-115.9, 52.68],
+          name: "南大门酒店",
+          type: "酒店",
+        },
+      ];
+
+      pointLayer.add(getPoint([-111.3, 52.68]));
+      titleLayer.add(getImageTitle([-111.3, 52.68]));
+
+      pointLayer.add(getPoint([-113.9, 52.68]));
+      pointLayer.add(getTriangle([-115.9, 52.68]));
+
+      // pointLayer.add(getRect([-117.9, 52.68]));
+
+      circleLayer.add(getCircle([-118.9, 52.68]));
+      pointLayer.add(getImagePoint([-118.9, 52.68]));
+      titleLayer.add(getImageTitle([-118.9, 52.68]));
+
+      // TODO: 冒泡问题
+      viewOn(view, "click", pointLayer, (graphics) => {
+        console.log("gLayer");
+        console.log(graphics);
+      });
+
+      viewOn(view, "click", titleLayer, (graphics) => {
+        console.log("titleLayer");
+        console.log(graphics);
+      });
+
+      function getCircle([longitude, latitude]) {
+        const circleGeometry = new Circle({
+          center: [longitude, latitude],
+          geodesic: true,
+          numberOfPoints: 100, // 沿圆曲线的点数
+          radius: 1000,
+          radiusUnit: "meters",
+        });
+
+        return new Graphic({
+          geometry: circleGeometry,
+          symbol: {
+            type: "simple-fill",
+            // style: "none",    ////可能的值："backward-diagonal"|"cross"|"diagonal-cross"|"forward-diagonal"|"horizontal"|"none"|"solid"
+            color: [61, 145, 255, 0.3],
+            outline: {
+              width: 1,
+              color: "dodgerblue",
+            },
+          },
         });
       }
 
-      function rect2pathX(x, y, width, height, rx, ry) {
-        /*
-         * rx 和 ry 的规则是：
-         * 1. 如果其中一个设置为 0 则圆角不生效
-         * 2. 如果有一个没有设置则取值为另一个
-         */
-        rx = rx || ry || 0;
-        ry = ry || rx || 0;
-        //非数值单位计算，如当宽度像100%则移除
-        if (isNaN(x - y + width - height + rx - ry)) return;
-        rx = rx > width / 2 ? width / 2 : rx;
-        ry = ry > height / 2 ? height / 2 : ry;
-        //如果其中一个设置为 0 则圆角不生效
-        if (0 == rx || 0 == ry) {
-          // var path =
-          //     'M' + x + ' ' + y +
-          //     'H' + (x + width) +     不推荐用绝对路径，相对路径节省代码量
-          //     'V' + (y + height) +
-          //     'H' + x +
-          //     'z';
-          var path =
-            "M" + x + " " + y + "h" + width + "v" + height + "h" + -width + "z";
-        } else {
-          var path =
-            "M" +
-            x +
-            " " +
-            (y + ry) +
-            "a" +
-            rx +
-            " " +
-            ry +
-            " 0 0 1 " +
-            rx +
-            " " +
-            -ry +
-            "h" +
-            (width - rx - rx) +
-            "a" +
-            rx +
-            " " +
-            ry +
-            " 0 0 1 " +
-            rx +
-            " " +
-            ry +
-            "v" +
-            (height - ry - ry) +
-            "a" +
-            rx +
-            " " +
-            ry +
-            " 0 0 1 " +
-            -rx +
-            " " +
-            ry +
-            "h" +
-            (rx + rx - width) +
-            "a" +
-            rx +
-            " " +
-            ry +
-            " 0 0 1 " +
-            -rx +
-            " " +
-            -ry +
-            "z";
-        }
-        return path;
+      // 点位名称
+      function getImageTitle([longitude, latitude]) {
+        const point = {
+          //Create a point
+          type: "point",
+          longitude: longitude,
+          latitude: latitude,
+        };
+
+        const canvasText = getText("第一小学", {
+          fontSize: 16,
+          color: "#fff",
+          backgroundColor: "#20405b",
+          paddingRight: 8,
+          paddingLeft: 8,
+          paddingTop: 8,
+          paddingBottom: 8,
+        });
+        addSignHook(canvasText);
+
+        console.log(canvasText.width);
+
+        // 定义 缩小倍数
+        const scale = 0.8;
+        const pictureMarkerSymbol = {
+          declaredClass: "test-aaa",
+          type: "picture-marker",
+          url: canvasText.toDataURL(), // require("@/assets/image/point-city.png"),
+          width: canvasText.width * scale,
+          height: canvasText.height * scale,
+          // xoffset: 0,
+          yoffset: 20,
+        };
+
+        return new Graphic({
+          geometry: point,
+          symbol: pictureMarkerSymbol,
+          attributes: {
+            name: "point",
+            age: 12,
+          },
+        });
       }
 
-      //计算字符所占的宽度
-      function getTextWidth(str, fontSize) {
-        let result = 0;
+      // 点位图标
+      function getImagePoint([longitude, latitude]) {
+        const point = {
+          //Create a point
+          type: "point",
+          longitude: longitude,
+          latitude: latitude,
+        };
 
-        let ele = document.createElement("span");
-        //字符串中带有换行符时，会被自动转换成<br/>标签，若需要考虑这种情况，可以替换成空格，以获取正确的宽度
-        //str = str.replace(/\\n/g,' ').replace(/\\r/g,' ');
-        ele.innerText = str;
-        //不同的大小和不同的字体都会导致渲染出来的字符串宽度变化，可以传入尽可能完备的样式信息
-        ele.style.fontSize = fontSize;
+        const canvasPoint = drawPointB64("1");
 
-        //由于父节点的样式会影响子节点，这里可按需添加到指定节点上
-        document.documentElement.append(ele);
+        // 定义 缩小倍数
+        const scale = 0.2;
+        const pictureMarkerSymbol = {
+          type: "picture-marker",
+          url: canvasPoint.toDataURL(), // require("@/assets/image/point-city.png"),
+          width: canvasPoint.width * scale,
+          height: canvasPoint.height * scale,
+          // xoffset: 0,
+          yoffset: -12,
+        };
 
-        result = ele.offsetWidth;
-
-        document.documentElement.removeChild(ele);
-        return result;
+        return new Graphic({
+          siteName: "点位1",
+          geometry: point,
+          symbol: pictureMarkerSymbol,
+          attributes: {
+            name: "point",
+            age: 12,
+          },
+          popupTemplate: template,
+        });
       }
 
-      // 增加标志
-      const addSignHook = (canvas) => {
-        const ctx = canvas.getContext("2d");
+      function getTriangle([longitude, latitude]) {
+        const point = {
+          //Create a point
+          type: "point",
+          longitude: longitude,
+          latitude: latitude,
+        };
 
-        const canvasBak = cloneCanvas(canvas);
+        const radius = 30; //Create a radius
+        var iconpathString = `M0 ${radius}a${radius} ${radius} 0 0 1 ${radius} -${radius}h0a${radius} ${radius} 0 0 1 ${radius} ${radius}v0a${radius} ${radius} 0 0 1 -${radius} ${radius}h0a${radius} ${radius} 0 0 1 -${radius} -${radius}z`;
 
-        const fontSize = 16;
-        const color = "#70b603";
-        const offsetRight = 8;
+        const simpleMarkerSymbol = {
+          type: "simple-marker",
+          color: [226, 119, 40], // Orange
+          // style:'triangle',
+          // style:'path',
+          // path: iconpathString,
+          size: 20,
+          path: "M 0 0 L 300 0 L150 240 Z",
+          outline: {
+            color: [255, 255, 255], // White
+            width: 1,
+          },
+        };
 
-        // 判断文字
-        ctx.font = `${fontSize}px Arial`; // 文本字体
-        ctx.textBaseline = "top";
-        ctx.fillStyle = color; // 文本颜色
-        const text = "证";
-        const textInfo = ctx.measureText(text);
-
-        // 增加画板的宽度
-        canvas.width += textInfo.width + offsetRight;
-        // 重绘 背景颜色
-        ctx.fillStyle = "#20405b";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // 重绘canvas
-        ctx.drawImage(canvasBak, 0, 0);
-
-        // 绘制文本
-        const width = canvas.width;
-        const height = canvas.height;
-
-        ctx.font = `${fontSize}px Arial`; // 文本字体
-        ctx.textBaseline = "top";
-        ctx.fillStyle = color; // 文本颜色
-
-        ctx.fillText(
-          text,
-          width - textInfo.width - offsetRight, // 文字左上角 X 坐标
-          height / 2 - fontSize / 2 // 文字左上角 Y 坐标
-        ); // 填充文本, 坐标
-
-        // 画圈
-        ctx.beginPath();
-        ctx.arc(
-          width - textInfo.width / 2 - offsetRight, // X
-          height / 2, // Y
-          fontSize - 5, // 半径
-          0,
-          Math.PI * 2
-        );
-        ctx.closePath();
-        ctx.strokeStyle = color;
-        ctx.stroke();
-      };
-
-      // 获取文本
-      function getText(text, option) {
-        const fontSize = option.fontSize || 16;
-        const color = option.color || "#000";
-        const backgroundColor =
-          option.backgroundColor === undefined
-            ? "#fff"
-            : option.backgroundColor;
-
-        const defaultPadding = 5;
-        const paddingTop = option.paddingTop || defaultPadding;
-        const paddingBottom = option.paddingBottom || defaultPadding;
-        const paddingLeft = option.paddingLeft || defaultPadding;
-        const paddingRight = option.paddingRight || defaultPadding;
-
-        const canvas = document.createElement("canvas"); // canvas 作为一个画布, 获取Canvas
-        const ctx = canvas.getContext("2d"); // 获取一个  2D上下文,
-
-        ctx.font = `${fontSize}px Arial`; // 文本字体
-        const textInfo = ctx.measureText(text);
-
-        canvas.width = textInfo.width + paddingLeft + paddingRight;
-        canvas.height = fontSize + paddingTop + paddingBottom;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // 擦除(0,0)位置大小为 整个Canvas , 擦除的意思是把该区域变为透明
-
-        // 背景
-        if (backgroundColor) {
-          ctx.fillStyle = backgroundColor;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        // 文字
-        // ctx.shadowOffsetX = 2; // 影音 x
-        // ctx.shadowOffsetY = 2; // 阴影 y
-        // ctx.shadowBlur = 2; // 聚焦度 , 高度?
-        // ctx.shadowColor = '#666666'; // 阴影颜色
-        ctx.font = `${fontSize}px Arial`; // 文本字体
-        ctx.textBaseline = "top";
-        ctx.fillStyle = color; // 文本颜色
-
-        ctx.fillText(text, paddingLeft, paddingTop); // 填充文本, 坐标
-
-        return canvas;
+        return new Graphic({
+          geometry: point,
+          symbol: simpleMarkerSymbol,
+          attributes: {
+            name: "point",
+            age: 12,
+          },
+          popupTemplate: template,
+        });
       }
 
-      function cloneCanvas(oldCanvas) {
-        //create a new canvas
-        var newCanvas = document.createElement("canvas");
-        var context = newCanvas.getContext("2d");
+      function getRect([longitude, latitude]) {
+        const point = {
+          //Create a point
+          type: "point",
+          longitude: longitude,
+          latitude: latitude,
+        };
+        let fontSize = 16;
+        let textWidth = getTextWidth("实验小学(标准站)", fontSize); //strlen(cityName);
+        console.log(textWidth);
+        textWidth = textWidth + 15;
+        let rectWidth = textWidth;
+        let rectHeight = fontSize + 6;
 
-        //set dimensions
-        newCanvas.width = oldCanvas.width;
-        newCanvas.height = oldCanvas.height;
+        const rect = rect2pathX(0, 0, rectWidth, rectHeight, 4, 4);
+        console.log(rect);
+        let simpleMarkerSymbol = {
+          type: "simple-marker",
+          color: [226, 119, 40], // Orange
+          // style:'solid',
+          // style:'path',
+          // path: iconpathString,
+          size: textWidth,
+          path: rect,
+          outline: null,
+          // outline: {
+          //   color: [255, 255, 255], // White
+          //   width: 1,
+          // },
+        };
 
-        //apply the old canvas to the new one
-        context.drawImage(oldCanvas, 0, 0);
-
-        //return the new canvas
-        return newCanvas;
+        return new Graphic({
+          geometry: point,
+          symbol: simpleMarkerSymbol,
+          attributes: {
+            name: "point",
+            age: 12,
+          },
+          popupTemplate: template,
+        });
       }
 
-      // 水滴
+      function getPoint([longitude, latitude]) {
+        const point = {
+          //Create a point
+          type: "point",
+          longitude: longitude,
+          latitude: latitude,
+        };
+        const simpleMarkerSymbol = {
+          type: "simple-marker",
+          color: [226, 119, 40], // Orange
+          outline: {
+            color: [255, 255, 255], // White
+            width: 1,
+          },
+        };
 
-      // 3 点 顺时针
-      function getxy1(a, b, r, 弧度) {
-        var X坐标 = a + Math.cos(弧度) * r;
-        var Y坐标 = b + Math.sin(弧度) * r;
-        return [X坐标, Y坐标];
+        const pointGraphic = new Graphic({
+          geometry: point,
+          symbol: simpleMarkerSymbol,
+          attributes: {
+            name: "point",
+            age: 12,
+          },
+          popupTemplate: template,
+        });
+
+        return pointGraphic;
       }
 
-      // 角度转弧度
-      function toRadian(angle) {
-        // while (angle < 0) angle += 360;
-        return (loopNumber(angle, 360) * Math.PI) / 180;
-      }
+      //标注的颜色
+    });
 
-      // 数循环
-      function loopNumber(num, fullNum) {
-        // 0:0   1:1  360:360  361:1
-        const rest = num % fullNum; // 余数
-        const multiple = parseInt(num / fullNum); // 倍数
-        if (rest == 0) {
-          const isFull = multiple % 2 != 0;
-          if (isFull) return fullNum;
-          return 0;
-        }
-        return rest;
-      }
+    function viewOn(view, eventName, layer, callback) {
+      view.on(eventName, (e) => {
+        view.hitTest(e).then(function (response) {
+          let results = response.results;
+          let graphics = results.filter(function (result) {
+            // check if the graphic belongs to the layer of interest
+            return result.graphic.layer === layer;
+          });
 
-      /**
-       * 画水滴坐标点 base64
-       * @param {*} text 显示的文字
+          if (graphics.length > 0) {
+            callback(graphics);
+          }
+        });
+      });
+    }
+
+    function rect2pathX(x, y, width, height, rx, ry) {
+      /*
+       * rx 和 ry 的规则是：
+       * 1. 如果其中一个设置为 0 则圆角不生效
+       * 2. 如果有一个没有设置则取值为另一个
        */
-      function drawPointB64(text) {
-        // locationPoint
-        const PI = Math.PI;
-        const R = 50; // 半径
-        const an = 75; // 角度
-        const angle1 = -180 - an; // 起弧度
-        const angle2 = an; // // 终弧度
-        const center = [R, R]; // 圆心
-
-        const canvas = document.createElement("canvas");
-
-        canvas.width = R * 2;
-        const triangleHeight = 3;
-        canvas.height = (R * 2 + triangleHeight) * 2 + 10; // 两倍的图形
-        const ctx = canvas.getContext("2d");
-
-        // const center = [canvas.width / 2, canvas.height / 2]; // 圆心(相对画布)
-
-        let xy1 = getxy1(...center, R, toRadian(angle1));
-        let xy2 = getxy1(...center, R, toRadian(angle2));
-
-        // 半圆
-        ctx.beginPath();
-        ctx.arc(...center, R, toRadian(angle1), toRadian(angle2), false);
-        // ctx.fillStyle = '#3d93fd';
-        // ctx.fill();
-        // ctx.closePath();
-
-        // 三角
-        // ctx.beginPath();
-        ctx.moveTo(...xy1);
-        ctx.lineTo(...xy2);
-        ctx.lineTo(canvas.width / 2, canvas.height / 2); // 画布中心
-        ctx.fillStyle = "#3d93fd";
-        ctx.fill();
-        ctx.closePath();
-
-        // drawHelpLines(ctx, canvas);
-
-        // 文字
-        ctx.beginPath();
-        ctx.font = "60px Microsoft YaHei";
-        ctx.textAlign = "center";
-        ctx.fillStyle = "#ffffff";
-        // ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2 - 10);
-        ctx.fillText(text, center[0], center[1] + 20);
-        ctx.closePath();
-
-        // drawRect(ctx, ...xy1)
-        // drawRect(ctx, ...xy2)
-        return canvas;
+      rx = rx || ry || 0;
+      ry = ry || rx || 0;
+      //非数值单位计算，如当宽度像100%则移除
+      if (isNaN(x - y + width - height + rx - ry)) return;
+      rx = rx > width / 2 ? width / 2 : rx;
+      ry = ry > height / 2 ? height / 2 : ry;
+      //如果其中一个设置为 0 则圆角不生效
+      if (0 == rx || 0 == ry) {
+        // var path =
+        //     'M' + x + ' ' + y +
+        //     'H' + (x + width) +     不推荐用绝对路径，相对路径节省代码量
+        //     'V' + (y + height) +
+        //     'H' + x +
+        //     'z';
+        var path =
+          "M" + x + " " + y + "h" + width + "v" + height + "h" + -width + "z";
+      } else {
+        var path =
+          "M" +
+          x +
+          " " +
+          (y + ry) +
+          "a" +
+          rx +
+          " " +
+          ry +
+          " 0 0 1 " +
+          rx +
+          " " +
+          -ry +
+          "h" +
+          (width - rx - rx) +
+          "a" +
+          rx +
+          " " +
+          ry +
+          " 0 0 1 " +
+          rx +
+          " " +
+          ry +
+          "v" +
+          (height - ry - ry) +
+          "a" +
+          rx +
+          " " +
+          ry +
+          " 0 0 1 " +
+          -rx +
+          " " +
+          ry +
+          "h" +
+          (rx + rx - width) +
+          "a" +
+          rx +
+          " " +
+          ry +
+          " 0 0 1 " +
+          -rx +
+          " " +
+          -ry +
+          "z";
       }
-    </script>
-  </head>
+      return path;
+    }
 
-  <body>
-    <div id="viewDiv" style="height: calc(100vh - 100px)"></div>
-    <button onClick="change()">change first polyline</button>
-  </body>
+    //计算字符所占的宽度
+    function getTextWidth(str, fontSize) {
+      let result = 0;
+
+      let ele = document.createElement("span");
+      //字符串中带有换行符时，会被自动转换成<br/>标签，若需要考虑这种情况，可以替换成空格，以获取正确的宽度
+      //str = str.replace(/\\n/g,' ').replace(/\\r/g,' ');
+      ele.innerText = str;
+      //不同的大小和不同的字体都会导致渲染出来的字符串宽度变化，可以传入尽可能完备的样式信息
+      ele.style.fontSize = fontSize;
+
+      //由于父节点的样式会影响子节点，这里可按需添加到指定节点上
+      document.documentElement.append(ele);
+
+      result = ele.offsetWidth;
+
+      document.documentElement.removeChild(ele);
+      return result;
+    }
+
+    // 增加标志
+    const addSignHook = (canvas) => {
+      const ctx = canvas.getContext("2d");
+
+      const canvasBak = cloneCanvas(canvas);
+
+      const fontSize = 16;
+      const color = "#70b603";
+      const offsetRight = 8;
+
+      // 判断文字
+      ctx.font = `${fontSize}px Arial`; // 文本字体
+      ctx.textBaseline = "top";
+      ctx.fillStyle = color; // 文本颜色
+      const text = "证";
+      const textInfo = ctx.measureText(text);
+
+      // 增加画板的宽度
+      canvas.width += textInfo.width + offsetRight;
+      // 重绘 背景颜色
+      ctx.fillStyle = "#20405b";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // 重绘canvas
+      ctx.drawImage(canvasBak, 0, 0);
+
+      // 绘制文本
+      const width = canvas.width;
+      const height = canvas.height;
+
+      ctx.font = `${fontSize}px Arial`; // 文本字体
+      ctx.textBaseline = "top";
+      ctx.fillStyle = color; // 文本颜色
+
+      ctx.fillText(
+        text,
+        width - textInfo.width - offsetRight, // 文字左上角 X 坐标
+        height / 2 - fontSize / 2 // 文字左上角 Y 坐标
+      ); // 填充文本, 坐标
+
+      // 画圈
+      ctx.beginPath();
+      ctx.arc(
+        width - textInfo.width / 2 - offsetRight, // X
+        height / 2, // Y
+        fontSize - 5, // 半径
+        0,
+        Math.PI * 2
+      );
+      ctx.closePath();
+      ctx.strokeStyle = color;
+      ctx.stroke();
+    };
+
+    // 获取文本
+    function getText(text, option) {
+      const fontSize = option.fontSize || 16;
+      const color = option.color || "#000";
+      const backgroundColor =
+        option.backgroundColor === undefined
+          ? "#fff"
+          : option.backgroundColor;
+
+      const defaultPadding = 5;
+      const paddingTop = option.paddingTop || defaultPadding;
+      const paddingBottom = option.paddingBottom || defaultPadding;
+      const paddingLeft = option.paddingLeft || defaultPadding;
+      const paddingRight = option.paddingRight || defaultPadding;
+
+      const canvas = document.createElement("canvas"); // canvas 作为一个画布, 获取Canvas
+      const ctx = canvas.getContext("2d"); // 获取一个  2D上下文,
+
+      ctx.font = `${fontSize}px Arial`; // 文本字体
+      const textInfo = ctx.measureText(text);
+
+      canvas.width = textInfo.width + paddingLeft + paddingRight;
+      canvas.height = fontSize + paddingTop + paddingBottom;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height); // 擦除(0,0)位置大小为 整个Canvas , 擦除的意思是把该区域变为透明
+
+      // 背景
+      if (backgroundColor) {
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
+
+      // 文字
+      // ctx.shadowOffsetX = 2; // 影音 x
+      // ctx.shadowOffsetY = 2; // 阴影 y
+      // ctx.shadowBlur = 2; // 聚焦度 , 高度?
+      // ctx.shadowColor = '#666666'; // 阴影颜色
+      ctx.font = `${fontSize}px Arial`; // 文本字体
+      ctx.textBaseline = "top";
+      ctx.fillStyle = color; // 文本颜色
+
+      ctx.fillText(text, paddingLeft, paddingTop); // 填充文本, 坐标
+
+      return canvas;
+    }
+
+    function cloneCanvas(oldCanvas) {
+      //create a new canvas
+      var newCanvas = document.createElement("canvas");
+      var context = newCanvas.getContext("2d");
+
+      //set dimensions
+      newCanvas.width = oldCanvas.width;
+      newCanvas.height = oldCanvas.height;
+
+      //apply the old canvas to the new one
+      context.drawImage(oldCanvas, 0, 0);
+
+      //return the new canvas
+      return newCanvas;
+    }
+
+    // 水滴
+
+    // 3 点 顺时针
+    function getxy1(a, b, r, 弧度) {
+      var X坐标 = a + Math.cos(弧度) * r;
+      var Y坐标 = b + Math.sin(弧度) * r;
+      return [X坐标, Y坐标];
+    }
+
+    // 角度转弧度
+    function toRadian(angle) {
+      // while (angle < 0) angle += 360;
+      return (loopNumber(angle, 360) * Math.PI) / 180;
+    }
+
+    // 数循环
+    function loopNumber(num, fullNum) {
+      // 0:0   1:1  360:360  361:1
+      const rest = num % fullNum; // 余数
+      const multiple = parseInt(num / fullNum); // 倍数
+      if (rest == 0) {
+        const isFull = multiple % 2 != 0;
+        if (isFull) return fullNum;
+        return 0;
+      }
+      return rest;
+    }
+
+    /**
+     * 画水滴坐标点 base64
+     * @param {*} text 显示的文字
+     */
+    function drawPointB64(text) {
+      // locationPoint
+      const PI = Math.PI;
+      const R = 50; // 半径
+      const an = 75; // 角度
+      const angle1 = -180 - an; // 起弧度
+      const angle2 = an; // // 终弧度
+      const center = [R, R]; // 圆心
+
+      const canvas = document.createElement("canvas");
+
+      canvas.width = R * 2;
+      const triangleHeight = 3;
+      canvas.height = (R * 2 + triangleHeight) * 2 + 10; // 两倍的图形
+      const ctx = canvas.getContext("2d");
+
+      // const center = [canvas.width / 2, canvas.height / 2]; // 圆心(相对画布)
+
+      let xy1 = getxy1(...center, R, toRadian(angle1));
+      let xy2 = getxy1(...center, R, toRadian(angle2));
+
+      // 半圆
+      ctx.beginPath();
+      ctx.arc(...center, R, toRadian(angle1), toRadian(angle2), false);
+      // ctx.fillStyle = '#3d93fd';
+      // ctx.fill();
+      // ctx.closePath();
+
+      // 三角
+      // ctx.beginPath();
+      ctx.moveTo(...xy1);
+      ctx.lineTo(...xy2);
+      ctx.lineTo(canvas.width / 2, canvas.height / 2); // 画布中心
+      ctx.fillStyle = "#3d93fd";
+      ctx.fill();
+      ctx.closePath();
+
+      // drawHelpLines(ctx, canvas);
+
+      // 文字
+      ctx.beginPath();
+      ctx.font = "60px Microsoft YaHei";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#ffffff";
+      // ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2 - 10);
+      ctx.fillText(text, center[0], center[1] + 20);
+      ctx.closePath();
+
+      // drawRect(ctx, ...xy1)
+      // drawRect(ctx, ...xy2)
+      return canvas;
+    }
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv" style="height: calc(100vh - 100px)"></div>
+  <button onClick="change()">change first polyline</button>
+</body>
+
 </html>
