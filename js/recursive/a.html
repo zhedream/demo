@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      main();
+
+      function main() {
+        let pp = go([1, 2, 3], 0, []);
+        console.log("pp: ", pp);
+
+        function go(arr, dep, temp_path) {
+          if (dep == 3) {
+            // path.push([...temp_path])
+            return {
+              paths: [temp_path.slice(0)],
+              count: 1,
+            };
+          }
+
+          let res = {
+            paths: [],
+            count: 0,
+          }; // cur stack
+
+          for (let i = 0; i < arr.length; i++) {
+            if (temp_path.indexOf(arr[i]) > -1) continue;
+
+            temp_path.push(arr[i]);
+
+            // console.log('temp_path: ', temp_path);
+
+            let rt = go(arr, dep + 1, temp_path); // 展开, 多个分支
+            console.log("rt: ", rt);
+
+            temp_path.pop(); // 重置状态
+
+            // 处理回溯结果, 聚合过程
+            // console.log('rt.paths: ', rt.paths);
+            // rt.paths.forEach((v) => {
+            //   // console.log('v: ', v);
+            //   res.paths.push(v);
+            // });
+            res.paths = res.paths.concat(rt.paths);
+            res.count += rt.count;
+          }
+
+          return res;
+        }
+      }
+    </script>
+  </body>
+</html>
