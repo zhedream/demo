@@ -1,112 +1,62 @@
 {
-  "type": "classBreaks",
-  "field": "FID",
-  "defaultSymbol": {
-      "type": "esriSLS",
-      "color": [
-          0,
-          0,
-          0,
-          255
-      ],
-      "width": 5,
-      "height": 100
+  "type": "simple",
+  "symbol": {
+    "type": "simple-line",
+    "color": "lightblue",
+    "width": "10px"
   },
   "visualVariables": [
-      {
-          "type": "size",
-          "field": "active",
-          "stops": [
-              {
-                  "size": 6,
-                  "active": 0
-              },
-              {
-                  "size": 12,
-                  "active": 1
-              }
-          ]
-      },
-      {
-          "type": "color",
-          "field": "value",
-          "legendOptions": {
-              "title": "Population per square kilometer"
-          },
-          "stops": [
-              {
-                  "color": [
-                      0,
-                      255,
-                      0,
-                      255
-                  ],
-                  "value": 0
-              },
-              {
-                  "color": [
-                      163,
-                      255,
-                      52,
-                      255
-                  ],
-                  "value": 21.428571428571427
-              },
-              {
-                  "color": [
-                      236,
-                      255,
-                      18,
-                      255
-                  ],
-                  "value": 42.857142857142854
-              },
-              {
-                  "color": [
-                      255,
-                      185,
-                      0,
-                      255
-                  ],
-                  "value": 64.28571428571428
-              },
-              {
-                  "color": [
-                      255,
-                      76,
-                      0,
-                      255
-                  ],
-                  "value": 85.71428571428571
-              },
-              {
-                  "color": [
-                      229,
-                      12,
-                      62,
-                      255
-                  ],
-                  "value": 107.14285714285714
-              },
-              {
-                  "color": [
-                      146,
-                      48,
-                      238,
-                      255
-                  ],
-                  "value": 128.57142857142856
-              },
-              {
-                  "color": [
-                      88,
-                      27,
-                      144,
-                      255
-                  ],
-                  "value": 150
-              }
-          ]
-      }
+    {
+      "type": "size",
+      "field": "active",
+      "stops": [
+        {
+          "size": 6,
+          "active": 0
+        },
+        {
+          "size": 12,
+          "active": 1
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "field": "value",
+      "stops": [
+        {
+          "color": [0, 255, 0, 255],
+          "value": 0
+        },
+        {
+          "color": [163, 255, 52, 255],
+          "value": 21.428571428571427
+        },
+        {
+          "color": [236, 255, 18, 255],
+          "value": 42.857142857142854
+        },
+        {
+          "color": [255, 185, 0, 255],
+          "value": 64.28571428571428
+        },
+        {
+          "color": [255, 76, 0, 255],
+          "value": 85.71428571428571
+        },
+        {
+          "color": [229, 12, 62, 255],
+          "value": 107.14285714285714
+        },
+        {
+          "color": [146, 48, 238, 255],
+          "value": 128.57142857142856
+        },
+        {
+          "color": [88, 27, 144, 255],
+          "value": 150
+        }
+      ]
+    }
   ]
 }

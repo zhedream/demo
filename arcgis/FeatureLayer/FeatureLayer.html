@@ -161,7 +161,8 @@
 
 
     let renderJson = await fetchJson("./render2d.json");
-    const renderer = jsonUtils.fromJSON(renderJson);
+    // const renderer = jsonUtils.fromJSON(renderJson);
+    const renderer = renderJson;
     view = new MapView({
       center: [119.74477699948523, 41.12294917376106],
       container: "viewDiv",
