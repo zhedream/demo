@@ -10,6 +10,10 @@
 <script>
 /*
 
+Vue.use("EchartComponent", EchartComponent);
+
+<EchartComponent :option="option" style="height:750px"></EchartComponent>
+
 <EchartComponent
   ref="echartRef"
   id="echartId"
@@ -24,7 +28,6 @@
 1. 改进方向 按需加载
 https://www.jianshu.com/p/cf0a54374419
 
-
 */
 
 import * as echarts from "echarts";
@@ -36,7 +39,7 @@ export default {
   props: {
     id: {
       type: String,
-      default: () => Math.random().toString(32).substr(2),
+      default: () => Math.random().toString(32).slice(2),
     },
     // 自动 setOption 前 clear
     clear: {
@@ -78,7 +81,6 @@ export default {
     this.container = null; // 容器 this.$el
 
     this.echart = null; // echart 实例
-    this.echartDom = null; // echart Dom
 
     this.lastWidth = null;
     this.lastHeight = null;
@@ -149,7 +151,6 @@ export default {
     },
   },
   mounted() {
-    console.log("mounted: ");
     this.container = this.$el;
     this.initEchart();
   },
@@ -157,15 +158,15 @@ export default {
     this.removeEchart();
   },
   watch: {
-    option(next) {
-      // console.count(this.id + ":watch");
-      // console.timeEnd(this.id);
-      this.setOption(next);
-      this.resize();
+    option: {
+      handler(next) {
+        this.setOption(next);
+        this.resize();
+      },
+      // deep: true,
+      immediate: true,
     },
-    // deep: true,
-    immediate: true,
-  },
+  }
 };
 
 function domResize(selector, callback, timeout = 100) {
@@ -230,12 +231,9 @@ function domResize(selector, callback, timeout = 100) {
   height: 100%;
   margin: 0 auto;
 
-  // .ant-spin-nested-loading {
-  //   height: 100%;
-  // }
-
-  // .ant-spin-container {
-  //   height: 100%;
-  // }
+  //.ant-spin-nested-loading,
+  //.ant-spin-container {
+  //  height: 100%;
+  //}
 }
 </style>
