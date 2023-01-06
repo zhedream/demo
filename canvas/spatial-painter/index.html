@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>插值图</title>
+    <title>1.插值图原理</title>
   </head>
   <body>
     <!--  FORM:  https://github.com/leogle/SpatialImageService  -->
-    <!-- 
+    <!--
 
       云图和热力图
       https://blog.csdn.net/lweiyue/article/details/119103957
@@ -23,6 +23,8 @@
     </style>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
     <!-- 公共 -->
     <script src="./util.js"></script>
     <script src="./data.js"></script>
@@ -30,35 +32,48 @@
     <!-- 墨卡托投影 -->
     <script>
       {
-        const center = [114.2363, 21.1572];
-        const scale = 4000;
-        const size = [800, 400];
-        const projection = d3
-          .geoMercator()
-          .center(center)
-          .scale(scale)
-          .translate([size[0] / 2, size[1] / 2]);
+        const center = [0, 0];
 
-        console.log(
-          "114.2363, 21.1572  转换后的坐标：",
-          projection([114.2363, 21.1572]).map((v) => parseInt(v))
+        // 自定义缩放投影
+        // const scale = 1000;
+        const size = [360, 180];
+        // const projection = d3
+        //   .geoMercator()
+        //   .center(center)
+        //   .scale(scale)
+        //   .translate(size[0] / 2, size[1] / 2);
+
+        // 自适应边界投影,
+        // 为什么维度设置 85 ,https://www.cnblogs.com/beniao/archive/2010/04/18/1714544.html
+        const projection = getProjectionFitSizeBbox(
+          size,
+          [0, -85, 360, 85]
         );
 
-        console.log(
-          "[108.50672204869178, 18.462252874841177]  转换后的坐标：",
-          projection([108.50672204869178, 18.462252874841177]).map((v) =>
-            parseInt(v)
-          )
-        );
+        window.projection = projection;
+
+        function logProjection(center) {
+          console.log(
+            center,
+            "转换后的坐标：",
+            projection(center).map((v) => parseInt(v))
+          );
+        }
+
+        logProjection(center);
+        logProjection([180, 0]);
+
         /*
          *   n
          * w   e
          *   s
          * */
-        let sw = projection.invert([0, size[1]]); // 左下角坐标
-        let ne = projection.invert([size[0], 0]); // 右上角坐标
-        console.log("左下", sw);
-        console.log("右上", ne);
+        // 画布左下角 对应地理坐标
+        let coor = projection.invert([0, size[1]]);
+        console.log("左下", coor);
+        // 画布右上角 对应地理坐标
+        coor = projection.invert([size[0], 0]);
+        console.log("右上", coor);
       }
     </script>
 
@@ -89,7 +104,7 @@
           "#551a8b",
         ];
 
-        const p = usePalete(colors, 0, 10);
+        const p = usePalette(colors, 0, 8);
 
         console.log("p: ", p.getColor(10));
 
@@ -115,6 +130,7 @@
         showMatrixTable(matrix, p.getColor);
 
         const m = DataUtil.scaleData(500, 500, matrix);
+        // console.log('m: ', m);
         showMatrixCanvas(m, p.getData);
       }
     </script>
@@ -189,7 +205,7 @@
         const p = usePalette(colors, 1, 420);
 
         // 输出矩阵 canvas 插值图
-        showMatrixCanvas(matrix, p.getData);
+        // showMatrixCanvas(matrix, p.getData);
       }
     </script>
   </body>

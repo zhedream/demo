@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>2.map 地图 插值图</title>
   </head>
   <body>
     <!-- Start -->
@@ -21,14 +21,29 @@
 
     <script src="./data.js"></script>
     <script src="./util.js"></script>
+    <script src="./addImageLayer.js"></script>
 
     <div id="greenhouseGases">
       <!-- 地图 -->
       <div id="viewDiv"></div>
     </div>
+    <style>
+      #viewDiv {
+        width: 720px;
+        height: 360px;
+      }
+    </style>
 
     <script>
+      var map, view, projection;
+
       init();
+
+      function logProjection(projection, center) {
+        console.log(`projection(${center}): `, projection(center));
+      }
+
+
       function init() {
         loadModules([
           "esri/Map",
@@ -37,19 +52,22 @@
           "esri/layers/MapImageLayer",
           "esri/layers/GraphicsLayer",
         ]).then(
-          ([Map, MapView, WebTileLayer, MapImageLayer, GraphicsLayer]) => {
-            var map = new Map({
+          async ([Map, MapView, WebTileLayer, MapImageLayer, GraphicsLayer]) => {
+            map = new Map({
               // basemap: "satellite",
             });
-            var view = new MapView({
+            view = new MapView({
               container: "viewDiv",
               map: map,
-              center: [106.89374561958043, 37.73011692624135],
-              zoom: 4,
+              // center: [113.61123, 22.555680000000002],
+              // center: [116.3683244, 39.915085],
+              center:[113.280637, 23.125178],
+              // center: [0, 0],
+              zoom: 5,
               constraints: {
                 // rotationEnabled: false,
-                minZoom: 12,
-                maxZoom: 3,
+                // minZoom: 12,
+                // maxZoom: 3,
               },
             });
 
@@ -72,7 +90,6 @@
 
             map.add(pointLayer);
 
-
             // 广东数据点
 
             let points = []; // turf points
@@ -85,6 +102,7 @@
 
             // 绝对中心点
             var features = turf.featureCollection(points);
+            console.log(features);
             var centerPoint = turf.center(features);
             console.log("center: ", centerPoint.geometry.coordinates);
             layerAdd(pointLayer, getTriangle(centerPoint.geometry.coordinates));
@@ -116,6 +134,7 @@
             // console.log("poly.geometry.coordinates: ", poly.geometry.coordinates);
 
             // 插值图
+            let size = [720, 360];
             var canvas;
             let sw, ne;
             {
@@ -136,24 +155,41 @@
 
               console.log(w / width);
 
-              const size = [500, 500 / (width / height)];
+              size = [width * 100, height * 100];
+              size = [w, (w / width) * height];
+              size = [360, 180];
+
+
+              let cn_bbox = getBboxByCode("100000");
+              let gd_bbox = getBboxByCode("440000");
+              [cn_bbox, gd_bbox] = await Promise.all([cn_bbox, gd_bbox]);
 
               // 投影
 
               console.log("minX, minY: ", minX, minY);
               // console.log(projection([minX, minY]));
 
-              let projection = getProjectionFitSize(size, features);
+              let gd_leftBottom = [gd_bbox[0], gd_bbox[1]];
+              let gd_rightTop = [gd_bbox[2], gd_bbox[3]];
+              let featureCollection = turf.featureCollection([gd_leftBottom, gd_rightTop].map(turf.point));
+              projection = getProjectionFitSize(size, featureCollection);
+              // let projection = getProjection(center, 1000, size);
 
+              projection(center);
+              console.log("center: ", center);
+              // logProjection(projection, [0, 0]);
+              // logProjection(projection, [-180, 0]);
+              // logProjection(projection, [-180, 0]);
+              // logProjection(projection, center);
 
               console.log("features: ", features);
-
-              console.log(1111, projection.invert([0, size[1]]));
 
               // window.projection = projection;
 
               sw = projection.invert([0, size[1]]); // 左下角坐标
+              console.log("sw: ", sw);
               ne = projection.invert([size[0], 0]); // 右上角坐标
+              console.log("ne: ", ne);
 
               canvas = createCanvas(size[0], size[1]);
               const painter = new SpatialPainter();
@@ -161,58 +197,78 @@
               // const min = Math.min(...data.datas.map(item => item.value));
               // data.min = min;
               // data.max = max;
-              polygons = [];
+
+
+              polygons = await getBoundPathsByCode("440000", 1);
+
+
+              // 调色板
+              let colors = [
+                "#00ff00",
+                "#c0ff3e",
+                "#ffff00",
+                "#ff8000",
+                "#ff0000",
+                "#9933fa",
+                "#551a8b",
+              ];
+
+              const palette = usePalette(colors, data.min, data.max);
+              window.palette = palette;
+
               console.time("paintSpatial");
-              painter.paintSpatial(canvas, data, projection, polygons, 0.5, true);
-              // document.body.appendChild(canvas);
+              painter.paintSpatial(
+                canvas,
+                data,
+                projection,
+                polygons,
+                0.5,
+                true
+              );
+              document.body.appendChild(canvas);
               console.timeEnd("paintSpatial");
             }
             // 贴图
-            getCustomImageOverlayLayer()
-              .then((CustomImageOverlayLayer) => {
-                console.log(
-                  "CustomImageOverlayLayer: ",
-                  CustomImageOverlayLayer
-                );
-                const view1 = view;
-                const map1 = map;
+            addImageLayer(view, map, "anvas2212", sw, ne, canvas);
+            // addImageLayer(view, map, "anvas2212", sw, ne, canvas);
 
-                let layerId = "imageLayer";
+            {
+              let canvas2 = createCanvas(...size);
+              let ctx2 = canvas2.getContext("2d");
+              // ctx2 绘制 canvas 内容, 图片剪裁
+              console.log(bboxData);
 
-                // 单例图层
-                const layer = map1.findLayerById(layerId);
-                if (layer) map1.remove(layer);
+              let leftTop_pix = projection([bboxData[0], bboxData[3]]);
+              leftTop_pix = projection([
+                112.63344679687523, 24.089092725915158,
+              ]);
+              let rightBottom_pix = projection([bboxData[2], bboxData[1]]);
+              rightBottom_pix = projection([
+                114.09462843749925, 21.649765900463336,
+              ]);
 
-                var ImageOverlayLayer = new CustomImageOverlayLayer({
-                  id: layerId,
-                  // picUrl: "0.png",
-                  extent: {
-                    xmin: sw[0],
-                    ymin: sw[1],
-                    xmax: ne[0],
-                    ymax: ne[1],
-                  },
-                  picUrl: canvas.toDataURL(),
-                  // picUrl:
-                  //   "http://127.0.0.1:5500/canvas/spatial-painter/Snipaste_2022-08-16_15-09-39.png",
-                  // extent: extent,
-                  view: view1,
-                });
-                map1.add(ImageOverlayLayer);
-                //地图移动刷新,防止地图初始化时候，图片叠加图层加载刷新不过来
-                // setTimeout(function () {
-                //   var center = view1.center.clone();
-                //   center.x -= 0.0001; //底图是经纬度
-                //   view1.center = center;
-                //   view1.goTo(view1.center, {
-                //     speedFactor: 0.1,
-                //     easing: "linear", //linear, in-cubic, out-cubic, in-out-cubic, in-expo, out-expo, in-out-expo
-                //   });
-                // }, 500);
-              })
-              .catch((err) => {
-                console.error(err);
-              });
+              let leftBottom_pix = projection([bboxData[0], bboxData[1]]);
+              let rightTop_pix = projection([bboxData[2], bboxData[3]]);
+
+              let width1 = rightBottom_pix[0] - leftTop_pix[0];
+              let height1 = rightBottom_pix[1] - leftTop_pix[1];
+              console.log(
+                "leftTop, rightBottom: ",
+                leftTop_pix,
+                rightBottom_pix
+              );
+              ctx2.drawImage(
+                canvas,
+                ...leftTop_pix,
+                width1,
+                height1,
+                50,
+                50,
+                width1,
+                height1
+              );
+              document.body.appendChild(canvas2);
+            }
           }
         );
       }
@@ -281,6 +337,7 @@
           });
         });
       }
+
       function getPolygon(rings) {
         /*
       一个
@@ -362,7 +419,7 @@
 
       function loadModules(params) {
         return new Promise((res) => {
-          require(params, function () {
+          require(params, function() {
             res(arguments);
           });
         });
@@ -375,9 +432,9 @@
       }
 
       #greenhouseGases {
-        height: calc(100vh - 50px);
-        display: flex;
-        flex-direction: column;
+        /* height: calc(100vh - 50px); */
+        /* display: flex;
+        flex-direction: column; */
         overflow: auto;
         position: relative;
       }
@@ -385,10 +442,11 @@
       #viewDiv {
         position: relative;
         margin-top: 10px;
-        flex: 1;
-        width: 100%;
-        height: 100%;
+        /* flex: 1; */
+        /* width: 100%;
+        height: 100%; */
       }
+
 
       /* 碳汇图例 */
       .legend {

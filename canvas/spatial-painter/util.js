@@ -2,7 +2,7 @@ function SpatialPainter() {
   /**
    * 初始化颜色版
    */
-  this.init = function (conrec) {
+  this.init = function(conrec) {
     try {
       let _paleCanvas = createCanvas(1, 256);
       let ctx = _paleCanvas.getContext("2d");
@@ -24,7 +24,7 @@ function SpatialPainter() {
     }
   };
 
-  this.paintSpatial = function (
+  this.paintSpatial = function(
     canvas,
     data,
     projection,
@@ -39,10 +39,12 @@ function SpatialPainter() {
       if (data.min && data.max) {
         this.minMax = [data.min, data.max];
       }
+      debugger
       let _spatialData = this._setSpatialData(data, projection);
+      // console.log("_spatialData: ", _spatialData);
       let context = canvas.getContext("2d");
       let image = context.createImageData(canvas.width, canvas.height);
-      let imgData = image.data;
+      let imageData = image.data;
       let d = _spatialData;
       let dlen = d.length;
       let height = canvas.height;
@@ -53,19 +55,23 @@ function SpatialPainter() {
         y2 = height;
       //得到点值的二维数组
       let matrixData = [];
+      // 根据画布大小, 初始化空矩阵
       for (let i = 0; i <= height; i++) {
         matrixData[i] = [];
         for (let j = 0; j <= width; j++) {
           matrixData[i][j] = "";
         }
       }
+      debugger
+      // 根据数据点, 初始化矩阵
       for (let _i = 0; _i < dlen; _i++) {
         let point = d[_i];
-        if (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2) {
+        // if (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2) {
           //仅在需要画图的区域初始化监测点数据
           matrixData[point.y][point.x] = point.value;
-        }
+        // }
       }
+      // console.log("matrixData: ", matrixData);
       let pixPolygons;
       let maskData = null;
       //使用遮罩绘制地图轮廓，填充红色，通过判断遮罩颜色确定数据点是否在多边形内
@@ -116,38 +122,38 @@ function SpatialPainter() {
           }
         }
       }
-      // let colors = [
-      //   "#00ff00",
-      //   "#c0ff3e",
-      //   "#ffff00",
-      //   "#ff8000",
-      //   "#ff0000",
-      //   "#9933fa",
-      //   "#551a8b",
-      // ];
-      // const p = usePalette(colors, 1, 420);
-      // p.palette.palette = this.palette;
-      // showMatrixCanvas(matrixData, p.getData);
+
+      console.log(matrixData);
 
       //更新图片数据
-      for (let _i3 = y1; _i3 <= y2; _i3++) {
-        for (let _j2 = x1; _j2 <= x2; _j2++) {
-          if (matrixData[_i3][_j2] === "") {
-            continue;
+      try {
+        for (let _i3 = y1; _i3 <= y2; _i3++) {
+          for (let _j2 = x1; _j2 <= x2; _j2++) {
+            let value = matrixData[_i3][_j2];
+            if (value === "") {
+              continue;
+            }
+            let radio = this._getRadioByValue(this.paramName,value);
+            //radio=0.8
+            imageData[4 * (_i3 * width + _j2)] =
+              this.palette[Math.floor(radio * 255 + 1) * 4 - 4];
+            imageData[4 * (_i3 * width + _j2) + 1] =
+              this.palette[Math.floor(radio * 255 + 1) * 4 - 3];
+            imageData[4 * (_i3 * width + _j2) + 2] =
+              this.palette[Math.floor(radio * 255 + 1) * 4 - 2];
+            imageData[4 * (_i3 * width + _j2) + 3] = Math.floor(255 * alpha);
+
+            // const [r, g, b, a] = palette.getData(value);
+            // const index = (_i3 * width + _j2) * 4;
+            // imageData[index] = r;
+            // imageData[index + 1] = g;
+            // imageData[index + 2] = b;
+            // imageData[index + 3] = 225 * 0.6;
+
           }
-          let radio = this._getRadioByValue(
-            this.paramName,
-            matrixData[_i3][_j2]
-          );
-          //radio=0.8
-          imgData[4 * (_i3 * width + _j2)] =
-            this.palette[Math.floor(radio * 255 + 1) * 4 - 4];
-          imgData[4 * (_i3 * width + _j2) + 1] =
-            this.palette[Math.floor(radio * 255 + 1) * 4 - 3];
-          imgData[4 * (_i3 * width + _j2) + 2] =
-            this.palette[Math.floor(radio * 255 + 1) * 4 - 2];
-          imgData[4 * (_i3 * width + _j2) + 3] = Math.floor(255 * alpha);
         }
+      }catch (e) {
+        console.error(e)
       }
       context.putImageData(image, 0, 0);
       return image;
@@ -156,13 +162,6 @@ function SpatialPainter() {
     }
   };
 
-  this.paintContour = function (
-    canvas,
-    data,
-    projection,
-    polygons,
-    alpha = 0.5
-  ) {};
   /**
    * 将地理坐标数据转换成画布坐标数据
    * @param data
@@ -170,7 +169,7 @@ function SpatialPainter() {
    * @returns {*}
    * @private
    */
-  this._setSpatialData = function (data, projection) {
+  this._setSpatialData = function(data, projection) {
     //data:{datas:[{"lat": 40.2929, "value": 21.0, "lng": 116.2266}, {"lat": 39.9301, "value": 16.0, "lng": 116.4233}...]
     //,paramName:"PM10",unit:"ug/m3"}
     if (data === null) {
@@ -193,7 +192,7 @@ function SpatialPainter() {
     this.unit = data.unit;
     return _spatialData;
   };
-  this._getRadioByValue = function (param, value) {
+  this._getRadioByValue = function(param, value) {
     //根据污染物名称和浓度值计算在图例中显示的颜色比例
     let levelDict = this._getParamValueLevelDict(param);
 
@@ -214,13 +213,13 @@ function SpatialPainter() {
             parseFloat(key) +
             ((scaleValue - levelDict[key][0]) /
               (levelDict[key][1] - levelDict[key][0])) *
-              levelDict[key][2]
+            levelDict[key][2]
           );
         }
       }
     }
   };
-  this.scale = function (levelDict, minMax, value) {
+  this.scale = function(levelDict, minMax, value) {
     let lo = levelDict[0][0];
     let hi = levelDict[0.8][0];
     if (minMax) {
@@ -231,7 +230,7 @@ function SpatialPainter() {
     }
     return value;
   };
-  this._getParamValueLevelDict = function (param) {
+  this._getParamValueLevelDict = function(param) {
     //根据污染物名称获取分级比例字典
     //格式[起始浓度,终止浓度,下一等级与当前等级的比例差] ,0.6的起始和终止值一样为了在iaqi>300后快速过度到0.8颜色
     if (param === "AQI") {
@@ -357,7 +356,7 @@ function SpatialPainter() {
     }
   };
 
-  this._getContecGradientDict = function () {
+  this._getContecGradientDict = function() {
     return {
       0: "#00deff", //蓝色 0
       0.099: "#00deff",
@@ -376,7 +375,7 @@ function SpatialPainter() {
       1.0: "rgb(111,4,116)",
     };
   };
-  this._getGradientDict = function () {
+  this._getGradientDict = function() {
     //AQI颜色标记字典(依据IAQI比例分级)
     /*
  return {
@@ -424,7 +423,7 @@ function SpatialPainter() {
    * @param {Array} polygon
    * @returns {Array}
    */
-  this.convertPolygon = function (projection, polygon) {
+  this.convertPolygon = function(projection, polygon) {
     console.log("convertPolygon");
     let pixPolygon = [];
     for (let i = 0; i < polygon.length; i++) {
@@ -436,7 +435,7 @@ function SpatialPainter() {
   /**
    * 转换多个多边形
    * */
-  this.convertPolygons = function (projection, polygons) {
+  this.convertPolygons = function(projection, polygons) {
     let pixPolygons = [];
     for (let i = 0; i < polygons.length; i++) {
       let pixPolygon = this.convertPolygon(projection, polygons[i]);
@@ -449,7 +448,7 @@ function SpatialPainter() {
    * @param canvas
    * @param polygons
    */
-  this.drawPolygons = function (canvas, polygons) {
+  this.drawPolygons = function(canvas, polygons) {
     for (let i = 0; i < polygons.length; i++) {
       this.drawPolygon(canvas, polygons[i]);
     }
@@ -460,7 +459,7 @@ function SpatialPainter() {
    * @param canvas
    * @param polygon
    */
-  this.drawPolygon = function (canvas, polygon) {
+  this.drawPolygon = function(canvas, polygon) {
     let context = canvas.getContext("2d");
     if (polygon && polygon.length > 3) {
       context.beginPath();
@@ -480,7 +479,7 @@ function SpatialPainter() {
    * @returns {boolean}
    * @summary 多边形数据较大时，性能损耗严重，暂不使用
    */
-  this.pnpoly = function (point, polygon) {
+  this.pnpoly = function(point, polygon) {
     // ray-casting algorithm based on
     // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
     let x = point[0],
@@ -526,6 +525,22 @@ function getProjectionFitSize(size, features) {
   return d3.geoMercator().fitSize([size[0], size[1]], features);
 }
 
+function getProjectionFitSizeBbox(size, bbox) {
+  let sw = [bbox[0], bbox[1]];
+  let ne = [bbox[2], bbox[3]];
+  // features = turf.featureCollection(points);
+  // 扩展: fitExtent
+  // https://stackoverflow.com/questions/55972289/how-can-i-scale-my-map-to-fit-my-svg-size-with-d3-and-geojson-path-data
+  return d3.geoMercator().fitSize(
+    [size[0], size[1]],
+    {
+      type: "FeatureCollection",
+      features: [
+        {type: "Feature", geometry: {type: "Point", coordinates: [sw[0], sw[1]]}},
+        {type: "Feature", geometry: {type: "Point", coordinates: [ne[0], ne[1]]}}]
+    });
+}
+
 class Palette {
   constructor(colors, steps = 256) {
     this.colors = colors;
@@ -540,10 +555,11 @@ class Palette {
     }
 
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 10, 256);
-    const palette = ctx.getImageData(0, 0, 1, 256).data;
+    ctx.fillRect(0, 0, 1, steps);
+    const palette = ctx.getImageData(0, 0, 1, steps).data;
     this.palette = palette;
   }
+
   getColor(mix, max, val) {
     let percen;
     if (val <= mix) percen = 0;
@@ -563,6 +579,7 @@ class Palette {
       this.palette[index * 4 + 2]
     })`;
   }
+
   getData(min, max, val) {
     let percen;
     if (val <= min) percen = 0;
@@ -663,12 +680,13 @@ function showMatrixCanvas(matrix, getData) {
       imageData[index] = r;
       imageData[index + 1] = g;
       imageData[index + 2] = b;
-      imageData[index + 3] = a;
+      imageData[index + 3] = 225 * 0.6;
     }
   }
   context.putImageData(image, 0, 0);
 
   document.body.appendChild(canvas);
+  return canvas;
 }
 
 function createMatrix(width, height) {
@@ -681,6 +699,7 @@ function createMatrix(width, height) {
   }
   return matrix;
 }
+
 function fillMatrix(matrix, points) {
   for (let i = 0; i < points.length; i++) {
     const point = points[i];
@@ -737,104 +756,59 @@ function getRadio(value) {
           parseFloat(key) +
           ((scaleValue - levelDict[key][0]) /
             (levelDict[key][1] - levelDict[key][0])) *
-            levelDict[key][2]
+          levelDict[key][2]
         );
       }
     }
   }
 }
 
-/**
- * 图层构造函数: 叠加图片
- * @returns {Promise<any[]>}
- */
-function getCustomImageOverlayLayer() {
-  return loadModules(["esri/layers/BaseDynamicLayer"]).then(
-    ([BaseDynamicLayer]) => {
-      return BaseDynamicLayer.createSubclass({
-        properties: {
-          picUrl: null,
-          extent: null,
-          image: null,
-          canvas: null,
-          view: null,
-        },
-
-        // Override the getImageUrl() method to generate URL
-        // to an image for a given extent, width, and height.
-        getImageUrl: async function (extent, width, height) {
-          const view = this.view;
-          //新Image对象，可以理解为DOM
-          if (!this.image) {
-            this.image = new Image();
-          }
-          this.image.src = this.picUrl;
-
-          await new Promise((res) => {
-            this.image.onload = () => {
-              console.log("image onload");
-              res();
-            };
-          });
-
-          // 创建canvas DOM元素，并设置其宽高和图片一样
-          if (!this.canvas) {
-            this.canvas = document.createElement("canvas");
-          }
-          this.canvas.width = 2000;
-          this.canvas.height = 2000;
-
-          //左上角坐标转换屏幕坐标,为了获取canvas绘制图片的起点
-          let mapPoint = {
-            x: this.extent.xmin,
-            y: this.extent.ymax,
-            spatialReference: {
-              wkid: 4326,
-            },
-          };
-          let screenPoint = view.toScreen(mapPoint);
-          //根据extent范围计算canvas绘制图片的宽度以及高度
-          //左下角
-          let leftbottom = {
-            x: this.extent.xmin,
-            y: this.extent.ymin,
-            spatialReference: {
-              wkid: 4326,
-            },
-          };
-          let screen_leftbottom = view.toScreen(leftbottom);
-          //右上角
-          let righttop = {
-            x: this.extent.xmax,
-            y: this.extent.ymax,
-            spatialReference: {
-              wkid: 4326,
-            },
-          };
-          let screen_righttop = view.toScreen(righttop);
-
-          this.canvas
-            .getContext("2d")
-            .drawImage(
-              this.image,
-              screenPoint.x,
-              screenPoint.y,
-              Math.abs(screen_righttop.x - screen_leftbottom.x),
-              Math.abs(screen_righttop.y - screen_leftbottom.y)
-            );
-
-          return this.canvas.toDataURL("image/png");
-        },
-      });
-    }
-  );
-}
-
 function getDistance(paths) {
   let from = turf.point(paths[0]);
   let to = turf.point(paths[1]);
-  let options = { units: "kilometers" };
+  let options = {units: "kilometers"};
 
   let distance = turf.rhumbDistance(from, to, options);
   return distance;
 }
+
+function fetchJson(url) {
+  return fetch(url).then((response) => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error("Network response was not ok.");
+  });
+}
+
+async function getBboxByCode(code = "100000") {
+  let code_json = await fetchJson("https://geo.datav.aliyun.com/areas_v3/bound/" + code + ".json");
+  let code_bbox;
+  // console.log(code_json);
+  let cn_paths = code_json.features[0].geometry.coordinates.flat(2);
+  let cn_line = turf.lineString(cn_paths);
+  code_bbox = turf.bbox(cn_line);
+  console.log(code + "_bbox: ", code_bbox);
+  return code_bbox;
+}
+
+async function getBoundPathsByCode(code, flatDeep = 0) {
+  let code_json = await fetchJson("https://geo.datav.aliyun.com/areas_v3/bound/" + code + ".json");
+  let code_paths = code_json.features[0].geometry.coordinates.flat(flatDeep);
+  console.log(code + "_paths: ", code_paths);
+  return code_paths;
+}
+
+function bboxToCollection(bbox) {
+  let leftBottom = [bbox[0], bbox[1]];
+  let rightTop = [bbox[2], bbox[3]];
+  let bboxCollection = turf.featureCollection([leftBottom, rightTop].map(turf.point));
+  return bboxCollection;
+}
+
+// 开尔文转摄氏度 javascript
+function kelvinToCelsius(kelvin) {
+  return kelvin - 273.15;
+}
+
+

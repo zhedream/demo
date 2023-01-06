@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+				initial-scale=1.0"
+    />
+    <title>d3 geoPath </title>
+  </head>
+
+  <body>
+    <div style="width: 800px; height: 800px;">
+      <center>
+        <h3 style="color: black;"></h3>
+      </center>
+
+      <svg width="800"
+           height="800"></svg>
+    </div>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="./util.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+    <script>
+      var svg = d3.select("svg"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
+      // Mercator projection
+      // Center(0, 0) with 0 rotation
+      var gfg = d3
+        .geoMercator()
+        .scale(width / 2.5 / Math.PI)
+        // .scale(30)
+        .center([0, 0]) // 聚焦中心
+        .rotate([0, 0]) // 左右平移 , 顺时针旋转
+        .translate([width / 2, height / 2]);
+
+      gfg = getProjectionFitSizeBbox(
+        [width, height],
+        // [180, -60, -180, 80],
+        [0, -85, 360, 85],
+      )
+        //   .center([0, 0])
+        .translate([width / 2, height / 2])
+        .rotate([180, 0]); // 左右平移 , 顺时针旋转
+
+      // .scale(width / 2.5 / Math.PI)
+
+
+      // Loading the json data
+      // Used json file stored at
+      function getPoint(center) {
+        return {
+          type: "Point",
+          coordinates: center,
+        };
+      }
+
+      function apendPoint(center, path, color = "green") {
+        const point = getPoint(center);
+        svg.append("path")
+          .datum(point)
+          .attr("d", path)
+          .attr("fill", color);
+      }
+
+      /*https://raw.githubusercontent.com/janasayantan
+                        /datageojson/master/world.json*/
+      d3.json(
+        "https://raw.githubusercontent.com/janasayantan/datageojson/master/world.json",
+        function(data) {
+          // Drawing the map
+          svg.append("g")
+            .selectAll("path")
+            .data(data.features)
+            .enter()
+            .append("path")
+            .attr("fill", "black")
+            .attr("d", d3.geoPath().projection(gfg))
+            .style("stroke", "#ffff");
+
+
+          // 指定投影
+          const path = d3.geoPath(gfg);
+
+          apendPoint([120, 23], path, "pink");
+
+          apendPoint([-180, 0], path, "#FF0000");
+          apendPoint([-90, 0], path, "#cc2929");
+          apendPoint([0, 0], path, "#008000");
+          apendPoint([85, 0], path, "#198019");
+          apendPoint([175, 0], path, "#0000FF");
+
+          apendPoint([265, 0], path, "#3333ff");
+          apendPoint([355, 0], path, "#800080");
+
+          apendPoint([0, 85], path, "#10b080");
+          apendPoint([0, -85], path, "#6310b0");
+        });
+    </script>
+
+
+  </body>
+  <style>
+    .aa {
+      color: purple;
+    }
+  </style>
+</html>

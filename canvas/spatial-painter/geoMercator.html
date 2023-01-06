@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>插值图原理-d3-geoMercator</title>
+  </head>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <body>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <!-- 公共 -->
+    <script src="./util.js"></script>
+    <script src="./data.js"></script>
+    <script src="../DataUtil.js"></script>
+    <!-- 墨卡托投影 -->
+    <script>
+      {
+        // 绝对中心点
+
+        let allPoints = polygons.reduce((arr, polygon) => {
+          return arr.concat(polygon.map(turf.point));
+        }, []);
+        // console.log("allPoints: ", allPoints);
+        var features = turf.featureCollection(allPoints);
+        // console.log("features: ", features);
+        var centerPoint = turf.center(features);
+        console.log("centerPoint: ", centerPoint);
+
+        const center = [0, 0];
+        const scale = 10000;
+        const size = [window.innerWidth, window.innerHeight];
+        // const size = [360,180];
+        console.log('centerPoint.geometry.coordinates: ', centerPoint.geometry.coordinates);
+
+        // const projection = d3
+        //   .geoMercator()
+        //   .center(centerPoint.geometry.coordinates)
+        //   .scale(scale)
+        //   .translate([size[0] / 2, size[1] / 2]);
+
+
+        // const projection = d3.geoMercator().fitExtent([[0, 0], size], features);
+        const projection = d3.geoMercator().fitSize(size, features);
+
+        function logProjection(center) {
+          console.log(
+            center,
+            "转换后的坐标：",
+            projection(center).map((v) => parseInt(v))
+          );
+        }
+
+        logProjection(center);
+
+        // polygons;
+        // console.log("polygons: ", polygons);
+
+        let p = new SpatialPainter();
+
+        let pixPolygons = p.convertPolygons(projection, polygons);
+        console.log("pixPolygons: ", pixPolygons);
+        let maskCanvas = createCanvas(...size);
+        p.drawPolygons(maskCanvas, pixPolygons);
+        document.body.appendChild(maskCanvas);
+      }
+    </script>
+  </body>
+</html>

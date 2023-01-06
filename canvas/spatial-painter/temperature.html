@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. temperature 地图 插值图</title>
+  </head>
+
+  <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!--  引入 lodash -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <script src="./data.js"></script>
+  <script src="./util.js"></script>
+  <script src="../DataUtil.js"></script>
+  <script src="./addImageLayer.js"></script>
+
+  <link
+    href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+    rel="stylesheet"
+  />
+  <script src="https://js.arcgis.com/4.24/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    #viewDiv {
+      width: 720px;
+      height: 360px;
+    }
+  </style>
+  <body>
+    <!-- Start -->
+
+    <!-- 地图 -->
+    <div id="viewDiv"></div>
+
+    <script>
+      var map, view;
+      init();
+
+      function handleGridData(ny, nx, data) {
+        let max = -9999;
+        let min = 9999;
+        let grid = [];
+        let points = [];
+        let index = 0;
+        for (let y = 0, lat = 90; y < ny; y++, lat--) {
+          let row = [];
+
+          for (let x = 0; x < nx; x++) {
+            row.push(data.data[index]);
+
+            // let lng = x >= 0 && x < 180 ? x : x - 360;
+            // if (lat < 85 && lat > -85) {
+            //   points.push({lng, lat, value: data.data[index]});
+            // }
+
+            if (x < 180) {
+              if (lat <= 85 && lat >= -85) {
+                points.push({lng: x, lat, value: data.data[index]});
+              }
+            }
+
+            if (data.data[index] > max) {
+              max = data.data[index];
+            }
+            if (data.data[index] < min) {
+              min = data.data[index];
+            }
+            index++;
+
+          }
+          grid.push(row);
+        }
+        return {
+          max, min, grid, points: {
+            min,
+            max,
+            datas: points,
+          },
+        };
+      }
+
+      function logToScreen(xy) {
+        console.log(
+          `view.toScreen(${xy}): `,
+          view.toScreen({
+            x: xy[0],
+            y: xy[1],
+            spatialReference: {
+              wkid: 4326,
+            },
+          })
+        );
+      }
+
+      function init() {
+        loadModules([
+          "esri/Map",
+          "esri/views/MapView",
+          "esri/layers/WebTileLayer",
+          "esri/layers/GraphicsLayer",
+        ]).then(async ([Map, MapView, WebTileLayer, GraphicsLayer]) => {
+          map = new Map({
+            // basemap: "satellite",
+          });
+          view = new MapView({
+            container: "viewDiv",
+            map: map,
+            // center: [106.89374561958043, 37.73011692624135],
+            center: [106.89374561958043, 37.73011692624135],
+            zoom: 4,
+            constraints: {
+              // rotationEnabled: false,
+              // minZoom: 12,
+              // maxZoom: 3,
+            },
+          });
+
+          let tileLayer = new WebTileLayer({
+            id: "tileLayer",
+            title: "tileLayer",
+            subDomains: ["webrd01"],
+            urlTemplate:
+              "http://{subDomain}.is.autonavi.com/appmaptile?x={col}&y={row}&z={level}&lang=zh_cn&size=1&scale=1&style=8",
+          });
+          map.add(tileLayer);
+          map.reorder(tileLayer, 0);
+
+          // 点位
+          const pointLayer = new GraphicsLayer({
+            id: "pointLayer",
+            // maxScale: zoomMap[12][1],
+            // minScale: zoomMap[4][1], // 设置 缩放比例 进行显示隐藏图层
+          });
+          map.add(pointLayer);
+
+
+          fetchJson("./temperatureData.json").then(async (data) => {
+            console.log(data);
+
+            let header = data.header;
+            let nx = header.nx;
+            let ny = header.ny;
+
+            let {max, min, grid, points} = handleGridData(ny, nx, data);
+            console.log("grid: ", grid);
+            console.log("points: ", points);
+
+            // 调色板
+            let colors = [
+              "#00ff00",
+              "#c0ff3e",
+              "#ffff00",
+              "#ff8000",
+              "#ff0000",
+              "#9933fa",
+              "#551a8b",
+            ];
+
+            const palette = usePalette(colors, min, max);
+            window.palette = palette;
+            console.log("min, max: ", min, max);
+
+            let point1 = [0, -90];
+            let point2 = [360, 90];
+
+            logToScreen(point1);
+            logToScreen(point2);
+
+            // let canvas = showMatrixCanvas(grid, palette.getData);
+            // await addImageLayer(view, map, "canvasLayer", point1, point2, canvas, {
+            //   opacity: 0.3,
+            // });
+
+            // ============================
+
+            const projection = getProjectionFitSizeBbox(
+              [180, 100],
+              [0, -85, 180, 85]
+            );
+            window.projection = projection;
+            let canvas2 = createCanvas(180, 100);
+            const painter = new SpatialPainter();
+            // polygons = await getBoundPathsByCode("440000", 1);
+            polygons = [];
+            painter.paintSpatial(
+              canvas2,
+              Object.assign(points, {
+                paramName: "PM10",
+                unit: "ug/m3",
+              }),
+              projection,
+              polygons,
+              0.5,
+              true
+            );
+            document.body.appendChild(canvas2);
+            await addImageLayer(
+              view,
+              map,
+              "canvasLayer2",
+              projection.invert([0, 100]),
+              projection.invert([180, 0]),
+              canvas2,
+              {
+                opacity: 0.3,
+              }
+            );
+
+          });
+        });
+      }
+
+      async function layerAdd(layer, graphicPromice) {
+        layer.add(await graphicPromice);
+      }
+
+      function getPoint([longitude, latitude]) {
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const point = {
+              //Create a point
+              type: "point",
+              longitude: longitude,
+              latitude: latitude,
+            };
+            const simpleMarkerSymbol = {
+              type: "simple-marker",
+              color: [226, 119, 40], // Orange
+              outline: {
+                color: [255, 255, 255], // White
+                width: 1,
+              },
+            };
+
+            const pointGraphic = new Graphic({
+              geometry: point,
+              symbol: simpleMarkerSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(pointGraphic);
+          });
+        });
+      }
+
+      function getPolyLine(paths) {
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const polyline = {
+              type: "polyline", // autocasts as new Polyline()
+              paths: paths,
+            };
+            const simpleMarkerSymbol = {
+              type: "simple-line",
+              color: [226, 119, 40], // Orange
+              outline: {
+                color: [255, 255, 255], // White
+                width: 1,
+              },
+              width: 2,
+            };
+
+            const pointGraphic = new Graphic({
+              geometry: polyline,
+              symbol: simpleMarkerSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(pointGraphic);
+          });
+        });
+      }
+
+      function getPolygon(rings) {
+        /*
+  一个
+  [ [],[],[],... ]
+  多个
+  [
+  [ [],[],[] ]
+  ...
+  ]
+  */
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const Polygon = {
+              type: "polygon", // autocasts as new Polygon()
+              rings: rings,
+            };
+            const fillSymbol = {
+              type: "simple-fill", // autocasts as new SimpleFillSymbol()
+              color: [227, 139, 79, 0.7],
+              outline: {
+                // autocasts as new SimpleLineSymbol()
+                color: [255, 255, 255],
+                width: 1,
+              },
+            };
+
+            const polygon = new Graphic({
+              geometry: Polygon,
+              symbol: fillSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(polygon);
+          });
+        });
+      }
+
+      function getTriangle([longitude, latitude]) {
+        return new Promise((res) => {
+          loadModules(["esri/Graphic"]).then(([Graphic]) => {
+            const point = {
+              //Create a point
+              type: "point",
+              longitude: longitude,
+              latitude: latitude,
+            };
+
+            const radius = 30; //Create a radius
+            var iconpathString = `M0 ${radius}a${radius} ${radius} 0 0 1 ${radius} -${radius}h0a${radius} ${radius} 0 0 1 ${radius} ${radius}v0a${radius} ${radius} 0 0 1 -${radius} ${radius}h0a${radius} ${radius} 0 0 1 -${radius} -${radius}z`;
+
+            const simpleMarkerSymbol = {
+              type: "simple-marker",
+              color: [226, 119, 40], // Orange
+              // style:'triangle',
+              // style:'path',
+              // path: iconpathString,
+              size: 20,
+              path: "M 0 0 L 300 0 L150 240 Z",
+              outline: {
+                color: [255, 255, 255], // White
+                width: 1,
+              },
+            };
+
+            let pointGraphic = new Graphic({
+              geometry: point,
+              symbol: simpleMarkerSymbol,
+              attributes: {
+                name: "point",
+                age: 12,
+              },
+            });
+            return res(pointGraphic);
+          });
+        });
+      }
+
+      function loadModules(params) {
+        return new Promise((res) => {
+          require(params, function() {
+            res(arguments);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
