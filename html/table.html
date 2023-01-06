@@ -1,31 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>table 的基本使用</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>table 的基本使用</title>
-</head>
+  <style>
+    .col1 {
+      background-color: #7bb33b;
+    }
 
-<body>
-  <!-- colspan 占几列 -->
-  <!-- rowspan 占几行 -->
-  <table border="1" cellpadding="0" cellspacing="0">
-    <thead>
-      <tr>
-        <th colspan="2">The table header</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>The table body</td>
-        <td>with two columns</td>
-      </tr>
-    </tbody>
-  </table>
+    .col2 {
+      background-color: #e38383;
+    }
+  </style>
+  <body>
+    <!-- colspan 占几列 -->
+    <!-- rowspan 占几行 -->
+    <table class="table-5" border="1" cellpadding="0" cellspacing="0">
+      <caption style="caption-side: bottom">
+        表格标题 caption-side: bottom
+      </caption>
 
+      <!-- 定义 列选择, 支持 width backgroundColor -->
+      <colgroup>
+        <col span="1" class="col1" width="200" />
+        <col span="1" class="col2" width="100" />
+      </colgroup>
 
-</body>
+      <thead>
+        <tr>
+          <th colspan="2">The table header</th>
+          <th style="display: none">The table header</th>
+        </tr>
+      </thead>
 
+      <tbody>
+        <tr>
+          <td>The table body</td>
+          <td>with two columns</td>
+        </tr>
+        <tr>
+          <td rowspan="2">The table body</td>
+          <td>with two columns</td>
+        </tr>
+        <tr>
+          <td style="display: none">The table body</td>
+          <td>with two columns</td>
+        </tr>
+      </tbody>
+
+      <tfoot>
+        <tr>
+          <td>Footer content 11</td>
+          <td>Footer content 2</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <style>
+      .table-5 {
+        border: none;
+      }
+      .table-5 tr td {
+        border: 1px none #e8eaec;
+        border-left-style: solid;
+        border-right-width: 0;
+      }
+      .table-5 tr td:last-child {
+        border-right-width: 1px;
+        border-right-style: solid;
+      }
+      .table-5 tr td {
+        border-top-style: solid;
+        border-bottom-width: 0;
+      }
+      .table-5 tr:last-child td {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+      }
+      .table-5 th {
+        border: 1px solid #e8eaec;
+      }
+      .table-5 td,
+      .table-5 th {
+        padding: 5px 10px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .table-5 thead {
+        border: none;
+      }
+      .table-5 thead th {
+        background-color: #cbd5ec;
+        color: #515a6e;
+        border-bottom-width: 0;
+        border-right-width: 0;
+      }
+      .table-5 thead th:last-child {
+        border-right-width: 1px;
+      }
+    </style>
+
+    <div>
+      <pre>
+        // less 样式
+        .table-5 {
+          border: none;
+        
+          tr {
+        
+            // td 左右边框
+            td {
+              border: 1px none #e8eaec;
+              border-left-style: solid;
+              border-right-width: 0;
+        
+              &:last-child {
+                border-right-width: 1px;
+                border-right-style: solid;
+              }
+            }
+        
+            // td 上下边框
+            td {
+              border-top-style: solid;
+              border-bottom-width: 0;
+            }
+        
+            &:last-child {
+              td {
+                border-bottom-width: 1px;
+                border-bottom-style: solid;
+              }
+            }
+        
+          }
+        
+        
+          th {
+            border: 1px solid #e8eaec;
+          }
+        
+        
+          td, th {
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: bold;
+          }
+        
+        
+          thead {
+            border: none;
+        
+            th {
+              background-color: #cbd5ec;
+              color: #515a6e;
+              border-bottom-width: 0;
+              border-right-width: 0;
+        
+              &:last-child {
+                border-right-width: 1px;
+              }
+            }
+        
+          }
+        
+        
+        }
+      </pre>
+    </div>
+  </body>
 </html>
