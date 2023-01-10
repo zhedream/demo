@@ -30,25 +30,45 @@
   <style>
     html,
     body,
-    #map-view {
+    #map-container {
       margin: 0;
       padding: 0;
       height: 100%;
       position: relative;
     }
 
-    #map-view {
+    #map-container {
       width: 720px;
       height: 360px;
     }
 
+    #map-view {
+      width: 100%;
+      height: 100%;
+    }
+
+    #report-container {
+      position: absolute;
+      bottom: 20px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 5px 10px;
+    }
 
   </style>
   <body>
     <!-- Start -->
 
     <!-- 地图 -->
-    <div id="map-view"></div>
+    <div id="map-container">
+
+      <div id="map-view"></div>
+
+      <div id="report-container">
+        Temperature: <span id="temperature"></span> ℃
+      </div>
+    </div>
 
     <script>
       var map, view;
@@ -105,28 +125,31 @@
       }
 
       async function main() {
-        let [Map, MapView, WebTileLayer] = await loadModules([
+        let [Map, MapView, WebTileLayer, webMercatorUtils] = await loadModules([
           "esri/Map",
           "esri/views/MapView",
           "esri/layers/WebTileLayer",
+          "esri/geometry/support/webMercatorUtils",
         ]);
 
         // 初始化地图
         initMap(Map, MapView, WebTileLayer);
 
         let bbox = await getBboxByCode("320000"); // 320000 江苏  100000 中国 440000 广东
-        let polygons = await getBoundPathsByCode("320000", 1);
+        let polygons = await getBoundPathsByCode("320000");
+        // console.log("polygons1", polygons);
+
 
         let temperatureData = await fetchJson("./temperatureData.json");
 
         let {grid, points, min, max} = handleTemperatureData(temperatureData, bbox);
 
-        console.log(grid);
-        console.log(points);
-        console.log(min, max);
+        // console.log(grid);
+        // console.log(points);
+        // console.log(min, max);
 
         // 创建画布和投影
-        let size = [500, 500];
+        let size = [360, 360];
         let canvas = createCanvas(size[0], size[1]);
         let projection = getProjectionFitSizeBbox(size, bbox);
         window.projection = projection;
@@ -156,7 +179,9 @@
 
         // =============== SpatialPainter 插值
 
+        let spatialMatrixData = [];
         let spatialPainter = new SpatialPainter();
+        window.spatialPainter = spatialPainter;
 
         spatialPainter.paintSpatial(
           canvas,
@@ -164,16 +189,25 @@
             datas: points,
             min,
             max,
-            palette,
+
             paramName: "PM10",
           }),
           projection,
-          polygons
+          polygons,
+          {
+            palette,
+            dataCallback: (data) => {
+              spatialMatrixData = data;
+              console.log('spatialMatrixData',spatialMatrixData);
+            },
+          }
         );
+
+
 
         document.body.appendChild(canvas);
 
-        await addImageLayer(
+        let layer = await addImageLayer(
           view,
           map,
           "canvasLayer2",
@@ -182,6 +216,33 @@
           canvas,
           {opacity: 1}
         );
+
+
+
+        // console.log("layer", layer);
+
+
+
+        layer.view.on("pointer-move", (evt) => {
+
+          // console.log("evt", evt);
+
+          let mousePos = _getMousePos(evt, layer.view);
+          let point = layer.view.toMap({x: mousePos.x, y: mousePos.y});
+          if (point.spatialReference.isWebMercator) {
+            point = webMercatorUtils.webMercatorToGeographic(point);
+          }
+          // console.log(point);
+
+          let [x, y] = projection([point.longitude, point.latitude]);
+          [x, y] = [Math.floor(x), Math.floor(y)];
+          // console.log("x, y", x, y);
+          let value = spatialMatrixData?.[y]?.[x];
+          let celsius = kelvinToCelsius(value);
+          let temperatureDom = document.getElementById("temperature");
+          temperatureDom.innerHTML = value ? celsius.toFixed(2) : "无数据";
+        });
+
 
         // ================= 手动插值
         // let matrixData = createMatrix(size[0], size[1]);

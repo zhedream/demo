@@ -20,7 +20,7 @@ function getCustomImageOverlayLayer() {
         // console.log("height: ", height);
         const view = this.view;
 
-        logPix_toMap(view, 0, 0);
+        // logPix_toMap(view, 0, 0);
         // logPix_toMap(view, width, 0);
 
 

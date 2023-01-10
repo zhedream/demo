@@ -37,6 +37,10 @@ export default class ColorGradient {
   }
 
   getLogValColor(val, maxValue) {
+
+    // 有对数色标 10**0 - 10**4    , 10**x = y , x = Math.log10(y)
+    // 则 100 处于色标 50% 处 , Math.log10(100) / Math.log10(10**4) = 0.5
+
     let min = 0;
     let max = 100;
     const stepCount = this.allColorList.length; // n个色阶, n种过度颜色
@@ -64,9 +68,9 @@ export default class ColorGradient {
    * @param oldColor
    * @returns {string}
    */
-  colorReverse(oldColor){
-     oldColor = '0x' + oldColor.replace(/#/g, '');
-    const str = '000000' + (0xFFFFFF - oldColor).toString(16);
+  colorReverse(oldColor) {
+    oldColor = "0x" + oldColor.replace(/#/g, "");
+    const str = "000000" + (0xffffff - oldColor).toString(16);
     return str.substring(str.length - 6, str.length);
   }
 
@@ -105,7 +109,7 @@ export default class ColorGradient {
     return rgb.test(color);
   }
 
-// 判断 是否是hex
+  // 判断 是否是hex
   isHex(color) {
     let hex = /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i;
     return hex.test(color);
@@ -117,7 +121,6 @@ export default class ColorGradient {
    * @return {[number,number,number]} 颜色集合 [r,g,b]
    */
   toRGBArray(color) {
-
     if (this.isRGB(color)) {
       return this.getRGBNumber(color);
     }
@@ -186,3 +189,6 @@ export default class ColorGradient {
 
 // color = c.toHex.apply(c, color)
 // console.log('color: ', color);
+
+// const colorArr = c.getLogValColor(item[2], 10 ** 5);
+// const color = c.toHex(...colorArr);
