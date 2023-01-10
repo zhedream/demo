@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模板</title>
+  </head>
+
+  <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!--  引入 lodash -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <script src="./data.js"></script>
+  <script src="./util.js"></script>
+  <script src="../DataUtil.js"></script>
+  <script src="./addImageLayer.js"></script>
+
+  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
+
+  <link
+    href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+    rel="stylesheet"
+  />
+  <script src="https://js.arcgis.com/4.24/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    /*#viewDiv {*/
+    /*  width: 720px;*/
+    /*  height: 360px;*/
+    /*}*/
+  </style>
+  <body>
+    <!-- Start -->
+
+    <!-- 地图 -->
+    <div id="viewDiv"></div>
+
+    <script>
+      var map, view;
+      init();
+
+      function init() {
+        loadModules([
+          "esri/Map",
+          "esri/views/MapView",
+          "esri/layers/WebTileLayer",
+          "esri/rest/query",
+        ]).then(async ([Map, MapView, WebTileLayer, query]) => {
+
+          map = new Map({
+            // basemap: "satellite",
+          });
+          view = new MapView({
+            container: "viewDiv",
+            map: map,
+            // center: [106.89374561958043, 37.73011692624135],
+            center: [106.89374561958043, 37.73011692624135],
+            zoom: 4,
+            constraints: {
+              // rotationEnabled: false,
+              // minZoom: 12,
+              // maxZoom: 3,
+            },
+          });
+
+          let tileLayer = new WebTileLayer({
+            id: "tileLayer",
+            title: "tileLayer",
+            subDomains: ["webrd01"],
+            urlTemplate:
+              "http://{subDomain}.is.autonavi.com/appmaptile?x={col}&y={row}&z={level}&lang=zh_cn&size=1&scale=1&style=8",
+          });
+          map.add(tileLayer);
+          map.reorder(tileLayer, 0);
+
+          // 空间查询
+          let queryUrl = "https://sampleserver6.arcgisonline.com/arcgis/rest/services/SampleWorldCities/MapServer/0";
+          query.executeQueryJSON(queryUrl, {  // autocasts as new Query()
+            where: "POP > 1000000"
+          }).then(function(results){
+            // results is a FeatureSet containing an array of graphic features
+            console.log(results.graphics);
+          }, function(error){
+            console.log(error); // will print error in console, if any
+          });
+
+        });
+      }
+
+      async function layerAdd(layer, graphicPromice) {
+        layer.add(await graphicPromice);
+      }
+
+      function loadModules(params) {
+        return new Promise((res) => {
+          require(params, function() {
+            res(arguments);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

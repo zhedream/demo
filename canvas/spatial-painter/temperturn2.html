@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>温度2</title>
+  </head>
+
+  <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!--  引入 lodash -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <script src="./data.js"></script>
+  <script src="./util.js"></script>
+  <script src="../DataUtil.js"></script>
+  <script src="./addImageLayer.js"></script>
+
+  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
+
+  <link
+    href="https://js.arcgis.com/4.25/esri/themes/light/main.css"
+    rel="stylesheet"
+  />
+  <script src="https://js.arcgis.com/4.25/"></script>
+
+  <style>
+    html,
+    body,
+    #map-view {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      position: relative;
+    }
+
+    #map-view {
+      width: 720px;
+      height: 360px;
+    }
+
+
+  </style>
+  <body>
+    <!-- Start -->
+
+    <!-- 地图 -->
+    <div id="map-view"></div>
+
+    <script>
+      var map, view;
+      main();
+
+
+      function handleTemperatureData(json, js_bbox) {
+        let {header, data} = json;
+
+        let {nx, ny} = header;
+
+        let grid = [];
+        let points = [];
+
+        let p = 0;
+        let min = 1000;
+        let max = -1000;
+        for (let i = 0, lat = 90; i < ny; i++, lat--) {
+          let row = [];
+
+          if (js_bbox && (lat < js_bbox[1] || lat > js_bbox[3])) {
+            p += nx; // 下一行
+            continue;
+          }
+
+          for (let j = 0; j < nx; j++) {
+            let lng;
+            if (j >= 0 && j <= 180) {
+              lng = j;
+            } else {
+              lng = j - 360;
+            }
+
+            if (js_bbox && (lng < js_bbox[0] || lng > js_bbox[2])) {
+              p++; // 下一个
+              continue;
+            }
+
+            let value = data[p++];
+            row.push(value);
+            points.push({
+              lng,
+              lat,
+              value,
+            });
+
+            if (value < min) min = value;
+            if (value > max) max = value;
+
+          }
+          grid.push(row);
+        }
+        return {grid, points, min, max};
+      }
+
+      async function main() {
+        let [Map, MapView, WebTileLayer] = await loadModules([
+          "esri/Map",
+          "esri/views/MapView",
+          "esri/layers/WebTileLayer",
+        ]);
+
+        // 初始化地图
+        initMap(Map, MapView, WebTileLayer);
+
+        let bbox = await getBboxByCode("320000"); // 320000 江苏  100000 中国 440000 广东
+        let polygons = await getBoundPathsByCode("320000", 1);
+
+        let temperatureData = await fetchJson("./temperatureData.json");
+
+        let {grid, points, min, max} = handleTemperatureData(temperatureData, bbox);
+
+        console.log(grid);
+        console.log(points);
+        console.log(min, max);
+
+        // 创建画布和投影
+        let size = [500, 500];
+        let canvas = createCanvas(size[0], size[1]);
+        let projection = getProjectionFitSizeBbox(size, bbox);
+        window.projection = projection;
+
+
+        // 调色板
+        let colors = [
+          "#00ff00",
+          "#c0ff3e",
+          "#ffff00",
+          "#ff8000",
+          "#ff0000",
+          "#9933fa",
+          "#551a8b",
+        ];
+        const palette = usePalette(colors, min, max);
+
+        // ============= 展示 原矩阵
+        // showMatrixCanvas(grid, palette.getData);
+        // showMatrixTable(grid, palette.getColor);
+
+        // ============== 缩放插值
+        // let interpolate = DataUtil.scaleData(1000, 500, grid);
+        // console.log("缩放插值后的数据", interpolate);
+        // showMatrixCanvas(interpolate, palette.getData);
+        // showMatrixTable(interpolate, palette.getColor);
+
+        // =============== SpatialPainter 插值
+
+        let spatialPainter = new SpatialPainter();
+
+        spatialPainter.paintSpatial(
+          canvas,
+          Object.assign({
+            datas: points,
+            min,
+            max,
+            palette,
+            paramName: "PM10",
+          }),
+          projection,
+          polygons
+        );
+
+        document.body.appendChild(canvas);
+
+        await addImageLayer(
+          view,
+          map,
+          "canvasLayer2",
+          projection.invert([0, size[1]]),
+          projection.invert([size[0], 0]),
+          canvas,
+          {opacity: 1}
+        );
+
+        // ================= 手动插值
+        // let matrixData = createMatrix(size[0], size[1]);
+        // // 点位投影
+        // let pixPoints = pointsProjection(points, projection);
+        // console.log("pixPoints", pixPoints);
+        // matrixData = fillMatrix(matrixData, pixPoints);
+        // console.log("填充后的矩阵", matrixData);
+        // let next = insertMatrix(matrixData, pixPoints);
+        // console.log("手动放插值后的数据", next);
+        // showMatrixCanvas(next, palette.getData);
+
+
+      }
+
+
+      function initMap(Map, MapView, WebTileLayer) {
+        map = new Map({
+          // basemap: "satellite",
+        });
+        view = new MapView({
+          container: "map-view",
+          map: map,
+          // center: [106.89374561958043, 37.73011692624135],
+          center: [106.89374561958043, 37.73011692624135],
+          zoom: 4,
+          constraints: {
+            // rotationEnabled: false,
+            // minZoom: 12,
+            // maxZoom: 3,
+          },
+        });
+
+        let tileLayer = new WebTileLayer({
+          id: "tileLayer",
+          title: "tileLayer",
+          subDomains: ["webrd01"],
+          urlTemplate:
+            "http://{subDomain}.is.autonavi.com/appmaptile?x={col}&y={row}&z={level}&lang=zh_cn&size=1&scale=1&style=8",
+        });
+        map.add(tileLayer);
+        map.reorder(tileLayer, 0);
+      }
+
+
+      async function layerAdd(layer, graphicPromice) {
+        layer.add(await graphicPromice);
+      }
+
+      function loadModules(params) {
+        return new Promise((res) => {
+          require(params, function() {
+            res(arguments);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

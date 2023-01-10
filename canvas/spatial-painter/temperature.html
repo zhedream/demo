@@ -179,7 +179,10 @@
             logToScreen(point1);
             logToScreen(point2);
 
-            // let canvas = showMatrixCanvas(grid, palette.getData);
+            // 插值
+            let interpolate = DataUtil.scaleData(1000, 500, grid);
+            let canvas = showMatrixCanvas(interpolate, palette.getData);
+            document.body.appendChild(canvas);
             // await addImageLayer(view, map, "canvasLayer", point1, point2, canvas, {
             //   opacity: 0.3,
             // });

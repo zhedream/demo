@@ -39,7 +39,6 @@ function SpatialPainter() {
       if (data.min && data.max) {
         this.minMax = [data.min, data.max];
       }
-      debugger
       let _spatialData = this._setSpatialData(data, projection);
       // console.log("_spatialData: ", _spatialData);
       let context = canvas.getContext("2d");
@@ -62,13 +61,12 @@ function SpatialPainter() {
           matrixData[i][j] = "";
         }
       }
-      debugger
       // 根据数据点, 初始化矩阵
       for (let _i = 0; _i < dlen; _i++) {
         let point = d[_i];
         // if (x1 <= point.x && point.x <= x2 && y1 <= point.y && point.y <= y2) {
-          //仅在需要画图的区域初始化监测点数据
-          matrixData[point.y][point.x] = point.value;
+        //仅在需要画图的区域初始化监测点数据
+        matrixData[point.y][point.x] = point.value;
         // }
       }
       // console.log("matrixData: ", matrixData);
@@ -133,27 +131,27 @@ function SpatialPainter() {
             if (value === "") {
               continue;
             }
-            let radio = this._getRadioByValue(this.paramName,value);
+            let radio = this._getRadioByValue(this.paramName, value);
             //radio=0.8
-            imageData[4 * (_i3 * width + _j2)] =
-              this.palette[Math.floor(radio * 255 + 1) * 4 - 4];
-            imageData[4 * (_i3 * width + _j2) + 1] =
-              this.palette[Math.floor(radio * 255 + 1) * 4 - 3];
-            imageData[4 * (_i3 * width + _j2) + 2] =
-              this.palette[Math.floor(radio * 255 + 1) * 4 - 2];
-            imageData[4 * (_i3 * width + _j2) + 3] = Math.floor(255 * alpha);
+            // imageData[4 * (_i3 * width + _j2)] =
+            //   this.palette[Math.floor(radio * 255 + 1) * 4 - 4];
+            // imageData[4 * (_i3 * width + _j2) + 1] =
+            //   this.palette[Math.floor(radio * 255 + 1) * 4 - 3];
+            // imageData[4 * (_i3 * width + _j2) + 2] =
+            //   this.palette[Math.floor(radio * 255 + 1) * 4 - 2];
+            // imageData[4 * (_i3 * width + _j2) + 3] = Math.floor(255 * alpha);
 
-            // const [r, g, b, a] = palette.getData(value);
-            // const index = (_i3 * width + _j2) * 4;
-            // imageData[index] = r;
-            // imageData[index + 1] = g;
-            // imageData[index + 2] = b;
-            // imageData[index + 3] = 225 * 0.6;
+            const [r, g, b, a] = data.palette.getData(value);
+            const index = (_i3 * width + _j2) * 4;
+            imageData[index] = r;
+            imageData[index + 1] = g;
+            imageData[index + 2] = b;
+            imageData[index + 3] = 225 * 0.8;
 
           }
         }
-      }catch (e) {
-        console.error(e)
+      } catch (e) {
+        console.error(e);
       }
       context.putImageData(image, 0, 0);
       return image;
@@ -604,7 +602,7 @@ function usePalette(colors, min, max, steps = 256) {
   };
 }
 
-function insertMatrix(matrix, points) {
+function insertMatrix(matrix, pixPoints) {
   for (let y = 0; y < matrix.length; y++) {
     const row = matrix[y];
     for (let x = 0; x < row.length; x++) {
@@ -614,8 +612,8 @@ function insertMatrix(matrix, points) {
       }
       let sum0 = 0;
       let sum1 = 0;
-      for (let k = 0; k < points.length; k++) {
-        const point = points[k];
+      for (let k = 0; k < pixPoints.length; k++) {
+        const point = pixPoints[k];
         let distance =
           (y - point.y) * (y - point.y) + (x - point.x) * (x - point.x);
 
@@ -631,6 +629,16 @@ function insertMatrix(matrix, points) {
     }
   }
   return matrix;
+}
+
+function pointsProjection(points, projection) {
+  return points.map((p) => {
+    let [x, y] = projection([p.lng, p.lat]);
+    return Object.assign(p, {
+      x: parseInt(x),
+      y: parseInt(y),
+    });
+  });
 }
 
 // 矩阵可视化
@@ -700,9 +708,9 @@ function createMatrix(width, height) {
   return matrix;
 }
 
-function fillMatrix(matrix, points) {
-  for (let i = 0; i < points.length; i++) {
-    const point = points[i];
+function fillMatrix(matrix, pixPoints) {
+  for (let i = 0; i < pixPoints.length; i++) {
+    const point = pixPoints[i];
     if (
       point.x > 0 &&
       point.y > 0 &&
@@ -812,3 +820,35 @@ function kelvinToCelsius(kelvin) {
 }
 
 
+/**
+ *
+ * @param view
+ * @param eventName
+ * @param layers layer Or layers
+ * @param callback
+ * @param outCallback
+ * @returns {*}
+ */
+function viewOn(view, eventName, layers, callback, outCallback) {
+
+  if (!(layers instanceof Array)) {
+    layers = [layers];
+  }
+
+  return view.on(eventName, (e) => {
+    view.hitTest(e).then(function(response) {
+      let results = response.results;
+      let graphics = results.filter(function(result) {
+        // check if the graphic belongs to the layer of interest
+        return layers.some(layer => layer === result.graphic.layer);
+      });
+      if (graphics.length > 0) {
+        callback && callback(graphics, e);
+      } else {
+        outCallback && outCallback();
+      }
+    });
+
+  });
+
+}

@@ -145,5 +145,6 @@ function addImageLayer(view, map, imageLayerID, sw, ne, canvas, option = {}) {
     // });
 
     map1.add(ImageOverlayLayer);
+    return ImageOverlayLayer;
   });
 }
