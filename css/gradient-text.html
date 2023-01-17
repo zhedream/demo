@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo</title>
+  </head>
+
+  <body>
+    <p class="gradient-text2" style="width: max-content">dddddd 哈哈哈哈哈哈</p>
+  </body>
+  <script></script>
+
+  <style>
+    .gradient-text {
+      color: transparent;
+      background: -webkit-linear-gradient(
+        30deg,
+        #32c5ff 25%,
+        #b620e0 50%,
+        #f7b500 75%,
+        #20e050 100%
+      );
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: auto;
+    }
+
+    @keyframes gradientText {
+      0% {
+        background-position: 0;
+      }
+      100% {
+        background-position: 9999px;
+      }
+    }
+    .gradient-text {
+      animation: gradientText 300s linear infinite alternate;
+    }
+  </style>
+
+  <style>
+    .gradient-text2 {
+      color: transparent;
+      background: linear-gradient(30deg, red, green, blue);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: identifier 300s infinite linear;
+    }
+    @keyframes identifier {
+      0% {
+        background-position: 0;
+      }
+      100% {
+        background-position: 9999px;
+      }
+    }
+  </style>
+</html>

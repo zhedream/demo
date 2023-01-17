@@ -4,7 +4,7 @@
  * @param {*} pageSize 条数
  * @param {*} array 数组
  */
-export const paginationFromArray = (pageNo, pageSize, array) => {
+const paginationFromArray = (pageNo, pageSize, array) => {
   if (!array) return array;
   const offset = (pageNo - 1) * pageSize;
   return offset + pageSize >= array.length
@@ -22,7 +22,7 @@ arr = arr.reduce(function (item, next) {
 }, []);
 
 // 保留三字 + ..
-export const textDot = (value) => {
+const textDot = (value) => {
   // 显示字数 三个字
   if (value.length > 3) return value.slice(0, 3) + "..";
   else return value;
@@ -32,7 +32,7 @@ export const textDot = (value) => {
  * @param {string} str
  * @return {number}
  */
-export const mbLen = (str) => {
+const mbLen = (str) => {
   var len = 0;
   for (var i = 0; i < str.length; i++) {
     var a = str.charAt(i);
@@ -49,7 +49,7 @@ export const mbLen = (str) => {
  * 去掉首尾两端的空格
  * @param {*} str
  */
-export function trim(str) {
+function trim(str) {
   return str.replace(/(^\s*)|(\s*$)/g, "");
 }
 
@@ -59,7 +59,7 @@ export function trim(str) {
  * @param {*} columnCount 一行几个
  * @return {number} 1 <= curColumn <= columnCount
  */
-export function whichColumn(count, columnCount) {
+function whichColumn(count, columnCount) {
   const remainder = (count - 1) % columnCount; // 下标的余数
   const restCount = columnCount - remainder - 1; // 剩余的个数
   return columnCount - restCount; // 第几个
@@ -71,7 +71,7 @@ export function whichColumn(count, columnCount) {
  * @return {string} String Array Object Boolean 等
  */
 const _toString = Object.prototype.toString;
-export const toRowTYpe = function toRowType(value) {
+const toRowType = function toRowType(value) {
   _toString.call(value).slice(8, -1);
 };
 
@@ -80,7 +80,7 @@ export const toRowTYpe = function toRowType(value) {
  * @param {string} content
  * @returns {Boolean}
  */
-export function copy(content) {
+function copy(content) {
   // input 不能换行
   // textarea 支持 \n 换行复制
   // 复制 dom.innerText
@@ -198,20 +198,20 @@ function getExt(name) {
 }
 
 /**
- * @param {string} base64
+ * @param {string} src
  */
-function getBase64Img(base64) {
+function getImage(src) {
   let image = new Image();
   return new Promise((res) => {
-    image.src = base64;
     image.onload = function () {
       image.onload = null;
       return res(image);
     };
+    image.src = src;
   });
 }
 
-export function domResize(selector, callback, timeout = 100) {
+function domResize(selector, callback, timeout = 100) {
   const that = callback;
   let container;
   if (selector instanceof HTMLElement) container = selector;
@@ -265,8 +265,6 @@ export function domResize(selector, callback, timeout = 100) {
   }
 }
 
-
-
 function get_centerNumber_index(total, count, index) {
   let centerNumber = total / count;
   return centerNumber * (index + 1) - centerNumber / 2;
@@ -316,7 +314,7 @@ function get_key_count_array(data, key) {
  * @param value
  * @returns {boolean}
  */
-export function notEmpty(value) {
+function notEmpty(value) {
   switch (value) {
     case "":
     case null:
@@ -327,11 +325,11 @@ export function notEmpty(value) {
   }
 }
 
-export function isEmpty(value) {
+function isEmpty(value) {
   return !notEmpty(value);
 }
 
-export function groupByToArray(data, f) {
+function groupByToArray(data, f) {
   let result = [];
   let fKeyIndex = {};
   for (let i = 0; i < data.length; i++) {
@@ -348,7 +346,7 @@ export function groupByToArray(data, f) {
   return result;
 }
 
-export function groupByToArrayObject(data, f, titleKey, dataKey) {
+function groupByToArrayObject(data, f, titleKey, dataKey) {
   titleKey = titleKey === undefined ? "title" : titleKey;
   dataKey = dataKey === undefined ? "data" : dataKey;
 
@@ -369,3 +367,36 @@ export function groupByToArrayObject(data, f, titleKey, dataKey) {
   }
   return result;
 }
+
+/**
+ * 函数劫持 后置钩子
+ * @param fn 被劫持的函数
+ * @param hook 劫持函数
+ * @param hookReturn 是否劫持返回值
+ * @returns {function(): *}
+ */
+function hookFunction(fn, hook, hookReturn = false) {
+  return function () {
+    const args = Array.prototype.slice.call(arguments);
+    const result = fn.apply(this, args);
+    const hookResult = hook(result, args);
+    return hookReturn ? hookResult : result;
+  };
+}
+
+/**
+ * 安全获取数据
+ * @param {*} data
+ * @param {*} keys
+ */
+const safeGetData = (data, keys) =>
+  keys.reduce(
+    (item, key) => (item && item[key] != undefined ? item[key] : undefined),
+    data
+  );
+
+/**
+ * JSON 深拷贝
+ * @param {*} data
+ */
+const cloneJson = (data) => JSON.parse(JSON.stringify(data));

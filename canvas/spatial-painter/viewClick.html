@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>模板</title>
+    <title>viewClick</title>
   </head>
 
   <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
@@ -22,10 +22,10 @@
   <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
 
   <link
-    href="https://js.arcgis.com/4.24/esri/themes/light/main.css"
+    href="https://js.arcgis.com/4.13/esri/themes/light/main.css"
     rel="stylesheet"
   />
-  <script src="https://js.arcgis.com/4.24/"></script>
+  <script src="https://js.arcgis.com/4.13/"></script>
 
   <style>
     html,
@@ -59,9 +59,8 @@
   <body>
     <!-- Start -->
 
-     <!-- 地图 -->
-     <div id="map-container">
-
+    <!-- 地图 -->
+    <div id="map-container">
       <div id="map-view"></div>
 
       <div id="report-container">
@@ -80,6 +79,10 @@
           "esri/layers/WebTileLayer",
         ]).then(async ([Map, MapView, WebTileLayer]) => {
           initMap(Map, MapView, WebTileLayer);
+
+          view.on("click", function (event) {
+            console.log('event: ', event);
+          });
         });
       }
 

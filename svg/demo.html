@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>svg demo - d3</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      position: relative;
+    }
+  </style>
+  <body>
+    <p></p>
+    <p></p>
+    <p></p>
+
+    <div>
+      <p></p>
+      <div>
+        <p id="pp"></p>
+      </div>
+      <p></p>
+    </div>
+
+    <script>
+      // D3.js 入门教程
+      // https://doc.yonyoucloud.com/doc/wiki/project/d3wiki/chart.html
+      var svg = d3.select("body").append("svg");
+      // .attr("width", 500)
+      // .attr("height", 500)
+
+      var pArr = d3.selectAll("p");
+      pArr.datum([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).text(function (d, index) {
+        return d + " index:" + index;
+      });
+
+      let div = d3.select("div");
+      let p = div.insert("p", "p:nth-child(1)").text("insert p");
+
+      svg
+        .append("text")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("fill", "red")
+        .attr("font-size", 20)
+        .text("hello world gG  西山YyGgW");
+
+      svg
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
+        .attr("width", 50)
+        .attr("height", 50)
+        .attr("fill", "red");
+
+      var rectHeight = 25; //每个矩形所占的像素高度(包括空白)
+
+      var dataset = [250, 210, 170, 130, 90]; //数据（表示矩形的宽度）
+
+      var svg2 = d3.select("body").append("svg");
+
+      svg2
+        .selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", 20)
+        .attr("y", function (d, i) {
+          return i * rectHeight;
+        })
+        .attr("width", function (d) {
+          return d;
+        })
+        .attr("height", rectHeight - 2)
+        .attr("fill", "steelblue");
+
+      // 坐标轴
+      {
+        var svg3 = d3.select("body").append("svg");
+        //数据
+        var dataset = [2.5, 2.1, 1.7, 1.3, 0.9];
+        //定义比例尺
+        var linear = d3
+          .scaleLinear()
+          .domain([0, d3.max(dataset)])
+          .range([0, 250]);
+
+        var axis = d3
+          .axisBottom()
+          .scale(linear) //指定比例尺
+          .ticks(7);
+
+        // svg3.append("g").call(axis);
+
+        svg
+          .append("g")
+          .attr("class", "axis")
+          .attr("transform", "translate(20,130)")
+          .call(axis);
+      }
+    </script>
+
+    <style>
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+      }
+
+      .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
+      }
+    </style>
+  </body>
+</html>
