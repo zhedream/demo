@@ -17,6 +17,102 @@
 </style>
 
 <script>
+  // 已知圆心，半径，弧度，求圆上的点坐标, x 正半轴, 逆时针
+  function getCircleXY(x, y, radius, angle) {
+    // 处理角度
+    angle = loopNumber(angle, 360); // 处理大角度 >360° 或 < -360°
+    if (angle < 0) angle = loopNumber(angle + 360, 360); // 处理成正角度
+    const angleSin = mathSin(angle);
+    const angleCos = mathCos(angle);
+    return [angleCos * radius + x, angleSin * radius + y];
+  }
+
+  function mathSin(angle) {
+    switch (angle) {
+      case 0:
+        return 0;
+      case 30:
+        return 0.5;
+      case 90:
+        return 1;
+      case 150:
+        return 0.5;
+      case 180:
+        return 0;
+      case 210:
+        return -0.5;
+      case 270:
+        return -1;
+      case 330:
+        return -0.5;
+      case 360:
+        return 0;
+    }
+    return Math.sin((angle * Math.PI) / 180);
+  }
+
+  function mathCos(angle) {
+    switch (angle) {
+      case 0:
+        return 1;
+      case 60:
+        return 0.5;
+      case 90:
+        return 0;
+      case 120:
+        return -0.5;
+      case 180:
+        return -1;
+      case 240:
+        return -0.5;
+      case 270:
+        return 0;
+      case 300:
+        return 0.5;
+      case 360:
+        return 1;
+    }
+    return Math.cos((angle * Math.PI) / 180);
+  }
+
+  // 判断角度所在象限, x 正半轴, 顺时针
+  function getAngleQuadrant(angle) {
+    switch (true) {
+      case angle > 0 && angle < 90:
+        return 4;
+      case angle > 90 && angle < 180:
+        return 3;
+      case angle > 180 && angle < 270:
+        return 2;
+      case angle > 270 && angle < 360:
+        return 1;
+      default:
+        return 0;
+    }
+  }
+  // 数循环
+  function loopNumber(num, fullNum) {
+    // 0:0   1:1  360:360  361:1 -361:-1
+    // 取符号
+    const sign = num < 0 ? -1 : 1;
+    num = Math.abs(num);
+    const rest = num % fullNum; // 余数
+    const multiple = parseInt(num / fullNum); // 倍数
+    if (rest == 0) {
+      const isfullNum = multiple % 2 != 0;
+      if (isfullNum) return fullNum * sign;
+      return 0;
+    }
+    return rest * sign;
+  }
+  // 角度转弧度
+  function toRadian(angle) {
+    // while (angle < 0) angle += 360;
+    return (loopNumber(angle, 360) * Math.PI) / 180;
+  }
+</script>
+
+<script>
   function getCircle(color = "green", size1 = 20) {
     const canvas = createCanvas(size1, size1);
 
@@ -42,13 +138,33 @@
     grad.addColorStop(0.8, color);
     grad.addColorStop(1, color);
 
-    // 半圆
+    //  1/4 圆弧 (0-90°)  , 默认arc画法: 以 x 正半轴,顺时针旋转
     ctx.beginPath();
-    ctx.arc(width / 2, height / 2, height / 2, 0, 180, false);
-    ctx.closePath();
-
+    ctx.arc(
+      width / 2,
+      height / 2,
+      height / 2,
+      toRadian(0),
+      toRadian(90),
+      false
+    );
+    // ctx.closePath();
     ctx.fillStyle = grad;
-    ctx.fill();
+    ctx.stroke();
+
+    // 1/4 圆弧 (0-90°), 做个转换, 以数学上的画法: x 正半轴, 逆时针旋转
+    ctx.beginPath();
+    ctx.arc(
+      width / 2,
+      height / 2,
+      height / 2,
+      toRadian(360 - 0),
+      toRadian(360 - 90),
+      true
+    );
+    // ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.stroke();
 
     return canvas;
   }
@@ -67,7 +183,14 @@
 
     // 半圆
     ctx.beginPath();
-    ctx.arc(width / 2, height / 2, height / 2, 0, 180, false);
+    ctx.arc(
+      width / 2,
+      height / 2,
+      height / 2,
+      toRadian(0),
+      toRadian(360),
+      false
+    );
     ctx.closePath();
 
     ctx.fillStyle = color;
@@ -95,7 +218,7 @@
     return canvas;
   }
 
-  const canvas = getCircle("green", 20);
+  const canvas = getCircle("green", 50);
   const canvas1 = getCircleText("国", "green", 25);
   document.body.appendChild(canvas);
   document.body.appendChild(canvas1);
