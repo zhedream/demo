@@ -113,6 +113,12 @@
 </script>
 
 <script>
+  function drawRect(ctx, x, y, size = 3) {
+    ctx.fillStyle = "red";
+    ctx.fillRect(x, y, size, size);
+    // ctx.clearRect(45, 45, 60, 60);
+    // ctx.strokeRect(50, 50, 50, 50);
+  }
   function getCircle(color = "green", size1 = 20) {
     const canvas = createCanvas(size1, size1);
 
@@ -138,33 +144,40 @@
     grad.addColorStop(0.8, color);
     grad.addColorStop(1, color);
 
-    //  1/4 圆弧 (0-90°)  , 默认arc画法: 以 x 正半轴,顺时针旋转
+    // 1/4 圆弧 (0-90°)  , 默认arc画法: 以 x 正半轴,顺时针旋转
+    // 数学坐标轴,  y轴向上, canvas y轴向下, 所以圆的画法 以x轴, 成水平对称
     ctx.beginPath();
     ctx.arc(
       width / 2,
       height / 2,
       height / 2,
       toRadian(0),
-      toRadian(90),
+      toRadian(360),
       false
     );
     // ctx.closePath();
     ctx.fillStyle = grad;
-    ctx.stroke();
+    // ctx.stroke();
+    ctx.fill();
+
+    let xy = getCircleXY(...center, width / 2, 0);
+    console.log("xy: ", xy);
+
+    drawRect(ctx, ...xy, 10);
 
     // 1/4 圆弧 (0-90°), 做个转换, 以数学上的画法: x 正半轴, 逆时针旋转
-    ctx.beginPath();
-    ctx.arc(
-      width / 2,
-      height / 2,
-      height / 2,
-      toRadian(360 - 0),
-      toRadian(360 - 90),
-      true
-    );
-    // ctx.closePath();
-    ctx.fillStyle = grad;
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.arc(
+    //   width / 2,
+    //   height / 2,
+    //   height / 2,
+    //   toRadian(360 - 0),
+    //   toRadian(360 - 90),
+    //   true
+    // );
+    // // ctx.closePath();
+    // ctx.fillStyle = grad;
+    // ctx.stroke();
 
     return canvas;
   }

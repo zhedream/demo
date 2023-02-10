@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>1</title>
+    <title>选择坐标</title>
   </head>
 
   <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
@@ -16,7 +16,7 @@
 
   <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
 
-  <script src="./js/gis-tool.js"></script>
+  <script src="./js/arcgis-tool.js"></script>
   <script src="./js/canvas-tool.js"></script>
 
   <link
@@ -118,14 +118,11 @@
           });
           map.add(graphicsLayer);
 
-
-
-          graphicsLayer.clickObj = viewLayersOn(
-            map,
+          graphicsLayer.clickObj = viewOnHitTest(
+            view,
             "click",
             graphicsLayer,
             (e) => {
-
               console.log("e222: ", e);
             }
           );
@@ -133,9 +130,9 @@
 
         // graphicsLayer.removeAll();
 
-        const canvas = getPointCanvas("好");
+        const canvas = getPointCanvas("点");
 
-        let graphicJson = await getCanvasGraphicPoint(canvas, center, {
+        let graphicJson = await getCanvasPointGraphic(canvas, center, {
           scale: 0.2,
           option: {
             xoffset: 0,
@@ -145,8 +142,6 @@
 
         document.body.style.cursor = "auto";
         console.timeEnd("add");
-
-
 
         graphicsLayer.add(graphicJson);
       }

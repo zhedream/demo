@@ -26,6 +26,7 @@
         },
       };
     </script>
+    <script src="../js/arcgis-tool.js"></script>
     <script src="https://js.arcgis.com/4.13/"></script>
   </head>
   <body>
@@ -127,7 +128,7 @@
       });
 
       view = new MapView({
-        center: [119.74477699948523, 41.12294917376106],
+        center: [116.338067, 39.912341],
         container: "viewDiv",
         map: map,
         zoom: 13,
@@ -144,14 +145,17 @@
       map.add(BlueTile);
 
       const data = await fetchJson("./data.json");
+      const paths_data1 = await fetchJson("./data1.json");
 
-      function handleData(points) {
+      const graphics2 = await fetchJson("./data2.json");
+
+      function handleData(pathData) {
         let graphics = [];
         let paths = [];
-        for (let i = 1; i < points.length; i++) {
+        for (let i = 1; i < pathData.length; i++) {
           let path = [];
-          const center = points[i];
-          const preCenter = points[i - 1];
+          const center = pathData[i];
+          const preCenter = pathData[i - 1];
           path.push(preCenter);
           path.push(center);
           paths.push(path);
@@ -167,16 +171,18 @@
           //   },
           // });
         }
-
+        console.log('path: ', paths);
         graphics.push({
           geometry: {
             type: "polyline",
-            // paths: [points],
-            paths: points,
-            paths: [
-              [114.922485, 27.8239822],
-              [114.922485, 27.8139252],
-            ],
+            // paths: paths,
+            
+            // paths: path,
+            paths: paths_data1,
+            // paths: [
+            //   [116.406532 48481044, 39.899845896188125],
+            //   [116.20653248481044, 39.890835896188125],
+            // ],
             // paths,
           },
           attributes: {
@@ -188,16 +194,19 @@
         return graphics;
       }
 
-      let graphics = handleData(data);
-      console.log("graphics: ", graphics);
+      // let graphics = handleData(data);
+      // console.log("graphics: ", graphics);
+
+      let graphics = graphics2;
+      console.log('graphics: ', graphics2);
 
       //字段定义
       let fields = [
-        // {
-        //   name: "ObjectID",
-        //   alias: "ObjectID",
-        //   type: "oid",
-        // },
+        {
+          name: "ObjectID",
+          alias: "ObjectID",
+          type: "oid",
+        },
       ];
       let item = graphics[0];
 
@@ -251,6 +260,7 @@
             type: "oid",
           },
         ], // 渲染字段
+        fields: fields,
         outFields: ["*"], // 显示所有其他字段2
         // objectIdField: "ObjectID",
         title: "FeatureLayer",
@@ -265,7 +275,7 @@
           symbol: {
             type: "simple-line",
             color: "lightblue",
-            width: "10px",
+            width: "5px",
           },
         },
         // popupTemplate: template,
@@ -291,33 +301,7 @@
       }
 
       // 自动缩放至
-      fLayer.when(function () {
-        console.log("fLayer: ", fLayer);
-        fLayer.queryExtent().then(function (results) {
-          // go to the extent of the results satisfying the query
-
-          console.log("results.extent: ", results.extent);
-
-          let { xmax, xmin, ymax, ymin } = results.extent;
-          let xDiff = xmax - xmin;
-          let yDiff = ymax - ymin;
-
-          let min = Math.min(xDiff, yDiff);
-
-          // view.goTo(results.extent);
-          view.goTo(results.extent.expand(1.5));
-
-          console.log("min: ", min);
-          if (min < 0.0001) {
-            console.log("min1: ", min);
-
-            view.goTo({
-              center: results.extent.center,
-              zoom: 18,
-            });
-          }
-        });
-      });
+      viewGotoLayerExtent(view, fLayer);
     </script>
   </body>
 </html>

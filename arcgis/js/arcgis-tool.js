@@ -39,11 +39,34 @@ function loadModules(params) {
   });
 }
 
+/**
+ * 函数劫持 后置钩子
+ * @param fn 被劫持的函数
+ * @param hook 劫持函数
+ * @param hookReturn 是否劫持返回值
+ * @returns {function(): *}
+ */
+function hookFunction(fn, hook, hookReturn = false) {
+  return function () {
+    const args = Array.prototype.slice.call(arguments);
+    const result = fn.apply(this, args);
+    const hookResult = hook(result, args);
+    return hookReturn ? hookResult : result;
+  };
+}
+
 async function layerAdd(layer, graphicPromise) {
   layer.add(await graphicPromise);
 }
 
-async function getCanvasGraphicPoint(canvas, center, symbolData = {}) {
+/**
+ * 获取 图片 点位 Graphic
+ * @param canvas canvas 图片
+ * @param center 经纬度
+ * @param symbolData 符号渲染配置
+ * @returns {{symbol: *, popupTemplate: *, geometry: *, attributes: *}}
+ */
+function getCanvasPointGraphic(canvas, center, symbolData = {}) {
   // let [Graphic] = await loadModules(["esri/Graphic"]);
   const point = {
     //Create a point
@@ -69,10 +92,7 @@ async function getCanvasGraphicPoint(canvas, center, symbolData = {}) {
   return {
     geometry: point,
     symbol: pictureMarkerSymbol,
-    attributes: {
-      name: "point",
-      age: 12,
-    },
+    attributes: {},
     popupTemplate: {
       title: "自定义内容: 异步 Dom {point}",
       content: async function (e) {
@@ -92,7 +112,6 @@ async function getCanvasGraphicPoint(canvas, center, symbolData = {}) {
     },
   };
 }
-
 function sleep(time = 100) {
   return new Promise((res) => {
     setTimeout(() => {
@@ -101,20 +120,23 @@ function sleep(time = 100) {
   });
 }
 
-function viewLayersOn(view, eventName, layers, callback, outCallback) {
+/**
+ * 监听事件并匹配结果
+ * @param view
+ * @param eventName
+ * @param layers
+ * @param callback
+ * @param outCallback
+ * @returns {*} 移除监听事件的函数对象 object.remove()
+ */
+function viewOnHitTest(view, eventName, layers, callback, outCallback) {
   if (!(layers instanceof Array)) {
     layers = [layers];
   }
   return view.on(eventName, (e) => {
-    view.hitTest(e).then(function (response) {
-      let results = response.results;
-      let graphics = results.filter(function (result) {
-        console.log("result: ", result);
-        // check if the graphic belongs to the layer of interest
-        return layers.some((layer) => layer === result.graphic.layer);
-      });
-      if (graphics.length > 0) {
-        callback && callback(graphics, e);
+    viewLayersHitTest(view, e, layers).then((results) => {
+      if (results.length > 0) {
+        callback && callback(results, e);
       } else {
         outCallback && outCallback();
       }
@@ -122,26 +144,11 @@ function viewLayersOn(view, eventName, layers, callback, outCallback) {
   });
 }
 
-function viewLayersOnOnce(view, eventName, layers, callback, outCallback) {
-  if (!(layers instanceof Array)) {
-    layers = [layers];
-  }
-  let o = view.on(eventName, (e) => {
-    view.hitTest(e).then(function (response) {
-      let results = response.results;
-      let graphics = results.filter(function (result) {
-        console.log("result: ", result);
-        // check if the graphic belongs to the layer of interest
-        return layers.some((layer) => layer === result.graphic.layer);
-      });
-      if (graphics.length > 0) {
-        callback && callback(graphics, e);
-      } else {
-        outCallback && outCallback();
-      }
-    });
-    o.remove();
-  });
+function viewOnHitTestOnce(view, eventName, layers, callback, outCallback) {
+  if (callback) callback = hookFunction(callback, () => o && o.remove());
+  if (outCallback)
+    outCallback = hookFunction(outCallback, () => o && o.remove());
+  let o = viewOnHitTest(view, eventName, layers, callback, outCallback);
 }
 
 function viewLayersHitTest(view, e, layers = []) {
@@ -175,3 +182,47 @@ function getViewLayersByType(view, layerType) {
 }
 
 // view.map.layers.items.map(v=>v.type)
+
+/**
+ * 自动缩放至图层范围
+ * @param view
+ * @param layer
+ */
+function viewGotoLayerExtent(view, layer) {
+  // 自动缩放至
+  layer.when(function () {
+    console.log("layer: ", layer);
+    layer.queryExtent().then(function (results) {
+      // go to the extent of the results satisfying the query
+
+      console.log("results.extent: ", results.extent);
+
+      let { xmax, xmin, ymax, ymin } = results.extent;
+      let xDiff = xmax - xmin;
+      let yDiff = ymax - ymin;
+
+      let min = Math.min(xDiff, yDiff);
+      let max = Math.max(xDiff, yDiff);
+
+      console.log("max: ", max);
+      console.log("min: ", min);
+      if (max < 0.006) {
+        console.log("max1: ");
+        view.goTo({
+          center: results.extent.center,
+          zoom: 16,
+        });
+      } else if (max > 100) {
+        console.log("max2: ");
+        view.goTo({
+          center: results.extent.center,
+          zoom: 3,
+        });
+      } else {
+        console.log("max3: ");
+        // view.goTo(results.extent);
+        view.goTo(results.extent.expand(1.5));
+      }
+    });
+  });
+}
