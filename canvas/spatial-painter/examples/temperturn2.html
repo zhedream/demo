@@ -14,18 +14,20 @@
   <!--  引入 lodash -->
   <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
 
-  <script src="./data.js"></script>
-  <script src="./util.js"></script>
-  <script src="../DataUtil.js"></script>
-  <script src="./addImageLayer.js"></script>
+  <script src="../data.js"></script>
+  <script src="../dist/util.js"></script>
 
-  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
+  <script src="../dist/addImageLayer.js"></script>
+  <script src="../dist/Painter.js"></script>
+  <script src="../dist/DataUtil.js"></script>
 
+  <!--  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>-->
+  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils@1.3.0/dist/arcgis-to-geojson.js"></script>
   <link
-    href="https://js.arcgis.com/4.25/esri/themes/light/main.css"
+    href="https://js.arcgis.com/4.13/esri/themes/light/main.css"
     rel="stylesheet"
   />
-  <script src="https://js.arcgis.com/4.25/"></script>
+  <script src="https://js.arcgis.com/4.13/"></script>
 
   <style>
     html,
@@ -135,23 +137,29 @@
         // 初始化地图
         initMap(Map, MapView, WebTileLayer);
 
-        let bbox = await getBboxByCode("320000"); // 320000 江苏  100000 中国 440000 广东
-        let polygons = await getBoundPathsByCode("320000");
-        // console.log("polygons1", polygons);
+        let bbox = await util.getBboxByCode("320000"); // 320000 江苏  100000 中国 440000 广东
+        console.log("bbox: ", bbox);
+        let polygons = await util.getBoundPathsByCode("320000");
+        console.log("polygons1", polygons);
 
 
-        let temperatureData = await fetchJson("./temperatureData.json");
+        let temperatureData = await util.fetchJson("./temperatureData.json");
+
+        console.log('Temperature')
 
         let {grid, points, min, max} = handleTemperatureData(temperatureData, bbox);
 
-        // console.log(grid);
-        // console.log(points);
-        // console.log(min, max);
+        console.log(grid);
+        console.log(points);
+        console.log(min, max);
+
+
 
         // 创建画布和投影
         let size = [360, 360];
-        let canvas = createCanvas(size[0], size[1]);
-        let projection = getProjectionFitSizeBbox(size, bbox);
+
+        let canvas = util.createCanvas(size[0], size[1]);
+        let projection = util.getProjectionFitSizeBbox(size, bbox);
         window.projection = projection;
 
 
@@ -165,7 +173,7 @@
           "#9933fa",
           "#551a8b",
         ];
-        const palette = usePalette(colors, min, max);
+        const palette = util.usePalette(colors, min, max);
 
         // ============= 展示 原矩阵
         // showMatrixCanvas(grid, palette.getData);
@@ -180,7 +188,7 @@
         // =============== SpatialPainter 插值
 
         let spatialMatrixData = [];
-        let spatialPainter = new SpatialPainter();
+        let spatialPainter = new Painter();
         window.spatialPainter = spatialPainter;
 
         spatialPainter.paintSpatial(
@@ -189,20 +197,19 @@
             datas: points,
             min,
             max,
-
             paramName: "PM10",
           }),
           projection,
           polygons,
           {
+
             palette,
             dataCallback: (data) => {
               spatialMatrixData = data;
-              console.log('spatialMatrixData',spatialMatrixData);
+              console.log("spatialMatrixData", spatialMatrixData);
             },
           }
         );
-
 
 
         document.body.appendChild(canvas);
@@ -218,27 +225,23 @@
         );
 
 
-
         // console.log("layer", layer);
-
 
 
         layer.view.on("pointer-move", (evt) => {
 
-          // console.log("evt", evt);
 
-          let mousePos = _getMousePos(evt, layer.view);
-          let point = layer.view.toMap({x: mousePos.x, y: mousePos.y});
-          if (point.spatialReference.isWebMercator) {
-            point = webMercatorUtils.webMercatorToGeographic(point);
-          }
+          let point = layer.view.toMap({x: evt.x, y: evt.y});
+
           // console.log(point);
+          console.log('{x: evt.x, y: evt.y}: ', {x: evt.x, y: evt.y});
+          console.log('[point.longitude, point.latitude]: ', [point.longitude, point.latitude]);
 
           let [x, y] = projection([point.longitude, point.latitude]);
           [x, y] = [Math.floor(x), Math.floor(y)];
-          // console.log("x, y", x, y);
+          console.log("x, y", x, y);
           let value = spatialMatrixData?.[y]?.[x];
-          let celsius = kelvinToCelsius(value);
+          let celsius = util.kelvinToCelsius(value);
           let temperatureDom = document.getElementById("temperature");
           temperatureDom.innerHTML = value ? celsius.toFixed(2) : "无数据";
         });

@@ -456,7 +456,9 @@ function SpatialPainter() {
     // console.log("convertPolygon");
     let pixPolygon = [];
     for (let i = 0; i < polygon.length; i++) {
-      pixPolygon.push(projection([polygon[i][0], polygon[i][1]]));
+      let point = polygon[i];
+      let items = projection([point[0], point[1]]);
+      pixPolygon.push(items);
     }
     return pixPolygon;
   };
@@ -532,6 +534,12 @@ function SpatialPainter() {
   };
 }
 
+/**
+ * 创建canvas
+ * @param width
+ * @param height
+ * @returns {HTMLCanvasElement}
+ */
 function createCanvas(width, height) {
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -888,14 +896,7 @@ function getRadio(value) {
   }
 }
 
-function getDistance(paths) {
-  let from = turf.point(paths[0]);
-  let to = turf.point(paths[1]);
-  let options = {units: "kilometers"};
 
-  let distance = turf.rhumbDistance(from, to, options);
-  return distance;
-}
 
 function fetchJson(url) {
   return fetch(url).then((response) => {
@@ -908,6 +909,7 @@ function fetchJson(url) {
 
 async function getBboxByCode(code = "100000") {
   let code_json = await fetchJson("https://geo.datav.aliyun.com/areas_v3/bound/" + code + ".json");
+  // let code_json = await fetchJson("http://172.16.9.148:2020/geo_datav_aliyun_com_proxy/areas_v3/bound/" + code + ".json");
   let code_bbox;
   // console.log(code_json);
   let cn_paths = code_json.features[0].geometry.coordinates.flat(2);
@@ -919,6 +921,7 @@ async function getBboxByCode(code = "100000") {
 
 async function getBoundPathsByCode(code, flatDeep = 1) {
   let code_json = await fetchJson("https://geo.datav.aliyun.com/areas_v3/bound/" + code + ".json");
+  // let code_json = await fetchJson("http://172.16.9.148:2020/geo_datav_aliyun_com_proxy/areas_v3/bound/" + code + ".json");
   let code_paths = code_json.features[0].geometry.coordinates.flat(flatDeep);
   // console.log(code + "_paths: ", code_paths);
   return code_paths;
@@ -934,6 +937,10 @@ function bboxToCollection(bbox) {
 // 开尔文转摄氏度 javascript
 function kelvinToCelsius(kelvin) {
   return kelvin - 273.15;
+}
+
+function getMax(arr) {
+  return Math.max.apply(null, arr);
 }
 
 

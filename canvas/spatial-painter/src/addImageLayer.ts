@@ -8,11 +8,13 @@ function logPix_toMap(view, x, y) {
  * @returns {Promise<any[]>}
  */
 function getCustomImageOverlayLayer() {
+
+  type Params = [any];
+
   return loadModules([
     "esri/layers/BaseDynamicLayer",
-    "esri/geometry/support/webMercatorUtils"
   ]).then(
-    ([BaseDynamicLayer, webMercatorUtils]) => {
+    ([BaseDynamicLayer]: Params) => {
       let getImageUrl = async function(extent, width, height) {
         console.log("extent: ", extent);
 
@@ -34,7 +36,7 @@ function getCustomImageOverlayLayer() {
           await new Promise((res) => {
             this.image.onload = () => {
               console.log("image loaded");
-              res();
+              return res("loaded");
             };
           });
         }
@@ -95,6 +97,7 @@ function getCustomImageOverlayLayer() {
 
         return this.canvas.toDataURL("image/png");
       };
+
       return BaseDynamicLayer.createSubclass({
         properties: {
           picUrl: null,
@@ -103,7 +106,6 @@ function getCustomImageOverlayLayer() {
           canvas: null,
           view: null,
         },
-
         // Override the getImageUrl() method to generate URL
         // to an image for a given extent, width, and height.
         getImageUrl: getImageUrl,
@@ -112,7 +114,7 @@ function getCustomImageOverlayLayer() {
   );
 }
 
-function addImageLayer(view, map, imageLayerID, sw, ne, canvas, option = {}) {
+export default function addImageLayer(view, map, imageLayerID, sw, ne, canvas, option: any = {}) {
   const {opacity = 1} = option;
   return getCustomImageOverlayLayer().then((CustomImageOverlayLayer) => {
     const view1 = view;
@@ -146,5 +148,15 @@ function addImageLayer(view, map, imageLayerID, sw, ne, canvas, option = {}) {
 
     map1.add(ImageOverlayLayer);
     return ImageOverlayLayer;
+  });
+}
+
+
+function loadModules(params) {
+  return new Promise((res) => {
+    // @ts-ignore , 浏览器引入
+    require(params, function() {
+      res(arguments);
+    });
   });
 }

@@ -14,12 +14,13 @@
   <!--  引入 lodash -->
   <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
 
-  <script src="./data.js"></script>
-  <script src="./util.js"></script>
-  <script src="../DataUtil.js"></script>
-  <script src="./addImageLayer.js"></script>
+  <script src="../data.js"></script>
+  <script src="../dist/util.js"></script>
+  <script src="../dist/DataUtil.js"></script>
+  <script src="../dist/addImageLayer.js"></script>
 
-  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
+  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils@1.3.0/dist/arcgis-to-geojson.js"></script>
+
 
   <link
     href="https://js.arcgis.com/4.13/esri/themes/light/main.css"
@@ -80,6 +81,7 @@
         ]).then(async ([Map, MapView, WebTileLayer]) => {
           initMap(Map, MapView, WebTileLayer);
 
+          // pointer-move
           view.on("click", function (event) {
             console.log('event: ', event);
           });
