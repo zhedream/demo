@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="../dist/util.js"></script>
+  </head>
+  <body>
+    <script>
+      // 准备数据
+      const arr = [];
+      for (let i = 0; i < 10; i++) {
+        arr.push(Math.floor(Math.random() * 20) + 1);
+      }
+      const n = 100; // canvas 宽度
+      const m = 1; // canvas 高度
+      const palette = [
+        [255, 0, 0, 255], // 红色
+        [0, 255, 0, 255], // 绿色
+        [0, 0, 255, 255], // 蓝色
+      ];
+
+      // 创建画布和矩阵数据
+      const canvas = document.createElement("canvas");
+      canvas.width = n;
+      canvas.height = m;
+      const ctx = canvas.getContext("2d");
+      const matrixData = ctx.createImageData(n, m);
+
+      // 将数据填入矩阵
+      for (let i = 0; i < arr.length; i++) {
+        const colorIndex = Math.floor((arr[i] - 1) / 6.6667);
+        const color = palette[colorIndex];
+        for (let j = 0; j < n; j++) {
+          const pixelIndex = (i * n + j) * 4;
+          matrixData.data[pixelIndex] = color[0];
+          matrixData.data[pixelIndex + 1] = color[1];
+          matrixData.data[pixelIndex + 2] = color[2];
+          matrixData.data[pixelIndex + 3] = color[3];
+        }
+      }
+
+      // 对矩阵进行插值
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(canvas, 0, 0, n, m, 0, 0, n * 10, m * 10);
+
+      // 创建 imageData 并根据矩阵数据和调色板填充
+      const imageData = ctx.createImageData(n * 10, m * 10);
+      for (let i = 0; i < matrixData.data.length; i += 4) {
+        const value = matrixData.data[i];
+        const colorIndex = Math.floor((value - 1) / 6.6667);
+        const color = palette[colorIndex];
+        imageData.data[i] = color[0];
+        imageData.data[i + 1] = color[1];
+        imageData.data[i + 2] = color[2];
+        imageData.data[i + 3] = color[3];
+      }
+
+      // 将 imageData 填充到画布上
+      ctx.putImageData(imageData, 0, 0);
+
+      // 输出 canvas.toDataURL
+      console.log(canvas.toDataURL());
+    </script>
+  </body>
+</html>

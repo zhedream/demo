@@ -64,6 +64,8 @@ export default class Painter {
     }
   ) {
 
+    canvas.toDataURL
+
     try {
       this.initPalette(conrec);
       //插值

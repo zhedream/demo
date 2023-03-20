@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="../dist/util.js"></script>
+  </head>
+  <body>
+    <script>
+      // 准备数据
+      var arr = [];
+      for (var i = 0; i < 10; i++) {
+        arr.push(Math.floor(Math.random() * 50) + 1);
+      }
+
+      // 准备画布
+      var canvas = document.createElement("canvas");
+      canvas.width = arr.length * 50;
+      canvas.height = 1;
+
+      // 准备调色板
+      var p = util.usePalette(
+        [
+          "#00deff",
+          "#00ff32",
+          "#ffdc00",
+          "rgb(240,108,25)",
+          "rgb(255,0,0)",
+          "rgb(153,0,76)",
+          "rgb(126,0,35)",
+          "rgb(111,4,116)",
+        ],
+        1,
+        50
+      );
+      var palette = p.getData;
+
+      // 创建同画布大小矩阵数据
+      var matrixData = [];
+      for (var i = 0; i < canvas.height; i++) {
+        matrixData[i] = [];
+        for (var j = 0; j < canvas.width; j++) {
+          matrixData[i][j] = undefined;
+        }
+      }
+
+      // 将数据填充入画布矩阵
+      var step = canvas.width / arr.length;
+      for (var i = 0; i < arr.length; i++) {
+        var x = Math.floor(i * step);
+        var y = 0;
+        matrixData[y][x] = arr[i];
+      }
+      console.log("matrixData: ", matrixData);
+
+      // 对 matrixData 插值
+      var newData = [];
+      for (var i = 0; i < matrixData.length; i++) {
+        var row = matrixData[i];
+        var newRow = linearInterpolate(row);
+        //  newData.push(newRow);
+        newData = newData.concat(newRow);
+      }
+      console.log("newData: ", newData);
+
+      // var newData = newData.flat();
+
+      // 创建画布大小的 imageData
+      var imageData = new ImageData(canvas.width, 1);
+      var data = imageData.data;
+
+      // 根据 matrixData 和 palette 填充 imageData
+      for (var i = 0; i < newData.length; i++) {
+        var val = newData[i];
+        // var color = palette[Math.floor((val - 1) / (20 / palette.length))];
+        var color = palette(val);
+        var index = i * 4;
+        data[index] = color[0];
+        data[index + 1] = color[1];
+        data[index + 2] = color[2];
+        data[index + 3] = 255;
+      }
+
+      // 一维数组 线性插值
+      function linearInterpolate(arr) {
+        let result = [];
+        let start = null;
+        let end = null;
+
+        for (let i = 0; i < arr.length; i++) {
+          if (arr[i] !== undefined) {
+            if (start === null) {
+              start = { index: i, value: arr[i] };
+            } else {
+              end = { index: i, value: arr[i] };
+              let steps = end.index - start.index;
+              let increment = (end.value - start.value) / steps;
+
+              for (let j = start.index; j <= end.index; j++) {
+                result[j] = start.value + (j - start.index) * increment;
+                result[j] = Math.round(result[j] * 100) / 100;
+              }
+
+              start = end;
+              end = null;
+            }
+          }
+        }
+
+        return result;
+      }
+
+      // 行转列
+      function transposeImageData(imageData) {
+        // 创建新的 ImageData 对象
+        var newImageData = new ImageData(imageData.height, imageData.width);
+
+        // 复制原始 imageData 数据
+        for (var y = 0; y < imageData.height; y++) {
+          for (var x = 0; x < imageData.width; x++) {
+            var index = (y * imageData.width + x) * 4;
+            var newIndex = (x * imageData.height + y) * 4;
+            newImageData.data[newIndex] = imageData.data[index];
+            newImageData.data[newIndex + 1] = imageData.data[index + 1];
+            newImageData.data[newIndex + 2] = imageData.data[index + 2];
+            newImageData.data[newIndex + 3] = imageData.data[index + 3];
+          }
+        }
+
+        return newImageData;
+      }
+
+      // 重复
+      function repeatImageData(imageData, n, direction) {
+        // 计算新的宽度和高度
+        var newWidth =
+          direction === "vertical" ? imageData.width : imageData.width * n;
+        var newHeight =
+          direction === "horizontal" ? imageData.height : imageData.height * n;
+
+        // 创建新的 ImageData 对象
+        var newImageData = new ImageData(newWidth, newHeight);
+
+        // 复制原始 imageData 数据
+        if (direction === "vertical") {
+          for (var i = 0; i < n; i++) {
+            for (var y = 0; y < imageData.height; y++) {
+              for (var x = 0; x < imageData.width; x++) {
+                var index = (y * imageData.width + x) * 4;
+                var newIndex =
+                  ((i * imageData.height + y) * imageData.width + x) * 4;
+                newImageData.data[newIndex] = imageData.data[index];
+                newImageData.data[newIndex + 1] = imageData.data[index + 1];
+                newImageData.data[newIndex + 2] = imageData.data[index + 2];
+                newImageData.data[newIndex + 3] = imageData.data[index + 3];
+              }
+            }
+          }
+        } else if (direction === "horizontal") {
+          for (var y = 0; y < imageData.height; y++) {
+            for (var i = 0; i < n; i++) {
+              for (var x = 0; x < imageData.width; x++) {
+                var index = (y * imageData.width + x) * 4;
+                var newIndex =
+                  (y * imageData.width * n + i * imageData.width + x) * 4;
+                newImageData.data[newIndex] = imageData.data[index];
+                newImageData.data[newIndex + 1] = imageData.data[index + 1];
+                newImageData.data[newIndex + 2] = imageData.data[index + 2];
+                newImageData.data[newIndex + 3] = imageData.data[index + 3];
+              }
+            }
+          }
+        }
+
+        return newImageData;
+      }
+
+      // 翻转
+      function flipImageData(imageData, direction) {
+        // 创建新的 ImageData 对象
+        var newImageData = new ImageData(imageData.width, imageData.height);
+
+        // 复制原始 imageData 数据
+        if (direction === "horizontal") {
+          for (var y = 0; y < imageData.height; y++) {
+            for (var x = 0; x < imageData.width; x++) {
+              var index = (y * imageData.width + x) * 4;
+              var newIndex =
+                (y * imageData.width + (imageData.width - 1 - x)) * 4;
+              newImageData.data[newIndex] = imageData.data[index];
+              newImageData.data[newIndex + 1] = imageData.data[index + 1];
+              newImageData.data[newIndex + 2] = imageData.data[index + 2];
+              newImageData.data[newIndex + 3] = imageData.data[index + 3];
+            }
+          }
+        } else if (direction === "vertical") {
+          for (var y = 0; y < imageData.height; y++) {
+            for (var x = 0; x < imageData.width; x++) {
+              var index = (y * imageData.width + x) * 4;
+              var newIndex =
+                ((imageData.height - 1 - y) * imageData.width + x) * 4;
+              newImageData.data[newIndex] = imageData.data[index];
+              newImageData.data[newIndex + 1] = imageData.data[index + 1];
+              newImageData.data[newIndex + 2] = imageData.data[index + 2];
+              newImageData.data[newIndex + 3] = imageData.data[index + 3];
+            }
+          }
+        }
+
+        return newImageData;
+      }
+
+      var nextImageData = imageData;
+      var nextImageData = transposeImageData(nextImageData);
+      nextImageData = flipImageData(nextImageData, "vertical");
+      nextImageData = repeatImageData(nextImageData, 200, "horizontal");
+
+      canvas.width = nextImageData.width;
+      canvas.height = nextImageData.height;
+      // 在画布上显示 imageData
+      var context = canvas.getContext("2d");
+      context.putImageData(nextImageData, 0, 0);
+
+      // 输出画布的 base64 编码
+      document.body.appendChild(canvas);
+    </script>
+  </body>
+</html>
