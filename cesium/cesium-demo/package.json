@@ -1,0 +1,25 @@
+{
+  "name": "cesium-demo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "@cesium/engine": "^2.1.0",
+    "@cesium/widgets": "^2.1.0",
+    "cesium": "^1.103.0",
+    "core-js": "^3.8.3",
+    "less": "^4.1.3",
+    "vue": "^2.7.14"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-typescript": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "less-loader": "^11.1.0",
+    "typescript": "~4.5.5",
+    "vue-template-compiler": "^2.7.14"
+  }
+}
