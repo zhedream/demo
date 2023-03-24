@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>popup</title>
+  </head>
+
+  <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <!--  引入 lodash -->
+  <script src="https://cdn.bootcdn.net/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+
+  <script src="../data.js"></script>
+  <script src="../dist/util.js"></script>
+  <script src="../dist/DataUtil.js"></script>
+  <script src="../dist/addImageLayer.js"></script>
+
+  <script src="https://unpkg.com/@esri/arcgis-to-geojson-utils"></script>
+
+  <link
+    href="https://js.arcgis.com/4.26/esri/themes/light/main.css"
+    rel="stylesheet"
+  />
+  <script src="https://js.arcgis.com/4.26/"></script>
+
+  <style>
+    html,
+    body,
+    #map-container {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      position: relative;
+    }
+
+    #map-container {
+      width: 720px;
+      height: 360px;
+    }
+
+    #map-view {
+      width: 100%;
+      height: 100%;
+    }
+
+    #report-container {
+      position: absolute;
+      bottom: 20px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 5px 10px;
+    }
+  </style>
+  <body>
+    <!-- Start -->
+
+    <!-- 地图 -->
+    <div id="map-container">
+
+      <div id="map-view"></div>
+
+      <div id="report-container">
+        Temperature: <span id="temperature"></span> ℃
+
+        <button onclick="test()">test</button>
+        <button onclick="test2()">test2</button>
+      </div>
+    </div>
+
+    <script>
+      var map, view;
+      var popup;
+      init();
+
+      function test() {
+
+        let htmlDivElement = document.createElement("div");
+        htmlDivElement.innerHTML = "<h2>自定义内容</h2>";
+        htmlDivElement.style.width = "300px";
+
+        // 关闭自动, 才能使用 open 方法
+        view.popup.autoOpenEnabled = false;
+
+
+        view.popup.overwriteActions = true;
+
+        // 折叠配置
+        view.popup.collapseEnabled = false;
+
+        // 停靠配置
+        view.popup.dockOptions = {
+          buttonEnabled: false,
+
+        };
+
+        // 配置 操作按钮
+        view.popup.actions = [
+          {
+            type: "button",
+            title: "Edit feature",
+            value: "edit",
+            id: "edit-this",
+            className: "esri-icon-edit",
+          }
+        ];
+
+        view.popup.on('trigger-action', function(event) {
+          console.log(event);
+          if (event.action.id === 'edit-this') {
+            console.log('edit-this');
+          }
+        });
+
+        view.on("click", function(event) {
+          console.log(event);
+          view.popup.open({
+            title: "test",
+            location: event.mapPoint,
+            content: htmlDivElement,
+            // 去除默认 actions, https://developers.arcgis.com/javascript/latest/api-reference/esri-widgets-Popup.html#actions
+            includeDefaultActions: false,
+            collapsed: false, // collapseEnabled 为 true 时生效
+          });
+
+          let domNode = view.popup.domNode;
+
+          // 设置样式
+          setTimeout(() => {
+            let container = domNode.querySelector(".esri-popup__main-container.esri-widget");
+            container.style.width = "330px";
+            container.style.maxHeight = "330px";
+          }, 0);
+
+
+
+        });
+      }
+
+
+
+      function test2() {
+
+        var contentElement = document.createElement("div");
+        contentElement.innerHTML = "这里是弹框的内容";
+
+        var popupTemplate = {
+          title: "弹框标题",
+          content: contentElement,
+          actions: []
+        };
+
+        loadModules([
+          "esri/widgets/Popup",
+        ]).then(async ([Popup]) => {
+
+          popup = new Popup({
+            view: view,
+            popupTemplate: popupTemplate
+          });
+
+          console.log(popup);
+
+
+          view.on("click", function(event) {
+            popup.open({
+              title: "弹框标题",
+              location: event.mapPoint,
+              content: contentElement,
+            });
+          });
+
+          // view.on("click", function(event) {
+          //   view.hitTest(event).then(function(response) {
+          //     var feature = response.results[0].graphic;
+          //     if (feature) {
+          //       // 显示弹框
+          //       popup.show({
+          //         title: "弹框标题",
+          //         location: event.mapPoint,
+          //         features: [feature]
+          //       });
+          //     } else {
+          //       // 隐藏弹框
+          //       popup.close();
+          //     }
+          //   });
+          // });
+
+
+        });
+
+
+      }
+
+      function init() {
+        loadModules([
+          "esri/Map",
+          "esri/views/MapView",
+          "esri/layers/WebTileLayer",
+        ]).then(async ([Map, MapView, WebTileLayer]) => {
+          initMap(Map, MapView, WebTileLayer);
+
+
+        });
+      }
+
+      function initMap(Map, MapView, WebTileLayer) {
+        map = new Map({
+          // basemap: "satellite",
+        });
+        view = new MapView({
+          container: "map-view",
+          map: map,
+          // center: [106.89374561958043, 37.73011692624135],
+          center: [106.89374561958043, 37.73011692624135],
+          zoom: 4,
+          constraints: {
+            // rotationEnabled: false,
+            // minZoom: 12,
+            // maxZoom: 3,
+          },
+        });
+
+        let tileLayer = new WebTileLayer({
+          id: "tileLayer",
+          title: "tileLayer",
+          subDomains: ["webrd01"],
+          urlTemplate:
+            "http://{subDomain}.is.autonavi.com/appmaptile?x={col}&y={row}&z={level}&lang=zh_cn&size=1&scale=1&style=8",
+        });
+        map.add(tileLayer);
+        map.reorder(tileLayer, 0);
+      }
+
+      async function layerAdd(layer, graphicPromice) {
+        layer.add(await graphicPromice);
+      }
+
+      function loadModules(params) {
+        return new Promise((res) => {
+          require(params, function() {
+            res(arguments);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>

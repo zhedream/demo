@@ -134,6 +134,7 @@ export function removeWallImageByGroup(viewer: Viewer, group: string) {
     let entity = entities[i];
     if (entity.properties && entity.properties.group && entity.properties.group.getValue() == group) {
       viewer.entities.remove(entity);
+      i--;
     }
   }
 }
