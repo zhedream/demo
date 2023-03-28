@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      #container {
+        margin: 20px
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container" style="height: 500px"></div>
+
+    <script src="../dist/LidarImage.js"></script>
+    <script src="../node_modules/echarts/dist/echarts.min.js"></script>
+    <script>
+
+      let colors = [
+        "#1F46E1",
+        "#204CE0",
+        "#2460D8",
+        "#2974D3",
+        "#2C80CF",
+        "#2E88CC",
+        "#35A0C5",
+        "#3CB5B2",
+        "#40BD9D",
+        "#44C48B",
+        "#48CA79",
+        "#4FD366",
+        "#50D462",
+        "#5AE03D",
+        "#5FE52C",
+        "#63EA10",
+        "#6EF500",
+        "#70F700",
+        "#77FD00",
+        "#82FF00",
+        "#82FF00",
+        "#8FFF00",
+        "#9DFF00",
+        "#A0FF00",
+        "#A8FF00",
+        "#AEFF00",
+        "#B6FF00",
+        "#C4FF00",
+        "#CCFF00",
+        "#D0FF00",
+        "#D5FF00",
+        "#DEFF00",
+        "#E0FF00",
+        "#E6FF00",
+        "#ECFF00",
+        "#F4FF00",
+        "#FEFE00",
+        "#FCED00",
+        "#FACF00",
+        "#F9BB00",
+        "#F79E00",
+        "#F68300",
+        "#F56B00",
+        "#F54800",
+        "#F43900",
+        "#F42900",
+        "#F41C00",
+        "#F40F00"];
+
+      function createRandomData(min, max, count) {
+        let data = [];
+        for (let i = 0; i < count; i++) {
+          data.push(Math.floor(Math.random() * (max - min) + min));
+        }
+        return data;
+      }
+
+      // 定义自定义渲染器
+      function myBarRenderer(params, api, data) {
+
+        console.log(params);
+
+        let index = api.value(0);
+        let value = api.value(1);
+
+        const size = api.size([index, value]);
+
+        const {height} = params.coordSys;
+
+        // console.log("size: ", size);
+
+        let lidar = new LidarImage.LidarImageRect(
+          {
+            width: parseInt(size[0]) + 1,
+            height: parseInt(height) + 10,
+            colors: colors,
+            data: {
+              data: data,
+              time: "",
+              points: [[0, 0], [0, 0]],
+              heightList: [1, 100]
+            },
+            minMax: [0, 10]
+          });
+
+        return lidar;
+      }
+
+      // 创建 ECharts 实例
+      var myChart = echarts.init(document.getElementById("container"));
+
+      function renderItem(data) {
+        let lidarMap = new Map();
+        return function renderItem(params, api) {
+          let index = api.value(0);
+          let value = api.value(1);
+
+          const coord = api.coord([index, value]);
+
+          const size = api.size([index, value]);
+
+          const {y, height} = params.coordSys;
+
+          let lidar;
+          if (lidarMap.has(index)) {
+            lidar = lidarMap.get(index);
+          } else {
+            lidar = myBarRenderer(params, api, data[index]);
+            lidarMap.set(index, lidar);
+          }
+
+          let canvas = lidar.getCanvas();
+
+          return new echarts.graphic.Image({
+            style: {
+              image: canvas,
+              lidar: lidar,
+              x: coord[0] - size[0] / 2,
+              y: y,
+              width: size[0],
+              height: height,
+            },
+          });
+        };
+
+      }
+
+      let count = 100;
+
+      // 最终办法:  手动传递 data
+
+      let data = [];
+      // 添加 100 个数据
+      for (let i = 0; i < count; i++) {
+        data.push(createRandomData(0, 10, 100));
+      }
+
+      let xAxisData = [];
+      // 添加 100 个数据
+      for (let i = 0; i < count; i++) {
+        xAxisData.push(i);
+      }
+
+      let serieData = [];
+      // 添加 100 个数据
+      for (let i = 0; i < count; i++) {
+        serieData.push([i, 100]);
+      }
+
+      var option = {
+        xAxis: {
+          type: "category",
+          data: xAxisData,
+        },
+        dataZoom: [
+          {
+            type: "slider",
+            show: true,
+            xAxisIndex: [0],
+            start: 0,
+            end: 100,
+          },
+          {
+            type: "inside",
+            xAxisIndex: [0],
+            start: 0,
+            end: 100,
+          },
+        ],
+        yAxis: {
+          type: "value",
+        },
+        tooltip: {
+          trigger: "none",
+          show: true,
+        },
+        series: [
+          {
+            type: "custom",
+            renderItem: renderItem(data),
+            data: serieData,
+            progressive: 100, // 启用渐进式渲染
+            progressiveThreshold: 500, // 当数据量超过 10000 时启用渐进式渲染
+          },
+        ],
+      };
+
+      // 指定需要使用的自定义渲染器
+      myChart.setOption(option);
+
+      // 添加事件监听器
+      myChart.getZr().on("mousemove", function(event) {
+
+        // // 获取坐标轴到画布的偏移量
+        // var offset = myChart.getDom().getBoundingClientRect();
+        // // 获取鼠标在画布中的位置
+        // var x = event.event.clientX - offset.left;
+        // var y = event.event.clientY - offset.top;
+        // console.log('2222',[x, y]);
+
+        const pointInPixel = [event.offsetX, event.offsetY];
+
+        if (!myChart.containPixel("grid", pointInPixel)) {
+          console.log("out grid");
+          return;
+        }
+
+        let target = event.target;
+
+        // let [xIndex, yValue] = myChart.convertFromPixel(
+        //   {seriesIndex: 0},
+        //   pointInPixel
+        // );
+
+        let style = target.style;
+
+        let lidar = style.lidar;
+
+        let itemY = style.y;
+        let itemHeight = style.height;
+        let itemTop = event.offsetY - itemY;
+
+        let curIndex = itemHeight - itemTop;
+
+        let yIndex1 = mapNumber([0, style.height], [0, lidar.height], curIndex);
+        let yIndex = Math.round(yIndex1);
+
+        if (yIndex === lidar.height) {
+          yIndex = lidar.height - 1;
+        }
+
+        let value = lidar.getValue(yIndex);
+        let height = lidar.getHeight(yIndex);
+        let color = lidar.getColor(yIndex);
+
+        // 通过 列 获取 lidar , 再通过 高度 获取 值
+
+        // 构造自定义 tooltip 的内容
+        var content = `<div style="background: #fff; padding: 10px;">
+           <div style="width: 5px;height: 5px;background-color: rgb(${color[0]},${color[1]},${color[2]})"></div>
+           curIndex:${curIndex} <br>
+           yIndex:${yIndex} <br>
+           height:${height} <br>
+           value:${value} <br>
+          </div>`;
+
+        // 触发 showTip action 显示 tooltip
+        myChart.dispatchAction({
+          type: "showTip",
+          x: event.offsetX,
+          y: event.offsetY,
+          tooltip: {
+            trigger: "none", // 关闭默认 tooltip
+            position: [event.offsetX + 10, event.offsetY + 10],
+            extraCssText: "z-index: 999;", // 设置显示优先级
+            formatter: function() {
+              return content;
+            }
+          }
+        });
+      });
+
+      myChart.getZr().on("click", function(event) {
+
+        const pointInPixel = [event.offsetX, event.offsetY];
+        if (!myChart.containPixel("grid", pointInPixel)) {
+          return;
+        }
+        let target = event.target;
+
+        console.log("grid", event);
+
+        let style = target.style;
+
+        let itemY = style.y;
+        let itemHeight = style.height;
+        let itemTop = event.offsetY - itemY;
+        let height = itemHeight - itemTop;
+
+        let lidar = style.lidar;
+
+        let lidarHeight = lidar.height;
+
+
+        let nextHeight = mapHeight(height, lidarHeight);
+        nextHeight = Math.round(nextHeight);
+
+        let value = lidar.getValue(nextHeight);
+        let h = lidar.getHeight(nextHeight);
+        let info = lidar.getInfo();
+        let data = lidar.getData();
+        console.log(data);
+        console.log(info);
+
+        console.log(info.time);
+        console.log(h);
+        console.log(value);
+
+
+      });
+
+
+      function mapHeight(minIndex, maxIndex, itemTop, itemHeight) {
+        if (minIndex > maxIndex) {
+          return maxIndex;
+        }
+        let height = maxIndex - minIndex;
+        let y = itemTop / itemHeight * height;
+        return maxIndex - y;
+      }
+
+      function mapNumber(nums, target, number) {
+        // 将number从区间[nums[0],nums[1]]映射到区间[target[0],target[1]]
+        return (number - nums[0]) / (nums[1] - nums[0]) * (target[1] - target[0]) + target[0];
+      }
+
+      function appendData() {
+        // 添加 100 个数据
+        for (let i = 0; i < 100; i++) {
+          data.push(createRandomData(0, 10, 100));
+        }
+
+        // 添加 100 个数据
+        let length = xAxisData.length;
+        for (let i = length; i < length + 100; i++) {
+          xAxisData.push(i);
+        }
+
+        // 添加 100 个数据
+        for (let i = length; i < length + 100; i++) {
+          serieData.push([i, 100]);
+        }
+
+        myChart.setOption({
+          xAxis: {
+            data: xAxisData,
+          },
+          series: [
+            {
+              data: serieData,
+            },
+          ],
+        });
+      }
+
+    </script>
+  </body>
+</html>

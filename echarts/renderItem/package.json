@@ -1,0 +1,21 @@
+{
+  "name": "rollup",
+  "version": "1.0.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c",
+    "build:watch": "rollup -c --watch",
+    "test": "node ./dist/LidarImage.js"
+  },
+  "dependencies": {
+    "echarts": "^5.4.2"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "rollup": "^3.17.2",
+    "rollup-plugin-typescript2": "^0.34.1"
+  }
+}
