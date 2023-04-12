@@ -400,3 +400,26 @@ const safeGetData = (data, keys) =>
  * @param {*} data
  */
 const cloneJson = (data) => JSON.parse(JSON.stringify(data));
+
+
+/**
+ * 运行增量任务
+ * @param {*} call 
+ */
+async function runTask(call) {
+  await new Promise((resolve) => {
+    _runTask(call, resolve);
+  });
+}
+function _runTask(fn, resolve) {
+  let now = Date.now();
+  requestAnimationFrame(() => {
+    let time = Date.now() - now;
+    if (time < 16.6) {
+      fn();
+      resolve();
+    } else {
+      _runTask(fn, resolve);
+    }
+  });
+}
