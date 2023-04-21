@@ -1,0 +1,23 @@
+{
+  "name": "babel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babelParser": "browserify ./node_modules/@babel/parser/lib/index.js --s babelParser > babelParser.js",
+    "babel": "browserify babel.js --s babelCore > babel.min.js",
+    "transformCodeToExposeModule": "browserify transformCodeToExposeModule.js --s transformCodeToExposeModule > transformCodeToExposeModule.min.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/generator": "^7.21.4",
+    "@babel/parser": "^7.21.4",
+    "@babel/traverse": "^7.21.4",
+    "@babel/types": "^7.21.4",
+    "browserify": "^17.0.0"
+  }
+}
