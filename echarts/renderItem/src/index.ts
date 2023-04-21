@@ -1,4 +1,4 @@
-import {LidarImageRect} from "@/LidarImage/LidarImage";
+import { LidarImageRect } from "@/LidarImage/LidarImage";
 
 new LidarImageRect({
   height: 0,
@@ -7,8 +7,11 @@ new LidarImageRect({
   data: {
     data: [1, 2, 3, 4, 5],
     time: "",
-    points: [[0, 0], [0, 0]],
-    heightList: [1, 2, 3, 4, 5]
+    points: [
+      [0, 0],
+      [0, 0],
+    ],
+    heightList: [1, 2, 3, 4, 5],
   },
-  minMax: [0, 0]
+  minMax: [0, 0],
 });

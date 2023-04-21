@@ -1,8 +1,8 @@
 // ======== canvas 绘制激光雷达图
 
 
-import {UsePalette, usePalette} from "./palette";
-import {flipImageData, linearInterpolate, repeatImageData, transposeImageData} from "./canvas.util";
+import { UsePalette, usePalette } from "./palette";
+import { flipImageData, linearInterpolate, repeatImageData, transposeImageData } from "./canvas.util";
 
 export interface LidarData {
 
@@ -75,7 +75,7 @@ interface LidarImageRectOption extends LidarImageOption {
 
 export class LidarImageRect extends LidarImageBase {
 
-  private canvas: HTMLCanvasElement = document.createElement("canvas");
+  private readonly canvas: HTMLCanvasElement = document.createElement("canvas");
 
   // 数据
   private readonly arr: number[];
@@ -202,8 +202,6 @@ export class LidarImageRect extends LidarImageBase {
     return this.heightArr;
   }
 
-
-
   // 获取源数据
   getInfo() {
     return this.data;
@@ -231,7 +229,8 @@ export class LidarImageRect extends LidarImageBase {
     let count = this.height;
     let step2 = (maxHeight - minHeight) / count;
     for (let i = 0; i < count; i++) {
-      heightArr.push(minHeight + i * step2);
+      let h = minHeight + i * step2;
+      heightArr.push(+h.toFixed(2));
     }
     this.heightArr = heightArr;
 
@@ -291,14 +290,14 @@ export class LidarImageRect extends LidarImageBase {
       data[index + 3] = 255;
       colors.push(color);
     }
-    this.dataColors = colors.reverse();
+    this.dataColors = colors;
 
     let nextImageData = imageData;
-    // 垂直翻转
-    nextImageData = flipImageData(nextImageData, "vertical");
-    // 转置 (宽高互换)
+    // 水平翻转
+    nextImageData = flipImageData(nextImageData, "horizontal");
+    // // 转置 (宽高互换)
     nextImageData = transposeImageData(nextImageData);
-    // 水平重复, 扩展图片宽度
+    // // 水平重复, 扩展图片宽度
     nextImageData = repeatImageData(nextImageData, this.width, "horizontal");
 
     this.canvas.width = nextImageData.width;

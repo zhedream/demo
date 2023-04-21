@@ -14,7 +14,7 @@ const paginationFromArray = (pageNo, pageSize, array) => {
 
 // 数组去重
 let obj = {};
-arr = arr.reduce(function (item, next) {
+var arr = arr.reduce(function (item, next) {
   obj[next.PollutantCode]
     ? ""
     : (obj[next.PollutantCode] = true && item.push(next));
@@ -166,7 +166,7 @@ function getDataIndex(dataIndex, pageSize) {
     page = dataIndex / pageSize;
     count = pageSize;
   } else {
-    page = parseInt(dataIndex / pageSize) + 1;
+    page = parseInt(String(dataIndex / pageSize)) + 1;
     count = dataIndex % pageSize;
   }
   return [page, count];
@@ -286,7 +286,7 @@ function get_key_count(data, key) {
 
 // 统计 data key 次数
 function get_key_count_array(data, key) {
-  let keys_count_array = [];
+  let keys_count_array: any[] = [];
   let key2Index = {};
 
   for (let i = 0; i < data.length; i++) {
@@ -350,7 +350,7 @@ function groupByToArrayObject(data, f, titleKey, dataKey) {
   titleKey = titleKey === undefined ? "title" : titleKey;
   dataKey = dataKey === undefined ? "data" : dataKey;
 
-  let result = [];
+  let result: any[] = [];
   let fKeyIndex = {};
   for (let i = 0; i < data.length; i++) {
     let item = data[i];
@@ -401,25 +401,26 @@ const safeGetData = (data, keys) =>
  */
 const cloneJson = (data) => JSON.parse(JSON.stringify(data));
 
-
-/**
- * 运行增量任务
- * @param {*} call 
- */
-async function runTask(call) {
-  await new Promise((resolve) => {
-    _runTask(call, resolve);
+export async function runTask(call: Function, signal?: AbortSignal) {
+  await new Promise<void>((resolve) => {
+    _runTask(call, resolve, signal);
   });
 }
-function _runTask(fn, resolve) {
+
+function _runTask(fn: Function, resolve: Function, signal?: AbortSignal) {
   let now = Date.now();
+
   requestAnimationFrame(() => {
+    if (signal?.aborted) {
+      console.log("task abort");
+      return resolve();
+    }
     let time = Date.now() - now;
     if (time < 16.6) {
       fn();
       resolve();
     } else {
-      _runTask(fn, resolve);
+      _runTask(fn, resolve, signal);
     }
   });
 }

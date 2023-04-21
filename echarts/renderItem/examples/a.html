@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container" style="height: 500px"></div>
+
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/echarts@5.3.1/dist/echarts.min.js"
+    ></script>
+    <script>
+      // 定义自定义渲染器
+      function myBarRenderer(data, api) {
+        let index = api.value(0);
+        let value = api.value(1);
+
+        const size = api.size([index, value]);
+
+        const canvas = document.createElement("canvas");
+
+        canvas.width = size[0];
+        canvas.height = size[1];
+
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, size[0], size[1]);
+
+        return canvas;
+      }
+
+      // 创建 ECharts 实例
+      var myChart = echarts.init(document.getElementById("container"));
+
+      function renderItem(params, api) {
+        let index = api.value(0);
+        let value = api.value(1);
+
+        const coord = api.coord([index, value]);
+
+        const size = api.size([index, value]);
+
+        console.log("size: ", size);
+
+        const { x, y, width, height } = params.coordSys;
+
+        var canvas = myBarRenderer.apply(null, arguments);
+
+        var graphic = new echarts.graphic.Image({
+          style: {
+            image: canvas,
+            x: coord[0],
+            y: coord[1],
+            width: size[0],
+            height: size[1],
+          },
+        });
+
+        return graphic;
+      }
+
+      var option = {
+        xAxis: {
+          type: "category",
+          data: ["A", "B", "C"],
+        },
+        yAxis: {
+          type: "value",
+        },
+        tooltip: {
+          show: true,
+        },
+        series: [
+          {
+            type: "custom",
+            renderItem: renderItem,
+            data: [10, 20, 40],
+          },
+        ],
+      };
+
+      // 指定需要使用的自定义渲染器
+      myChart.setOption(option);
+
+      // 获取自定义渲染器的 canvas 对象，并进行其他操作
+      var myCustomRendererCanvas = myChart
+        .getZr()
+        .painter.getLayer("myCustomRenderer").dom;
+    </script>
+  </body>
+</html>
