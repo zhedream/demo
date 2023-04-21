@@ -45,11 +45,8 @@ export async function* GenTask(walls: wallImageInfo[], cesiumView: Viewer): IRun
   for (let i = 0; i < walls.length; i++) {
     if (i > 1000) break;
     let image = await fetchImage("/demo.png?index=" + i);
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(null);
-      }, 50);
-    });
+    // let image = await fetchImage("/demo.png");
+
     const wall = walls[i];
     yield addWallImage({
       id: "lidar-" + i,
@@ -84,3 +81,17 @@ export async function runNext<T, TReturn>(task: AsyncGenerator<T, TReturn>, maxC
   return last;
 }
 
+
+
+export function mapNumber(nums: [number, number], target: [number, number], number: number) {
+  // 将number从区间[nums[0],nums[1]]映射到区间[target[0],target[1]]
+  return (number - nums[0]) / (nums[1] - nums[0]) * (target[1] - target[0]) + target[0];
+}
+
+export function sleep(time: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(null);
+    }, time);
+  });
+}

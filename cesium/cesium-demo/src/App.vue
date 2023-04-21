@@ -1,9 +1,7 @@
 <template>
   <div id="app">
     <div>
-      <button @click="createTask">createTask</button>
-      &nbsp;
-      <button @click="show1()">show</button>
+      <button @click="render()">show</button>
       &nbsp;
       <button @click="clear">clear</button>
       &nbsp;
@@ -15,30 +13,12 @@
 
 <script lang="ts" setup>
 import CesiumMap from "@/components/cesiumMap/index.vue";
-import {getViewer, Point} from "@/components/cesiumMap/cesiumUtil";
+import { getViewer, Point } from "@/components/cesiumMap/cesiumUtil";
 import graphicsData from "@/components/cesiumMap/data2.json";
 import * as Cesium from "cesium";
-import {MapID} from "@/components/cesiumMap/model";
-import {onMounted} from "vue";
-import {GenTask, IRunTaskReturn, runNext} from "@/components/cesiumMap/lidarUtil";
-
-
-import Tem from "@/tem.vue";
-import {renderHTML} from "@/renderHTML";
-
-
-onMounted(() => {
-  renderHTML(Tem, {msg: "hello"})
-      .then(res=>{
-
-        window.rrr = res
-
-      });
-});
-
-
-// let a = new Tem({msg: "123"});
-
+import { MapID } from "@/components/cesiumMap/model";
+import { onMounted } from "vue";
+import { GenTask, sleep } from "@/components/cesiumMap/lidarUtil";
 
 // =============  添加图片
 
@@ -52,90 +32,56 @@ onMounted(() => {
 
 let paths: [Point, Point][] = [];
 
-graphicsData.forEach((graphic,) => {
+graphicsData.forEach((graphic) => {
   let path: any = graphic.geometry.paths[0];
   paths.push(path);
 });
-// console.log(paths);
+
 
 let walls = paths.map((item) => {
   return {
     url: "",
-    points: item
+    points: item,
   };
 });
 
-let task: IRunTaskReturn;
-let taskDone: boolean;
+let signalController: AbortController;
 
-async function createTask() {
-  task = GenTask(walls, cesiumView);
-  taskDone = false;
-}
+async function render() {
+  signalController = new AbortController();
+  let signal = signalController.signal;
 
-async function render(task: IRunTaskReturn, count = 1) {
-  if (!taskDone) {
-    let last = await runNext(task, count);
+  let g = GenTask(walls, cesiumView);
 
-    var cameraPosition = cesiumView.camera.position;
-    var cartographicPosition = Cesium.Cartographic.fromCartesian(cameraPosition);
-    var longitude = Cesium.Math.toDegrees(cartographicPosition.longitude);
-    var latitude = Cesium.Math.toDegrees(cartographicPosition.latitude);
-    var height = cartographicPosition.height;
+  let index = 0;
 
-    let destination = Cesium.Cartesian3.fromDegrees(longitude, latitude, height - 1);
-    cesiumView.zoomTo(cesiumView.entities).then();
+  for await (let item of g) {
+    if (signal.aborted) {
+      g.return();
+      break;
+    }
+    console.log(item);
 
-    // cesiumView.camera.flyTo({
-    //   destination: destination,
-    //   // orientation: {
-    //   //   heading: Cesium.Math.toRadians(0),
-    //   // }
-    // });
-    if (last.done) {
-      taskDone = true;
+    await sleep(100);
+
+    if (index++ === 10) {
+      cesiumView.zoomTo(cesiumView.entities).then();
     }
   }
 }
 
 function clear() {
-  task.return();
-  taskDone = false;
+  signalController.abort();
   cesiumView.entities.removeAll();
 }
 
-function show1(count = 100) {
-  if (taskDone) return ;
-  let res: any;
-  let P = new Promise((resolve, reject) => {
-    res = resolve;
-  });
-  requestIdleCallback(() => {
-    render(task, 20).then(() => {
-      setTimeout(() => {
-        res();
-      }, 2000);
-    });
-  }, {timeout: 1000});
-  P.then(() => {
-    if (count === 100) {
-      cesiumView.zoomTo(cesiumView.entities).then();
-    }
-    console.log("绘制完成 10个图片");
-    show1(count - 1);
-  });
-}
-
 function test() {
+  //@ts-ignore
   window.cesiumView = cesiumView;
   let entities = cesiumView.entities.values;
-  // for (let entity of entities) {
-  //   // 在这里对每个实体对象进行操作
-  //   // cesiumView.entities.remove(entity);
-  // }
+  console.log("entities: ", entities);
 
 }
-
 </script>
 
 <style>
