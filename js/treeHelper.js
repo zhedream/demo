@@ -1,4 +1,4 @@
-// form vben admin
+// from vben admin
 
 const DEFAULT_CONFIG = {
   id: "id",
@@ -165,4 +165,56 @@ export function treeMapEach(data, { children = "children", conversion }) {
   } else {
     return Object.assign({}, conversionData);
   }
+}
+
+
+/**
+ * 
+ * @param {string[][]} arr2 
+ * @param {string} label 
+ * @param {string} value 
+ * @param {string} children 
+ * @returns 
+ */
+function createTree(
+  arr2,
+  label = "key",
+  value = "label",
+  children = "children"
+) {
+  let res = [];
+
+  // 遍历数组
+  for (let i = 0; i < arr2.length; i++) {
+    let path = arr2[i];
+    let cur = res;
+
+    // 遍历当前路径中所有节点
+    for (let j = 0; j < path.length; j++) {
+      let node = path[j];
+
+      // 查找当前节点是否已经存在
+      let flag = false;
+      for (let k = 0; k < cur.length; k++) {
+        if (cur[k][value] === node) {
+          cur = cur[k][children];
+          flag = true;
+          break;
+        }
+      }
+
+      // 如果不存在则新建节点并加入到当前节点中
+      if (!flag) {
+        let newNode = {
+          [label]: node,
+          [value]: node,
+          [children]: [],
+        };
+        cur.push(newNode);
+        cur = newNode[children];
+      }
+    }
+  }
+
+  return res;
 }

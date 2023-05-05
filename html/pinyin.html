@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中文拼音搜索 Demo</title>
+  </head>
+  <body>
+    <input type="text" id="search-box" placeholder="输入搜索文本" />
+    <ul id="search-results"></ul>
+
+    <script type="module">
+      import pinyin from "https://cdn.jsdelivr.net/npm/pinyin@3.0.0-alpha.5/+esm";
+      console.log("pinyin: ", pinyin);
+
+      const data = [
+        "中文",
+        "拼音",
+        "搜索",
+        "demo",
+        "中国",
+        "汉字",
+        "英文",
+        "学习",
+        "技术",
+        "开发",
+      ];
+
+      function search(keyword) {
+        const results = data.filter((item) => {
+          const py = pinyin(item, { style: pinyin.STYLE_NORMAL }).join("");
+          return item.includes(keyword) || py.includes(keyword);
+        });
+
+        return results;
+      }
+
+      console.log(search("zhong")); // ['中文', '中国']
+      console.log(search("学")); // ['学习']
+    </script>
+  </body>
+</html>
