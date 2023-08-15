@@ -13,7 +13,11 @@
 
 <script lang="ts" setup>
 import CesiumMap from "@/components/cesiumMap/index.vue";
-import { getViewer, Point } from "@/components/cesiumMap/cesiumUtil";
+import {
+  addWallImage,
+  getViewer,
+  Point,
+} from "@/components/cesiumMap/cesiumUtil";
 import graphicsData from "@/components/cesiumMap/data2.json";
 import * as Cesium from "cesium";
 import { MapID } from "@/components/cesiumMap/model";
@@ -28,6 +32,20 @@ onMounted(() => {
   if (!viewer) return;
   cesiumView = viewer;
   // console.log(viewer);
+
+  addWallImage({
+    viewer: cesiumView,
+    image: "/demo.png",
+    points: [
+      [114.022485, 27.8239822],
+      [114.128485, 27.7239822],
+      [114.217485, 27.8289822],
+      [114.927485, 27.8289822],
+    ],
+  });
+
+  cesiumView.zoomTo(cesiumView.entities).then();
+
 });
 
 let paths: [Point, Point][] = [];
@@ -36,7 +54,6 @@ graphicsData.forEach((graphic) => {
   let path: any = graphic.geometry.paths[0];
   paths.push(path);
 });
-
 
 let walls = paths.map((item) => {
   return {
@@ -80,7 +97,6 @@ function test() {
   window.cesiumView = cesiumView;
   let entities = cesiumView.entities.values;
   console.log("entities: ", entities);
-
 }
 </script>
 
