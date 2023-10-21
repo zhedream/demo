@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>text 上下滚动</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      ul {
+        height: 22px;
+        overflow: hidden;
+        transition: all 0.5s;
+      }
+
+      li {
+        height: 22px;
+        list-style: none;
+        line-height: 22px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <ul>
+        <li>111</li>
+        <li>222</li>
+        <li>333</li>
+        <li>444</li>
+        <li>555</li>
+        <li>666</li>
+      </ul>
+    </div>
+    <script>
+      var doms = {
+        ul: document.querySelector("ul"),
+      };
+
+      function next(index) {
+        const ul = document.querySelector("ul");
+        const liHeight = 22;
+        const scrollTop = index * liHeight;
+
+        ul.scrollTo({
+          top: scrollTop,
+          behavior: "smooth",
+        });
+      }
+
+      let index = 1;
+
+      let count = doms.ul.children.length;
+
+      setInterval(() => {
+        index = (index % count) + 1;
+        next(index - 1);
+      }, 2000);
+    </script>
+  </body>
+</html>
