@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demo</title>
+  </head>
+
+  <body></body>
+  <script>
+    function detectMosaicByCompression(width, height, pixels) {
+      // 将像素数据转换为 ImageData 对象
+      var imageData = new ImageData(pixels, width, height);
+
+      // 将 ImageData 对象转换为 JPEG 格式的图像数据
+      var jpegData = encode(imageData, 50);
+
+      // 计算原图像数据和 JPEG 格式图像数据的大小比例
+      var originalSize = width * height * 4;
+      var jpegSize = jpegData.length;
+      var compressionRatio = jpegSize / originalSize;
+      console.log('compressionRatio: ', compressionRatio);
+
+      // 判断是否为马赛克
+      if (compressionRatio < 0.01) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    // 将 ImageData 对象转换为 JPEG 格式的图像数据
+    function encode(imageData, quality) {
+      var canvas = document.createElement("canvas");
+      canvas.width = imageData.width;
+      canvas.height = imageData.height;
+
+      var ctx = canvas.getContext("2d");
+      ctx.putImageData(imageData, 0, 0);
+
+      var dataUrl = canvas.toDataURL("image/jpeg", quality);
+      var data = atob(dataUrl.split(",")[1]);
+      var array = new Uint8Array(data.length);
+      for (var i = 0; i < data.length; i++) {
+        array[i] = data.charCodeAt(i);
+      }
+
+      return array;
+    }
+
+    function isBlurry(imageSrc, scale) {
+      // 创建一个图像对象并加载图片
+      var img = new Image();
+      img.src = imageSrc;
+
+      let p;
+
+      let r = new Promise((res) => {
+        p = res;
+      });
+
+      // 当图像加载完成后执行下面的处理
+      img.onload = function () {
+        // 创建一个 canvas 元素并获取上下文
+        var canvas = document.createElement("canvas");
+        var ctx = canvas.getContext("2d");
+
+        // 设置 canvas 元素的大小为图像的大小，并绘制图像
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        ctx.drawImage(img, 0, 0);
+
+        // 获取图像的像素数据
+        var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        var pixels = imageData.data;
+
+        let sharpness = detectMosaicByCompression(
+          canvas.width,
+          canvas.height,
+          pixels
+        );
+        p();
+        console.log("sharpness: " + imageSrc, sharpness);
+      };
+
+      return r;
+    }
+
+    let scale = 3.5;
+
+    // 测试代码
+
+    async function mian() {
+      for (let i = 0; i < 9; i++) {
+        await isBlurry("d" + i + ".png", scale);
+      }
+    }
+    mian();
+  </script>
+</html>
