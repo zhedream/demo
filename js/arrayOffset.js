@@ -27,20 +27,28 @@
 
 let a = [
   [0, 0, [1, 2, 3]],
-  [0, 1, [1, 2, 3]],
-  [0, 2, [1, 2, 3]],
+  [0, 1, [4, 5, 6]],
+  [0, 2, [7, 8, 9]],
 ];
 
 a = a.flatMap(([x, y, [r, g, b]]) => [x, y, r, g, b]);
 console.log('a: ', a);
 
+let width = 3;
+let height = 1;
+let x = 0;
+let y = 2;
+
+function getIndex(x, y, width) {
+  return y * width + x;
+}
+
+let pointIndex = getIndex(x, y, width);
+
+
 let pointWidth = 5;
-let pointXOffset = 0;
-let pointYOffset = 1;
 let pointColorOffset = 2;
 
-
-let pointIndex = 0;
 
 let pointHead = pointIndex * pointWidth;
 let colorHead = pointHead + pointColorOffset;
@@ -51,5 +59,9 @@ let gOffset = 1;
 let bOffset = 2;
 
 let r = a[colorHead + rOffset];
+let g = a[colorHead + gOffset];
+let b = a[colorHead + bOffset];
 console.log('r: ', r);
+console.log('g: ', g);
+console.log('b: ', b);
 

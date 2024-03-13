@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <button onclick="copyImage()">复制图片到剪切板</button>
+  <button onclick="copyText()">复制文本到剪切板</button>
+
+
+  <div>
+
+    <img id="text-image" src="" alt="">
+    <input type="text" id="text" onchange="textChange()">
+
+  </div>
+
+  <script>
+
+    function stringToImage(str) {
+      // 补全字符串长度使其为3的倍数
+      while (str.length % 3 !== 0) {
+        str += ' '; // 使用空格补齐
+      }
+
+      // 计算每边需要多少像素（正方形根号下）
+      const size = Math.ceil(Math.sqrt(str.length / 3));
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      let imageData = ctx.createImageData(size, size);
+
+      for (let i = 0; i < str.length; i += 3) {
+        const r = str.charCodeAt(i);
+        const g = str.charCodeAt(i + 1);
+        const b = str.charCodeAt(i + 2);
+        const index = (i / 3) * 4; // 每个像素4个值(RGBA)，所以乘以4
+        imageData.data[index] = r;    // R
+        imageData.data[index + 1] = g; // G
+        imageData.data[index + 2] = b; // B
+        imageData.data[index + 3] = 255; // A
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+      // 将 canvas 转换为图像
+      const image = new Image();
+      image.src = canvas.toDataURL();
+
+      return image;
+    }
+
+
+    function textChange(e) {
+      let text = document.getElementById('text').value;
+      let img = stringToImage(text);
+      document.getElementById('text-image').src = img.src;
+    }
+
+
+    // 创建一个函数，用于复制图片到剪贴板
+    async function copyImageToClipboard(imageUrl) {
+
+      var blobPromise = fetch(imageUrl).then(res => res.blob());
+      // var blobUrl = URL.createObjectURL(await blobPromise);
+      let clipboardData = new ClipboardItem({ 'image/png': blobPromise });
+      // 将图片数据添加到剪贴板
+      navigator.clipboard.write([clipboardData]).then(function () {
+        console.log('Image copied to clipboard successfully!');
+      }, function (err) {
+        console.error('Could not copy image to clipboard: ', err);
+      });
+      return;
+
+
+      // 创建一个新的 Image 对象
+      // let img = new Image();
+
+      // 设置图片的 src 属性为要复制的图片 URL
+      // img.src = imageUrl;
+      // img.crossOrigin="anonymous"; // 跨域污染
+
+      // async function imgToBlob(img) {
+      //   let canvas = document.createElement('canvas');
+      //   let ctx = canvas.getContext('2d');
+      //   canvas.width = img.width;
+      //   canvas.height = img.height;
+      //   ctx.drawImage(img, 0, 0, img.width, img.height);
+      //   // return canvas;
+      //   return new Promise((resolve, reject) => {
+      //     canvas.toBlob(resolve);
+      //   });
+      // }
+
+      // img.onload = async () => {
+
+      //   let b = await imgToBlob(img)
+
+      //   // 创建一个空的 document 对象
+      //   let clipboardData = new ClipboardItem({ 'image/png': b });
+      //   // 将图片数据添加到剪贴板
+      //   navigator.clipboard.write([clipboardData]).then(function () {
+      //     console.log('Image copied to clipboard successfully!');
+      //   }, function (err) {
+      //     console.error('Could not copy image to clipboard: ', err);
+      //   });
+
+      // }
+
+
+    }
+
+
+    function copyImage() {
+      // 1. 跨域图片, 禁止绘制到 canvas
+      copyImageToClipboard('https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png');
+      // 2. 复制期间, 必须聚焦到页面
+      // copyImageToClipboard('Normal.png');
+    }
+
+    function copyTextToClipboard(text) {
+
+      // 将文本数据添加到剪贴板
+      // let textBlob = new Blob([text], { type: 'text/plain' });
+      // navigator.clipboard.write([new ClipboardItem({ 'text/plain': textBlob })]).then(function () {
+      //   console.log('Text copied to clipboard successfully!');
+      // }, function (err) {
+      //   console.error('Could not copy text to clipboard: ', err);
+      // });
+
+      navigator.clipboard.writeText(text).then(function () {
+        console.log('Text copied to clipboard successfully!');
+      }, function (err) {
+        console.error('Could not copy text to clipboard: ', err);
+      });
+    }
+
+    function copyText() {
+      copyTextToClipboard('Hello, world!');
+    }
+
+
+  </script>
+
+  <form id="form">
+    <input type="file">
+    <img id="img" src="" alt="">
+    <div id="imgs-box"></div>
+    <div id="drop-area" style="width: 100px;height: 100px;background-color: aliceblue;">
+      粘贴或拖拽
+    </div>
+  </form>
+
+  <style>
+    #imgs-box img {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</body>
+
+<script>
+
+
+  var form = document.getElementById('form');
+
+  var input = form.querySelector('input');
+
+  var imgBox = document.getElementById('imgs-box');
+
+  var div = form.querySelector('#drop-area');
+
+
+  var fileList = []
+
+
+  input.addEventListener('change', function (e) {
+    console.log('e: ', e);
+    fileList.push(...e.target.files);
+    console.log('fileList: ', fileList);
+    handleFileListPreview(fileList)
+  });
+
+
+
+  // 防止浏览器默认处理拖拽文件的行为（例如打开文件）
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    div.addEventListener(eventName, preventDefaults, false)
+  });
+
+  function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+
+  div.addEventListener('paste', function (e) {
+    console.log('e: ', e);
+    // 1. 处理图片
+    var items = e.clipboardData.items;
+    console.log('items: ', items);
+    var files = e.clipboardData.files;
+    console.log('files: ', [...files]);
+    console.log('items: ', [...items]);
+    for (var i = 0; i < items.length; i++) {
+      console.log('items[i]: ', items[i]);
+      if (items[i].kind === 'file' && items[i].type.indexOf('image') !== -1) {
+        console.log('items[i]: ', items[i]);
+        var file = items[i].getAsFile();
+
+        getBase64(file)
+          .then(base64 => {
+            console.log('base64: ', base64);
+
+            let birnary = atob(base64.split(',')[1]);
+            // console.log('birnary: ', birnary);
+            let array = new Uint8Array(birnary.length);
+            for (let i = 0; i < birnary.length; i++) {
+              let number = birnary.charCodeAt(i);
+              // console.log('code: ', code);
+              array[i] = number;
+            }
+            let blob = new Blob([array], { type: 'image/png' });
+            // console.log('blob: ', blob);
+            let url = URL.createObjectURL(blob);
+
+            let img = document.getElementById('img');
+
+            img.src = url;
+
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = 'test.png';
+            a.click();
+
+
+
+          })
+
+        fileList.push(file);
+      }
+    }
+    handleFileListPreview(fileList)
+  });
+
+  function getBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  let texts = [];
+  let imgFiles = [];
+  let otherFiles = [];
+  let urls = [];
+
+  div.addEventListener('drop', function (e) {
+    e.preventDefault();
+
+    for (let i = 0; i < e.dataTransfer.items.length; i++) {
+      let item = e.dataTransfer.items[i];
+      console.log('item.kind: ', item.kind);
+      console.log('item.type: ', item.type);
+      if (item.kind === 'file') {
+        let file = item.getAsFile();
+        if (file.type.startsWith('text')) {
+          // 如果是文本文件
+          let reader = new FileReader();
+          reader.onload = function (e) {
+            texts.push(e.target.result);
+          };
+          reader.readAsText(file);
+        } else if (file.type.startsWith('image')) {
+          // 如果是图片文件
+          imgFiles.push(file);
+        } else {
+          // 其他类型文件
+          otherFiles.push(file);
+        }
+      } else if (item.kind === 'string') {
+        // 处理文本数据
+        item.getAsString(function (text) {
+          texts.push(text);
+        });
+      } else if (item.kind === 'url') {
+        // 处理 URL
+        urls.push(item.getAsURL());
+      }
+    }
+
+    console.log('texts: ', texts);
+    console.log('imgFiles: ', imgFiles);
+    console.log('otherFiles: ', otherFiles);
+    console.log('urls: ', urls);
+
+  });
+
+
+
+  function handleFileListPreview(fileList) {
+
+    let fg = new DocumentFragment();
+
+    for (let i = 0; i < fileList.length; i++) {
+      const file = fileList[i];
+      if (!file.blob) {
+        file.blob = URL.createObjectURL(file);
+      }
+      var img = new Image();
+      img.src = file.blob;
+      fg.appendChild(img);
+    }
+    imgBox.innerHTML = '';
+    imgBox.appendChild(fg);
+  }
+
+
+
+
+
+
+
+
+</script>
+
+</html>

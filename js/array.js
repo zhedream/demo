@@ -106,48 +106,63 @@ https://jingyan.baidu.com/article/22fe7ced4e36bd7002617fae.html
 */
 
 
+
+
+/**
+ * 交集 A 有 且 B 有
+ * @param {*} a
+ * @param {*} b
+ * @returns
+ */
+function intersect(a, b) {
+  const set1 = new Set(a);
+  const set2 = new Set(b);
+  const result = [];
+
+  for (const item of set1) {
+    if (set2.has(item)) {
+      result.push(item);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * 差集 , A 有 B 没有
+ * @param  list1
+ * @param  list2
+ * @returns T[]
+ */
+function difference(list1, list2) {
+  const set2 = new Set(list2);
+  const result = [];
+
+  for (const item of list1) {
+    if (!set2.has(item)) {
+      result.push(item);
+    }
+  }
+  return result;
+}
+
 // 在一个数组范围 安全设置数组, 保留原顺序
 function arrayOverwriteRange(arr, insert, scpoe) {
-  const remove = diff(scpoe, insert);
+  const remove = difference(scpoe, insert);
   arr = removeArrRange(arr, remove);
   arr = insertArrRange(arr, insert, scpoe);
   return arr;
 }
 
-// 差集 , A 有 B 没有
-function diff(arr, arr2) {
-  return arr.filter(v => arr2.indexOf(v) == -1);
-}
-// 交集 A 有 且 B 有
-function inter(a, b) {
-  return a.filter(v => b.indexOf(v) > -1);
-}
-
-// 交集2 A 有 且 B 有
-function inter2(a, b) {
-  let vmapcount = new Map();
-  new Set(a).forEach((v) => {
-    if (vmapcount.has(v)) vmapcount.set(v, vmapcount.get(v) + 1);
-    else vmapcount.set(v, 1);
-  });
-  new Set(b).forEach((v) => {
-    if (vmapcount.has(v)) vmapcount.set(v, vmapcount.get(v) + 1);
-    else vmapcount.set(v, 1);
-  });
-  let res = [];
-  vmapcount.forEach((count, v) => count > 1 && res.push(v));
-  return res;
-}
-
 // 剔除
 function removeArrRange(arr, remove, scpoe) {
-  let _intersection = scpoe ? inter(remove, scpoe) : remove; // 交集
-  return diff(arr, _intersection);
+  let _intersection = scpoe ? intersect(remove, scpoe) : remove; // 交集
+  return difference(arr, _intersection);
 }
 // 添加
 function insertArrRange(arr, insert, scpoe) {
-  let _intersection = scpoe ? inter(insert, scpoe) : insert; // 交集
-  let _add = diff(_intersection, arr); // 差集
+  let _intersection = scpoe ? intersect(insert, scpoe) : insert; // 交集
+  let _add = difference(_intersection, arr); // 差集
   return arr.concat(_add);
 }
 
@@ -178,14 +193,14 @@ export function diffArr(pre, next) {
  * @param {function} getValue
  * @returns {{add:array,sub:array}} 增加的元素 add , 减少的元素 sub
  */
- export function diffArrBy(pre, next, getValue) {
+export function diffArrBy(pre, next, getValue) {
   let g = (e) => e;
   if (getValue instanceof Function) g = getValue;
   let add = [], sub = [];
   let difference = next
     .concat(pre)
     .filter((item) => !next.some(v => g(v) === g(item)) || !pre.some(v => g(v) === g(item))); // 对称差集
-  sub = difference.filter((item) => pre.some(v => g(v) === g(item)) ); // difference - a  相对补集
+  sub = difference.filter((item) => pre.some(v => g(v) === g(item))); // difference - a  相对补集
   add = difference.filter((item) => !pre.some(v => g(v) === g(item))); // difference - (difference - a) 的 相对补集
   // console.log("对称差集", difference);
   // console.log("新增", add);
