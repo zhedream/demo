@@ -372,15 +372,22 @@ function groupByToArrayObject(data, f, titleKey, dataKey) {
  * 函数劫持 后置钩子
  * @param fn 被劫持的函数
  * @param hook 劫持函数
- * @param hookReturn 是否劫持返回值
- * @returns {function(): *}
+ * @param hookReturn 是否劫持返回值, 开启 lazy 强制使用劫持返回值
+ * @param lazy 是否懒执行, 开启后, hook 函数的参数为 nextFn， 调用 nextFn() 执行原函数
  */
-function hookFunction(fn, hook, hookReturn = false) {
-  return function () {
+export function hookFunction(fn: Function, hook: Function, hookReturn = false, lazy = false) {
+  return function() {
     const args = Array.prototype.slice.call(arguments);
-    const result = fn.apply(this, args);
-    const hookResult = hook(result, args);
-    return hookReturn ? hookResult : result;
+    if (lazy) {
+      // @ts-ignore
+      return hook(args, fn, this);
+    } else {
+      // @ts-ignore
+      const result: any = fn.apply(this, args);
+      let hookResult = hook(args, result);
+      return hookReturn ? hookResult : result;
+    }
+
   };
 }
 

@@ -60,7 +60,6 @@ var fieldsObjIndex = fields.reduce((acc, cur, index) => {
 }, {});
 
 var a = arr.sort((a) => {
-
   // fields 中的数据 排在前面
   if (~fields.indexOf(a)) return -1;
   // 其他保持
@@ -77,3 +76,37 @@ arr.sort((a, b) => {
 });
 
 console.log("a: ", a);
+
+// let sorts = [
+//   {
+//     key: "code",
+//     order: "desc",
+//     type: "string", // string, number,
+//   },
+// ];
+
+function sortList(data, sorts, getVal) {
+  return data.sort((a, b) => {
+    for (let sort of sorts) {
+      let { key, order } = sort;
+      let aElement = getVal ? getVal(a, key) : a[key];
+      let bElement = getVal ? getVal(b, key) : b[key];
+      if (aElement !== bElement) {
+        if (
+          sort.type === "number" ||
+          typeof aElement === "number" ||
+          !isNaN(aElement)
+        ) {
+          return order === "asc" ? aElement - bElement : bElement - aElement;
+        } else {
+          aElement += "";
+          bElement += "";
+          return order === "asc"
+            ? aElement.localeCompare(bElement)
+            : bElement.localeCompare(aElement);
+        }
+      }
+    }
+    return 0;
+  });
+}
