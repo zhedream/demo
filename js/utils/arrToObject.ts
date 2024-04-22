@@ -32,14 +32,7 @@ console.log(map);
  * @param {string | [string]} keys
  * @param {boolean} flag 反选, 仅 keys 为数组时, 不选的标志
  */
-/**
- * 数组转对象
- * @param {[{}]} arr  对像数组
- * @param {string} key  键
- * @param {string | [string]} keys
- * @param {boolean} flag 反选, 仅 keys 为数组时, 不选的标志
- */
-function toObj(arr, k, keys, flag = false) {
+function toObj(arr, k, keys?, flag = false) {
   if (keys === undefined) {
     keys = [];
     flag = true;
@@ -122,3 +115,69 @@ console.log(headerMap);
 
 
 */
+
+type FnOrKey<T> = (item: T) => any | keyof T;
+
+// 分组： _.groupBy
+export function groupBy<T>(array: Array<T>, funcOrKey: FnOrKey<T>) {
+  const f = (item: T) =>
+    funcOrKey instanceof Function ? funcOrKey(item) : item[funcOrKey];
+  let result: Record<string, Array<T>> = {};
+  for (let i = 0; i < array.length; i++) {
+    let item = array[i];
+    let key: string = f(item);
+    if (result[key] === undefined) {
+      result[key] = [];
+    }
+    result[key].push(item);
+  }
+  return result;
+}
+
+// 分区： _.partition
+function partition<T>(data: T[], fnOrKey: FnOrKey<T>) {
+
+  const fn = (item: T) =>
+    fnOrKey instanceof Function ? fnOrKey(item) : item[fnOrKey];
+
+  let result = [];
+  let fnKeyIndexMap = {}; // fnKey 所在分区索引
+  for (let i = 0; i < data.length; i++) {
+    let item = data[i];
+    let fnKey = fn(item);
+
+    if (fnKeyIndexMap[fnKey] === undefined) {
+      fnKeyIndexMap[fnKey] = result.length; // key 所在分区索引
+      result.push([]); // 新分区
+    }
+    result[fnKeyIndexMap[fnKey]].push(item);
+  }
+  return result;
+}
+
+function partitionWithObject<T>(
+  data: T[],
+  fnOrKey: FnOrKey<T>,
+  titleKey = "title",
+  dataKey = "data"
+) {
+  const fn = (item: T) =>
+    fnOrKey instanceof Function ? fnOrKey(item) : item[fnOrKey];
+
+  let result: any[] = [];
+  let fKeyIndex = {};
+  for (let i = 0; i < data.length; i++) {
+    let item = data[i];
+    let fKey = fn(item);
+    if (fKeyIndex[fKey] === undefined) {
+      fKeyIndex[fKey] = result.length;
+      result.push({
+        [titleKey]: fKey,
+        [dataKey]: [],
+      });
+    }
+
+    result[fKeyIndex[fKey]][dataKey].push(item);
+  }
+  return result;
+}

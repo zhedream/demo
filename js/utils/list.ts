@@ -4,7 +4,7 @@
  * @param  list2
  * @returns T[]
  */
-export function difference<T>(list1: T[], list2: T[]) {
+export function difference<T>(list1: Iterable<T>, list2: Iterable<T>) {
   const set2 = new Set(list2);
   const result: T[] = [];
 
@@ -22,7 +22,7 @@ export function difference<T>(list1: T[], list2: T[]) {
  * @param  arr2
  * @returns T[]
  */
-export function symmetricDifference<T>(arr1: T[], arr2: T[]): T[] {
+export function symmetricDifference<T>(arr1: Iterable<T>, arr2: Iterable<T>) {
   const set1 = new Set(arr1);
   const set2 = new Set(arr2);
   const result: T[] = [];
@@ -48,7 +48,7 @@ export function symmetricDifference<T>(arr1: T[], arr2: T[]): T[] {
  * @param {*} b
  * @returns
  */
-export function intersect<T>(a: T[], b: T[]): T[] {
+export function intersect<T>(a: Iterable<T>, b: Iterable<T>) {
   const set1 = new Set(a);
   const set2 = new Set(b);
   const result: T[] = [];
@@ -114,4 +114,25 @@ export function diffListBy<T>(prev: T[], next: T[], compare: (item: T) => any) {
   }
 
   return { added, removed };
+}
+
+// ========  在一个数组范围 安全设置数组, 保留原顺序
+export function arrayOverwriteRange<T>(arr: T[], insert: T[], scope: T[]) {
+  const remove = difference(scope, insert);
+  arr = removeArrRange(arr, remove);
+  arr = insertArrRange(arr, insert, scope);
+  return arr;
+}
+
+// 剔除
+export function removeArrRange<T>(arr: T[], remove: T[], scope?: T[]) {
+  let _intersection = scope ? intersect(remove, scope) : remove; // 交集
+  return difference(arr, _intersection);
+}
+
+// 添加
+export function insertArrRange<T>(arr: T[], insert: T[], scope?: T[]) {
+  let _intersection = scope ? intersect(insert, scope) : insert; // 交集
+  let _add = difference(_intersection, arr); // 差集
+  return arr.concat(_add);
 }
