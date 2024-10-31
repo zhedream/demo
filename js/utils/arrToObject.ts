@@ -63,6 +63,20 @@ function toObj(arr, k, keys?, flag = false) {
   return object;
 }
 
+function toObj4(arr, key, keys, flag = false) {
+  let map = _.keyBy(arr, key);
+  if (keys === undefined) return map;
+
+  if (typeof keys == "string") {
+    return _.mapValues(map, keys);
+  }
+  if (flag) {
+    return _.mapValues(map, (item) => _.omit(item, keys));
+  } else {
+    return _.mapValues(map, (item) => _.pick(item, keys));
+  }
+}
+
 /**
  * 数据转对象, 字典映射
  * @param {*} arr
@@ -136,7 +150,6 @@ export function groupBy<T>(array: Array<T>, funcOrKey: FnOrKey<T>) {
 
 // 分区： _.partition
 function partition<T>(data: T[], fnOrKey: FnOrKey<T>) {
-
   const fn = (item: T) =>
     fnOrKey instanceof Function ? fnOrKey(item) : item[fnOrKey];
 

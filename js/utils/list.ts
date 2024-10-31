@@ -116,6 +116,15 @@ export function diffListBy<T>(prev: T[], next: T[], compare: (item: T) => any) {
   return { added, removed };
 }
 
+// function diffListBy2(prev, next, compare) {
+//   const added = _.differenceBy(next, prev, compare);
+//   const removed = _.differenceBy(prev, next, compare);
+//   return {
+//     added,
+//     removed,
+//   };
+// }
+
 // ========  在一个数组范围 安全设置数组, 保留原顺序
 export function arrayOverwriteRange<T>(arr: T[], insert: T[], scope: T[]) {
   const remove = difference(scope, insert);

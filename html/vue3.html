@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <!--  引入 vue3-->
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.4.9/vue.global.js"></script>
+  <body>
+    <div id="app">
+      <button @click="getDayTabData">查询</button>
+      <button @click="onReset">重置</button>
+    </div>
+
+    <script>
+      const { ref } = Vue;
+      const app = Vue.createApp({
+        setup() {
+          const getDayTabData = () => {
+            console.log("getDayTabData");
+          };
+          const onReset = () => {
+            console.log("onReset");
+          };
+          // return ()=> [
+          //   Vue.h('button', {onClick: getDayTabData}, '查询2'),
+          //   Vue.h('button', {onClick: onReset}, '重置')
+          // ];
+          return {
+            getDayTabData,
+            onReset,
+          };
+        },
+      });
+      let vm = app.mount("#app");
+      console.log(app);
+      console.log(vm);
+      console.log(vm === app);
+    </script>
+  </body>
+</html>

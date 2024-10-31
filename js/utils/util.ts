@@ -185,3 +185,44 @@ function runGenerator<G extends Generator>(g: G, options?: IdleRequestOptions) {
   };
   requestIdleCallback(doIdleWork, options);
 }
+
+
+export function getFontColor(bgColor: string): string {
+  const hexColor = toHexColor(bgColor);
+  // 移除前缀 '#'
+  const color = hexColor.replace("#", "");
+
+  // 将十六进制转换为 RGB
+  const r = parseInt(color.slice(0, 2), 16);
+  const g = parseInt(color.slice(2, 4), 16);
+  const b = parseInt(color.slice(4, 6), 16);
+
+  // 计算亮度 (0.299 * R + 0.587 * G + 0.114 * B)
+  const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+
+  // 如果亮度较高，返回黑色，否则返回白色
+  return brightness > 186 ? "#000000" : "#ffffff";
+}
+
+export const toHexColor = (function() {
+  // 创建离屏 canvas
+  let canvas: OffscreenCanvas | HTMLCanvasElement;
+  let context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D;
+
+  // 如果浏览器支持 OffscreenCanvas，就使用它
+  if (typeof OffscreenCanvas !== "undefined") {
+    canvas = new OffscreenCanvas(1, 1);
+    context = canvas.getContext("2d");
+  } else {
+    // 否则退回到普通的离屏 canvas
+    let canvas = document.createElement("canvas");
+    canvas.width = 1;
+    canvas.height = 1;
+    context = canvas.getContext("2d");
+  }
+
+  return function(color: string) {
+    context.fillStyle = color;
+    return context.fillStyle;
+  };
+})();
