@@ -226,3 +226,16 @@ export const toHexColor = (function() {
     return context.fillStyle;
   };
 })();
+
+
+async function retryAsync(fn: () => Promise<any>, retryCount: number = 3, retryDelay: number = 1000, title: string = "重试") {
+  for (let i = 0; i < retryCount; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      console.warn(`${title} 第${i + 1}次失败，继续重试...`);
+      await new Promise((resolve) => setTimeout(resolve, retryDelay));
+    }
+  }
+  throw new Error(`${title} 失败`);
+}
